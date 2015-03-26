@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Getting started with a search engine for your site (no server required!)</title>
+  <meta name="description" content="This tutorial is in the context of Jekyll and GitHub pages">
+
+  <link rel="shortcut icon" href="/images/favicon.ico?v=1.1"> 
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://joshbeam.github.io/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html">
+  <link rel="alternate" type="application/rss+xml" title="Front End Collision" href="http://joshbeam.github.io/feed.xml" />
+  <script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-60978864-1', 'auto');
+	ga('send', 'pageview');
+</script>
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+    <div class="site-title">
+      <img class="profile-picture" src="/images/me.jpg" />
+
+      <div>
+      <a href="/">Front End Collision</a>
+      <small>Blog of web developer Josh Beam</small>
+      </div>
+    </div>
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+          <a class="page-link" href="/">Blog</a>
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+          <a class="page-link" href="/archive/">Archive</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <a href="/" class="view-all-link">&laquo; View All</a>
+  <br><br>
+  <header class="post-header">
+    <h1 class="post-title">Getting started with a search engine for your site (no server required!)</h1>
+    <p class="post-meta">Mar 26, 2015 &mdash; Josh Beam &mdash; <em>javascript</em> <em>jekyll</em> <em>json</em> <em>lunr.js</em> <em>tutorial</em> </p>
+  </header>
+
+  <article class="post-content">
+    <div id="toc-container">
+   <table class="toc" id="toc">
+      <tbody>
+         <tr>
+            <td>
+               <div id="toctitle">
+                  <h2>Contents</h2>
+               </div>
+               <ul>
+                  <li class="toc_level-1 toc_section-1">
+                     <a href="#tocAnchor-1-1"><span class="tocnumber">1</span> <span class="toctext">What do you mean “no server”?</span></a>
+                  </li>
+                  <li class="toc_level-1 toc_section-2">
+                     <a href="#tocAnchor-1-2"><span class="tocnumber">2</span> <span class="toctext">Why not process on the server?</span></a>
+                  </li>
+                  <li class="toc_level-1 toc_section-3">
+                     <a href="#tocAnchor-1-3"><span class="tocnumber">3</span> <span class="toctext">Tutorial</span></a>
+                     <ul>
+                        <li class="toc_level-2 toc_section-4">
+                           <a href="#tocAnchor-1-3-1"><span class="tocnumber">3.1</span> <span class="toctext">Technologies used</span></a>
+                        </li>
+                        <li class="toc_level-2 toc_section-5">
+                           <a href="#tocAnchor-1-3-2"><span class="tocnumber">3.2</span> <span class="toctext">Architecture</span></a>
+                        </li>
+                        <li class="toc_level-2 toc_section-6">
+                           <a href="#tocAnchor-1-3-3"><span class="tocnumber">3.3</span> <span class="toctext">Step 1 — Make the JSON file</span></a>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="toc_level-1 toc_section-7">
+                     <a href="#tocAnchor-1-7"><span class="tocnumber">4</span> <span class="toctext">To be continued...</span></a>
+                  </li>
+               </ul>
+            </td>
+         </tr>
+      </tbody>
+   </table>
+</div><div class="note">This tutorial is in the context of Jekyll and GitHub pages</div>
+
+<h1 id="tocAnchor-1-1">What do you mean “no server”?</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
+<p>Lots of search features on websites rely on communicating with the server to deliver search results. For example, a user might click a <code>search</code> button that sends, say, a <code>POST</code> request to the server, where a <code>.php</code> file handles the request, and sends the results back.</p>
+
+<p>With the way we’re gonna do it here, <strong>we’re going to handle the request entirely on the client. No server-side code processing required.</strong> We’ll go over the architecture in a minute.</p>
+
+<h1 id="tocAnchor-1-2">Why <em>not</em> process on the server?</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
+<p>Nothing wrong with the traditional way of doing it. For my website, though, <strong>I’m using <a href="http://jekyllrb.com/">Jekyll</a>, and I’m hosting it on <a href="https://pages.github.com/">GitHub pages</a>. GitHub pages doesn’t support processing with PHP, Node.js, etc.</strong> Therefore, the only way to do it is on the client (with a little bit of pre-processing, which we’ll go over in a second).</p>
+
+<h1 id="tocAnchor-1-3">Tutorial</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
+<h2 id="tocAnchor-1-3-1">Technologies used</h2>
+<ol>
+  <li><a href="http://jekyllrb.com/">Jekyll</a> (a static site generator)</li>
+  <li><a href="http://lunrjs.com/">lunr.js</a> (a JavaScript search indexer)</li>
+  <li><a href="http://jquery.com/">jQuery</a> (to make the AJAX stuff and displaying the results easier)</li>
+</ol>
+
+<h2 id="tocAnchor-1-3-2">Architecture</h2>
+<ol>
+  <li>Take advantage of Liquid (the template system that Jekyll uses) to <strong>create a JSON file of <em>all</em> our searchable content</strong> (in this example, blog posts)</li>
+  <li>Write some JavaScript that <strong>sends an AJAX request to retrieve the JSON file</strong> whenever the user searches for something</li>
+  <li>Use lunr.js to <strong>match the search query against all the blog posts</strong> in the JSON file</li>
+  <li><strong>Display the search results</strong> in order by the strength of the match</li>
+</ol>
+
+<div class="ellipsis">…</div>
+
+<h2 id="tocAnchor-1-3-3">Step 1 — Make the JSON file</h2>
+
+<p>We’re going to kind of “hack” our way through Liquid to create a JSON file.</p>
+
+<p>Create a new file in your <em>root</em> called <code>posts.json</code>. Open it up:</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="o">---</span>
+<span class="o">---</span>
+<span class="p">[</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="nx">post</span> <span class="k">in</span> <span class="nx">site</span><span class="p">.</span><span class="nx">posts</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{</span>
+      <span class="s2">"title"</span>    <span class="o">:</span> <span class="s2">"{{ post.title | escape }}"</span><span class="p">,</span>
+      <span class="s2">"category"</span> <span class="o">:</span> <span class="s2">"{{ post.categories | join: ' ' }}"</span><span class="p">,</span>
+      <span class="s2">"content"</span>	 <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | remove: """</span><span class="p">}}</span><span class="s2">",</span>
+<span class="s2">      "</span><span class="nx">url</span><span class="s2">"      : "</span><span class="p">{{</span> <span class="nx">site</span><span class="p">.</span><span class="nx">baseurl</span> <span class="p">}}{{</span> <span class="nx">post</span><span class="p">.</span><span class="nx">url</span> <span class="p">}}</span><span class="s2">",</span>
+<span class="s2">      "</span><span class="nx">date</span><span class="s2">"     : "</span><span class="p">{{</span> <span class="nx">post</span><span class="p">.</span><span class="nx">date</span> <span class="p">}}</span><span class="err">"</span>
+    <span class="p">}{</span><span class="o">%</span> <span class="nx">unless</span> <span class="nx">forloop</span><span class="p">.</span><span class="nx">last</span> <span class="o">%</span><span class="p">},{</span><span class="o">%</span> <span class="nx">endunless</span> <span class="o">%</span><span class="p">}</span>
+  <span class="p">{</span><span class="o">%</span> <span class="nx">endfor</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">]</span></code>
+   </pre>
+</div>
+
+<p>You’ll notice some strange things. First, if you’re using syntax highlighting, <strong>you’ll get all kinds of weird “errors”. Ignore them.</strong> JSON or JavaScript syntax highlighting doesn’t understand that we’re using Liquid.</p>
+
+<p>Second, <strong>how the hell is this going to work</strong>, if it’s a JSON file? Well, you see the two sets of <code>---</code> at the top of the file? When you run <code>jekyll build</code>, it will see this file as a “special file” that needs to be processed with Liquid. If we remove the <code>---</code>, it won’t process the template. This is called “YAML front matter”. <strong>Any pages with YAML front matter get processed with Liquid.</strong></p>
+
+<p>Most of the templating above is self-explanatory if you understand the basics of <a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">Liquid filters</a>. However there is <strong>one line I’d like to explain</strong>.</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="s2">"content"</span>   <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | remove: """</span><span class="p">}}</span><span class="err">"</span><span class="p">,</span></code>
+   </pre>
+</div>
+
+<p>The content of our post might contain raw <code>tab</code> characters, as well as double quotes (<code>"</code>). Well, as it turns out, <strong>having <code>tab</code> characters inside a JSON string is <em>invalid</em> JSON</strong>, so when we call our AJAX request later, <strong>nothing would be returned! Not good.</strong></p>
+
+<p>Solution? Run two <code>remove</code> filters: one for the <code>tab</code> character, and one for the double quotes.</p>
+
+<p>Also, <strong>I want to explain this part:</strong></p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="p">}{</span><span class="o">%</span> <span class="nx">unless</span> <span class="nx">forloop</span><span class="p">.</span><span class="nx">last</span> <span class="o">%</span><span class="p">},{</span><span class="o">%</span> <span class="nx">endunless</span> <span class="o">%</span><span class="p">}</span></code>
+   </pre>
+</div>
+
+<p><strong>If you don’t have that line of code</strong>, your output would look something like this:</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="p">[</span>
+	<span class="p">{</span> <span class="cm">/* content */</span> <span class="p">},</span>
+	<span class="p">{</span> <span class="cm">/* content */</span> <span class="p">},</span>
+	<span class="p">{</span> <span class="cm">/* content */</span> <span class="p">},</span>
+<span class="p">]</span></code>
+   </pre>
+</div>
+
+<p>See the trailing comma on the last object? <strong>This is also invalid JSON. Not good.</strong> So, we run a some Liquid that says <em>don’t put a comma at the end if it’s the last object</em>.</p>
+
+<p>
+   <strong>Now, run <code>jekyll build</code>, and you’ll end up with a compiled <code>posts.json</code> underneath <code>_site</code>, which contains the entire built site. Here’s the compiled JSON:</strong>
+</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">"title"</span>    <span class="o">:</span> <span class="s2">"Why do people add semicolons before modules?"</span><span class="p">,</span>
+      <span class="s2">"category"</span> <span class="o">:</span> <span class="s2">"javascript snippet"</span><span class="p">,</span>
+      <span class="s2">"content"</span>	 <span class="o">:</span> <span class="s2">"Simple answer: because of minification issues.Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn’t careful.(function() {// code})()(function() {// code})();If you look closely enough at the above, you’ll see the first IIFE is missing a semicolon at the end.That means that when minified, it’ll look like this:The broken code:(function() {})()(function() {})();// (a)()(b)()The problem is that now function a is being called with function b passed in as an argument. Interesting.So, we just add a ; to the beginning of the module, and to the end. This acts as a safeguard to ensure we don’t run into that problem when we minify.So, when we try doing the above example with semicolons at the beginning and at the end, and you minify the code, you get this instead:The working code:;(function() {})();;(function() {})();The cool thing is, the above doesn’t throw any errors. In fact, JSHint won’t yell at you either.Why is this? Check out the MDN article on empty:  An empty statement is used to provide no statement, although the JavaScript syntax would expect one.So those extra semicolons are not a syntax error, because a random semicolon anywhere in the code can be interpreted as an empty statement. Cool, huh?"</span><span class="p">,</span>
+      <span class="s2">"url"</span>      <span class="o">:</span> <span class="s2">"/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html"</span><span class="p">,</span>
+      <span class="s2">"date"</span>     <span class="o">:</span> <span class="s2">"2015-03-22 18:34:00 -0500"</span>
+    <span class="p">},</span>
+    <span class="cm">/* and several other posts*/</span>
+<span class="p">]</span></code>
+   </pre>
+</div>
+
+<div class="note">I strongly recommend running your output through <a href="http://jsonlint.com/">JSONLint</a> if your code isn't working right. It'll help you find whatever errors you might have in your JSON syntax.</div>
+
+<h1 id="tocAnchor-1-7">To be continued...</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
+
+  </article>
+
+  <a href="/" class="view-all-link">&laquo; View All</a>
+
+  <div class="twitter-plug">Like this post?
+<a href="https://twitter.com/intent/tweet?url=http://joshbeam.github.io/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html&text=Getting started with a search engine for your site (no server required!)&via=joshbeam92" 
+target="_blank">
+Share it with your followers</a> 
+or 
+<a href="https://twitter.com/joshbeam92">
+follow me on Twitter</a>!</div>
+
+	<hr>
+
+  <div class="ask-for-comments">
+  	<em>What do you think? Did I get something wrong, or did I get something right? Comment below to let me and everyone else know.</em>
+  </div>
+
+  
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      //var disqus_developer = 1;
+      /* * * CONFIGURATION VARIABLES * * */
+      var disqus_shortname = 'frontendcollision';
+      
+      /* * * DON'T EDIT BELOW THIS LINE * * */
+      (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+  
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Front End Collision</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Josh Beam (author)</li>
+          <li><a href="mailto:joshua.a.beam@gmail.com">joshua.a.beam@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/joshbeam">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">joshbeam</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/joshbeam92">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">joshbeam92</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">Website and blog of full-stack JavaScript developer, Josh Beam.
+</p>
+        <p class="text">&copy; 2015 Joshua Beam</p>
+        <div class="search">
+          <input type="text" class="search-box" id="search" /><input type="button" class="search-button" value="Search" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+    <script src="/js/dist/scripts.js"></script>
+  </body>
+
+</html>

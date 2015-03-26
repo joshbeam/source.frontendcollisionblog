@@ -1,0 +1,25 @@
+{
+  "name": "joshbeam.github.io",
+  "version": "1.0.0",
+  "description": "Blog of JavaScript developer, Josh Beam",
+  "main": " ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshbeam/joshbeam.github.io"
+  },
+  "author": "Josh Beam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joshbeam/joshbeam.github.io/issues"
+  },
+  "homepage": "https://github.com/joshbeam/joshbeam.github.io",
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-uglify": "^1.1.0",
+    "gulp-rename": "^1.2.0"
+  }
+}
