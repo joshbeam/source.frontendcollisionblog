@@ -21,3 +21,6 @@ exclude:
 - "package.json"
 - "gulpfile.js"
 - "js/src"
+
+include:
+- ".nojekyll"
