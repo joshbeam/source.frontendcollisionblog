@@ -275,7 +275,7 @@ $(function(Query,utils) {
 })(this);
 {% endhighlight %}
 
-We've simply wrapped it in a module, because later on we could add more methods to module (if we wanted to). For example, a <a href="http://localhost:4000/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html#tocAnchor-1-8">custom forEach</a> function.
+We've simply wrapped it in a module, because later on we could add more methods to module (if we wanted to). For example, a <a href="{{ "/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html#tocAnchor-1-8" | prepend:site.url }}">custom forEach</a> function.
 
 ## Step 3 &mdash; Use lunr.js and display the results
 
