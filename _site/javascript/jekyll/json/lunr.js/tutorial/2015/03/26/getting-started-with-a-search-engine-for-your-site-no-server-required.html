@@ -114,10 +114,30 @@
                         <li class="toc_level-2 toc_section-6">
                            <a href="#tocAnchor-1-3-3"><span class="tocnumber">3.3</span> <span class="toctext">Step 1 — Make the JSON file</span></a>
                         </li>
+                        <li class="toc_level-2 toc_section-7">
+                           <a href="#tocAnchor-1-3-4"><span class="tocnumber">3.4</span> <span class="toctext">Step 2 — Send an AJAX request</span></a>
+                        </li>
+                        <li class="toc_level-2 toc_section-8">
+                           <a href="#tocAnchor-1-3-5"><span class="tocnumber">3.5</span> <span class="toctext">Step 3 — Use lunr.js and display the results</span></a>
+                        </li>
                      </ul>
                   </li>
-                  <li class="toc_level-1 toc_section-7">
-                     <a href="#tocAnchor-1-7"><span class="tocnumber">4</span> <span class="toctext">To be continued...</span></a>
+                  <li class="toc_level-1 toc_section-9">
+                     <a href="#tocAnchor-1-9"><span class="tocnumber">4</span> <span class="toctext">Conclusion</span></a>
+                     <ul>
+                        <li class="toc_level-2 toc_section-10">
+                           <a href="#tocAnchor-1-9-1"><span class="tocnumber">4.1</span> <span class="toctext">Benefits</span></a>
+                        </li>
+                        <li class="toc_level-2 toc_section-11">
+                           <a href="#tocAnchor-1-9-2"><span class="tocnumber">4.2</span> <span class="toctext">Drawbacks</span></a>
+                        </li>
+                     </ul>
+                  </li>
+                  <li class="toc_level-1 toc_section-12">
+                     <a href="#tocAnchor-1-12"><span class="tocnumber">5</span> <span class="toctext">Example</span></a>
+                  </li>
+                  <li class="toc_level-1 toc_section-13">
+                     <a href="#tocAnchor-1-13"><span class="tocnumber">6</span> <span class="toctext">Credits</span></a>
                   </li>
                </ul>
             </td>
@@ -149,8 +169,7 @@
 <ol>
   <li>Take advantage of Liquid (the template system that Jekyll uses) to <strong>create a JSON file of <em>all</em> our searchable content</strong> (in this example, blog posts)</li>
   <li>Write some JavaScript that <strong>sends an AJAX request to retrieve the JSON file</strong> whenever the user searches for something</li>
-  <li>Use lunr.js to <strong>match the search query against all the blog posts</strong> in the JSON file</li>
-  <li><strong>Display the search results</strong> in order by the strength of the match</li>
+  <li>Use lunr.js to <strong>match the search query against all the blog posts</strong> in the JSON file and <strong>display the search results</strong> in order by the strength of the match</li>
 </ol>
 
 <div class="ellipsis">…</div>
@@ -170,9 +189,9 @@
     <span class="p">{</span>
       <span class="s2">"title"</span>    <span class="o">:</span> <span class="s2">"{{ post.title | escape }}"</span><span class="p">,</span>
       <span class="s2">"category"</span> <span class="o">:</span> <span class="s2">"{{ post.categories | join: ' ' }}"</span><span class="p">,</span>
-      <span class="s2">"content"</span>	 <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | remove: """</span><span class="p">}}</span><span class="s2">",</span>
-<span class="s2">      "</span><span class="nx">url</span><span class="s2">"      : "</span><span class="p">{{</span> <span class="nx">site</span><span class="p">.</span><span class="nx">baseurl</span> <span class="p">}}{{</span> <span class="nx">post</span><span class="p">.</span><span class="nx">url</span> <span class="p">}}</span><span class="s2">",</span>
-<span class="s2">      "</span><span class="nx">date</span><span class="s2">"     : "</span><span class="p">{{</span> <span class="nx">post</span><span class="p">.</span><span class="nx">date</span> <span class="p">}}</span><span class="err">"</span>
+      <span class="s2">"content"</span>	 <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | escape | remove: "</span><span class="err">\</span><span class="s2">"}}"</span><span class="p">,</span>
+      <span class="s2">"url"</span>      <span class="o">:</span> <span class="s2">"{{ site.baseurl }}{{ post.url }}"</span><span class="p">,</span>
+      <span class="s2">"date"</span>     <span class="o">:</span> <span class="s2">"{{ post.date }}"</span>
     <span class="p">}{</span><span class="o">%</span> <span class="nx">unless</span> <span class="nx">forloop</span><span class="p">.</span><span class="nx">last</span> <span class="o">%</span><span class="p">},{</span><span class="o">%</span> <span class="nx">endunless</span> <span class="o">%</span><span class="p">}</span>
   <span class="p">{</span><span class="o">%</span> <span class="nx">endfor</span> <span class="o">%</span><span class="p">}</span>
 <span class="p">]</span></code>
@@ -187,7 +206,7 @@
 
 <div class="highlight">
    <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="s2">"content"</span>   <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | remove: """</span><span class="p">}}</span><span class="err">"</span><span class="p">,</span></code>
+      <code class="language-javascript" data-lang="javascript"><span class="s2">"content"</span>   <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | escape | remove: "</span><span class="err">\</span><span class="s2">"}}"</span><span class="p">,</span></code>
    </pre>
 </div>
 
@@ -238,7 +257,321 @@
 
 <div class="note">I strongly recommend running your output through <a href="http://jsonlint.com/">JSONLint</a> if your code isn't working right. It'll help you find whatever errors you might have in your JSON syntax.</div>
 
-<h1 id="tocAnchor-1-7">To be continued...</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+<h2 id="tocAnchor-1-3-4">Step 2 — Send an AJAX request</h2>
+
+<h3 id="create-a-query-object">Create a “Query” object</h3>
+
+<p>Don’t confuse our <code>Query</code> object with <code>jQuery</code>. Our <code>Query</code> object will serve as a container for everything related to our search. I’ve commented the code so you can see what everything does.</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="c1">//Create a module using an IIFE</span>
+
+<span class="p">;(</span><span class="kd">function</span><span class="p">(</span><span class="nx">global</span><span class="p">,</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+  <span class="cm">/*</span>
+<span class="cm">    Put ourselves into "strict" mode</span>
+<span class="cm">    This just helps us write cleaner JavaScript</span>
+<span class="cm">  */</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+
+  <span class="nx">Query</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1">// this.q is our search query (for example, "javascript tutorial")</span>
+    <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">val</span><span class="p">;</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="c1">// brings us to our search page with a query string attached</span>
+    <span class="nx">goToLocation</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">route</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">!==</span> <span class="s1">'undefined'</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">===</span> <span class="s1">'string'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="o">=</span><span class="nx">route</span><span class="o">+</span><span class="s1">'/?query='</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">q</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="c1">// returns our search query (for example, "javascript tutorial")</span>
+    <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="c1">// "grab" the query from the query string in the URL and set this.q to it</span>
+    <span class="nx">setFromURL</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[\[]/</span><span class="p">,</span> <span class="s2">"\\["</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[\]]/</span><span class="p">,</span> <span class="s2">"\\]"</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">"[\\?&amp;]"</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">"=([^&amp;#]*)"</span><span class="p">),</span>
+          <span class="nx">results</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">);</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">results</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="s2">""</span> <span class="o">:</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">results</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\+/g</span><span class="p">,</span> <span class="s2">" "</span><span class="p">));</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>        
+    <span class="p">},</span>
+    <span class="c1">// a wrapper for jQuery's $.get</span>
+    <span class="nx">getJSON</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">file</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="c1">// when we initialize a query, we have the option of giving it a query string</span>
+  <span class="kd">function</span> <span class="nx">Query</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">q</span> <span class="o">!==</span> <span class="s1">'undefined'</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">q</span> <span class="o">===</span> <span class="s1">'string'</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// attach the Query object to the window</span>
+  <span class="nx">global</span><span class="p">.</span><span class="nx">Query</span> <span class="o">=</span> <span class="nx">Query</span><span class="p">;</span>
+<span class="p">})(</span><span class="k">this</span><span class="p">,</span><span class="nx">$</span><span class="p">);</span></code>
+   </pre>
+</div>
+
+<p>Whew! That’s a lot of stuff. Let’s write a little API documentation to show you what everything does:</p>
+
+<ol>
+  <li><code>var query = new Query()</code> — we can create a new “container” to hold our search query</li>
+  <li><code>query.set('javascript tutorial')</code> — this is what we want to search for, for example</li>
+  <li><code>query.goToLocation('my-search-page')</code> — will bring us to <code>/my-search-page?query=javascript%20tutorial</code></li>
+  <li><code>query.get()</code> — returns `“javascript tutorial”, in this case</li>
+  <li><code>query.setFromURL()</code> — when we reached <code>/my-search-page?query=javascript%20tutorial</code>, we can grab the “javascript tutorial” string, and set it (internally, it says <code>this.q = "javascript tutorial"</code>)</li>
+  <li><code>query.getJSON('/posts.json')</code> — this just grabs our page, <code>/posts.json</code> and returns the return value of <code>$.get</code> (this is useful because we can call <code>query.getJSON('/posts.json').done(function() {})</code>)</li>
+</ol>
+
+<p><strong>Still confused?</strong> I recommend reading up first on <a href="http://benalman.com/news/2010/11/immediately-invoked-function-expression/">Immediately Invoked Function Expressions</a>.</p>
+
+<h3 id="let-the-user-search-for-something">Let the user search for something</h3>
+
+<div class="highlight">
+   <pre>
+      <code class="language-html" data-lang="html"><span class="c">&lt;!-- Your search form --&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">class=</span><span class="s">"search"</span><span class="nt">&gt;</span>
+ 	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"search-box"</span> <span class="na">id=</span><span class="s">"search"</span> <span class="nt">/&gt;</span>
+ 	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">class=</span><span class="s">"search-button"</span> <span class="na">value=</span><span class="s">"Search"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span></code>
+   </pre>
+</div>
+
+<p>I hate forms. But here, we use them for a very specific reason. It’s so that we can execute our search function both whenever the user clicks the “Search” button, or whenever the user hits the “enter” key on the keyboard. HTML has this built-in functionality. If we didn’t use a <code>form</code>, and just used, say, a <code>div</code>, we would have to write code that would listen to both the <code>click</code> event on the button, and the <code>keydown</code> event on the text box.</p>
+
+<p>So on all pages where there is the above search form, we should also have this JavaScript:</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="c1">// search.js</span>
+<span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">Query</span><span class="p">)</span> <span class="p">{</span>
+	<span class="s1">'use strict'</span><span class="p">;</span>
+
+	<span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Query</span><span class="p">();</span>
+
+	<span class="nx">$</span><span class="p">(</span><span class="s1">'.search'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">'submit'</span><span class="p">,</span><span class="nx">exec</span><span class="p">);</span>	
+
+	<span class="kd">function</span> <span class="nx">submit</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+		<span class="c1">// stop the form from doing its default behavior</span>
+		<span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+
+		<span class="c1">// set the query, and go to the search page with our query URL</span>
+		<span class="nx">query</span>
+		<span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.search-box'</span><span class="p">).</span><span class="nx">val</span><span class="p">().</span><span class="nx">trim</span><span class="p">())</span>
+		<span class="p">.</span><span class="nx">goToLocation</span><span class="p">(</span><span class="s1">'/search'</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}(</span><span class="nx">Query</span><span class="p">));</span></code>
+   </pre>
+</div>
+
+<p>We could easily write the above code as such:</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="c1">// search.js</span>
+<span class="kd">function</span> <span class="nx">submit</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+
+	<span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="o">=</span><span class="s1">'/search/?query='</span><span class="o">+</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.search-box'</span><span class="p">).</span><span class="nx">val</span><span class="p">().</span><span class="nx">trim</span><span class="p">();</span>
+<span class="p">}</span></code>
+   </pre>
+</div>
+
+<p>However, the only reason we’re using our custom Query object is because <strong>it separates concerns, and we’ve also created a reusable, easy-to-read and understandable module</strong>.</p>
+
+<h3 id="finally-send-the-request">Finally, send the request</h3>
+
+<p>We’ll have the following code <strong>on our <code>/search</code> page</strong>:</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="c1">// results.js</span>
+<span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">Query</span><span class="p">,</span><span class="nx">utils</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Query</span><span class="p">(),</span>
+		<span class="nx">site</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s2">"//"</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span>
+		<span class="c1">// some utility functions</span>
+		<span class="nx">utils</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">;</span>
+
+	<span class="nx">query</span>
+	<span class="p">.</span><span class="nx">setFromURL</span><span class="p">(</span><span class="s1">'query'</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">'/posts.json'</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+		<span class="c1">// show our results</span>
+	<span class="p">});</span>	
+<span class="p">}(</span><span class="nx">Query</span><span class="p">,</span><span class="nx">utils</span><span class="p">));</span></code>
+   </pre>
+</div>
+
+<div class="note">Remember my tip about <a href="http://jsonlint.com/">JSONLint</a>? Seriously, use it. Open up your console, and you should see your JSON (since we wrote <code>console.log(data)</code> in the above code). If you don't see it, your JSON might be improperly formatted.</div>
+
+<h3 id="wait-whats-utils">Wait, what’s <code>utils</code>?</h3>
+
+<p><code>utils</code> is a little package of a function that we’ll call <code>shade</code>. This function will be used to color our results based on the strength of the match against our query.</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="c1">// utils.js</span>
+<span class="p">;(</span><span class="kd">function</span><span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
+	<span class="s1">'use strict'</span><span class="p">;</span>
+
+	<span class="kd">var</span> <span class="nx">utils</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="nx">shade</span><span class="o">:</span> <span class="nx">shade</span>
+	<span class="p">};</span>
+
+	<span class="kd">function</span> <span class="nx">shade</span><span class="p">(</span><span class="nx">color</span><span class="p">,</span><span class="nx">percent</span><span class="p">)</span> <span class="p">{</span>
+		<span class="c1">//Comes from: http://stackoverflow.com/a/13542669/2714730</span>
+		<span class="kd">var</span> <span class="nx">f</span><span class="o">=</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">color</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">16</span><span class="p">),</span><span class="nx">t</span><span class="o">=</span><span class="nx">percent</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">?</span><span class="mi">0</span><span class="o">:</span><span class="mi">255</span><span class="p">,</span><span class="nx">p</span><span class="o">=</span><span class="nx">percent</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">?</span><span class="nx">percent</span><span class="o">*-</span><span class="mi">1</span><span class="o">:</span><span class="nx">percent</span><span class="p">,</span><span class="nx">R</span><span class="o">=</span><span class="nx">f</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">,</span><span class="nx">G</span><span class="o">=</span><span class="nx">f</span><span class="o">&gt;&gt;</span><span class="mi">8</span><span class="o">&amp;</span><span class="mh">0x00FF</span><span class="p">,</span><span class="nx">B</span><span class="o">=</span><span class="nx">f</span><span class="o">&amp;</span><span class="mh">0x0000FF</span><span class="p">;</span>
+		<span class="k">return</span> <span class="s2">"#"</span><span class="o">+</span><span class="p">(</span><span class="mh">0x1000000</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">R</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">R</span><span class="p">)</span><span class="o">*</span><span class="mh">0x10000</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">G</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">G</span><span class="p">)</span><span class="o">*</span><span class="mh">0x100</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">B</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">B</span><span class="p">)).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="nx">global</span><span class="p">.</span><span class="nx">utils</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">;</span>
+<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code>
+   </pre>
+</div>
+
+<p>We’ve simply wrapped it in a module, because later on we could add more methods to module (if we wanted to). For example, a <a href="http://localhost:4000/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html#tocAnchor-1-8">custom forEach</a> function.</p>
+
+<h2 id="tocAnchor-1-3-5">Step 3 — Use lunr.js and display the results</h2>
+
+<p>Here comes the fun part. First, here’s the HTML for our <code>/search</code> page:</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-html" data-lang="html"><span class="c">&lt;!-- /search --&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"search-results-count"</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"search-results"</span><span class="nt">&gt;&lt;/ul&gt;</span></code>
+   </pre>
+</div>
+
+<p>That’s literally it. Our JavaScript is a bit more interesting:</p>
+
+<div class="highlight">
+   <pre>
+      <code class="language-javascript" data-lang="javascript"><span class="c1">// results.js</span>
+<span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">searchIndex</span><span class="p">,</span>
+		<span class="nx">results</span><span class="p">,</span>
+		<span class="nx">$resultsCount</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'.search-results-count'</span><span class="p">),</span>
+		<span class="nx">$results</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'.search-results'</span><span class="p">),</span>
+		<span class="nx">totalScore</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+		<span class="nx">percentOfTotal</span><span class="p">;</span>
+
+	<span class="c1">// PIECE 1</span>
+	<span class="c1">// set up the allowable fields</span>
+	<span class="nx">searchIndex</span> <span class="o">=</span> <span class="nx">lunr</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'title'</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'category'</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'content'</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">ref</span><span class="p">(</span><span class="s1">'url'</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'date'</span><span class="p">);</span>
+	<span class="p">});</span>
+	
+	<span class="c1">// PIECE 2</span>
+	<span class="c1">// add each item from posts.json to the index</span>
+	<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">searchIndex</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+	<span class="p">});</span>
+
+	<span class="c1">// PIECE 3</span>
+	<span class="c1">// search for the query and store the results as an array</span>
+	<span class="nx">results</span> <span class="o">=</span> <span class="nx">searchIndex</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="nx">query</span><span class="p">.</span><span class="nx">get</span><span class="p">());</span>
+	
+	<span class="c1">// PIECE 4</span>
+	<span class="c1">// add the title of each post into each result, too (this doesn't come standard with lunr.js)</span>
+	<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">result</span> <span class="k">in</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">results</span><span class="p">[</span><span class="nx">result</span><span class="p">].</span><span class="nx">title</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">post</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="nx">results</span><span class="p">[</span><span class="nx">result</span><span class="p">].</span><span class="nx">ref</span><span class="p">;</span>
+		<span class="p">})[</span><span class="mi">0</span><span class="p">].</span><span class="nx">title</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">// show how many results there were, in the DOM</span>
+	<span class="nx">$resultsCount</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">?</span> <span class="s1">' result'</span> <span class="o">:</span> <span class="s1">' results'</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' for "'</span> <span class="o">+</span> <span class="nx">query</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span> <span class="o">+</span><span class="s1">'"'</span><span class="p">);</span>
+
+	<span class="c1">// PIECE 5</span>
+	<span class="c1">// get the total score of all items, so that we can divide each result into it, giving us a percentage</span>
+	<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">totalScore</span><span class="o">+=</span><span class="nx">result</span><span class="p">.</span><span class="nx">score</span><span class="p">;</span>
+	<span class="p">});</span>
+
+	<span class="c1">// PIECE 6 &amp; PIECE 7</span>
+	<span class="c1">// append each result link, with a border that corresponds to a color with a strength equal to its percentage</span>
+	<span class="c1">// of the total score</span>
+	<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">percentOfTotal</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">score</span><span class="o">/</span><span class="nx">totalScore</span><span class="p">;</span>
+
+		<span class="nx">$results</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">'&lt;li&gt;&lt;a href="'</span><span class="o">+</span> <span class="nx">site</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">ref</span> <span class="o">+</span><span class="s1">'"&gt;'</span><span class="o">+</span><span class="nx">result</span><span class="p">.</span><span class="nx">title</span><span class="o">+</span><span class="s1">'&lt;/a&gt;&lt;/li&gt;'</span><span class="p">);</span>
+		<span class="nx">$results</span><span class="p">.</span><span class="nx">children</span><span class="p">(</span><span class="s1">'li'</span><span class="p">).</span><span class="nx">last</span><span class="p">().</span><span class="nx">css</span><span class="p">({</span>
+			<span class="s1">'border-left'</span><span class="o">:</span> <span class="s1">'20px solid '</span><span class="o">+</span><span class="nx">utils</span><span class="p">.</span><span class="nx">shade</span><span class="p">(</span><span class="s1">'#ffffff'</span><span class="p">,</span><span class="o">-</span><span class="nx">percentOfTotal</span><span class="p">)</span>
+		<span class="p">});</span>
+	<span class="p">});</span>		
+<span class="p">});</span></code>
+   </pre>
+</div>
+
+<p>Let’s go over this in pieces:</p>
+
+<h3 id="piece-1">Piece 1</h3>
+
+<p>We set up a <code>searchIndex</code> object, which is just an initialization of <code>lunr</code>. If you notice, we call <code>this.field()</code>, and every field <strong>actually exactly matches the fields that we have in our <code>posts.json</code></strong>.</p>
+
+<h3 id="piece-2">Piece 2</h3>
+<p>Then, we loop through our JSON objects from <code>posts.json</code>, and we add them to <code>searchIndex</code>.</p>
+
+<h3 id="piece-3">Piece 3</h3>
+<p>We call <code>.search(query.get())</code> on our <code>lunr</code> object, <code>searchIndex</code>. Remember, we called <code>query.setFromURL()</code>, so when we call <code>query.get()</code>, it returns the query string from the URL</p>
+
+<h3 id="piece-4">Piece 4</h3>
+<p>It turns out that the <code>results</code> object only contains objects with a <code>ref</code> field. Open up your console and run your code and you’ll see what I mean. The <code>ref</code> field we set up to be the URL of the post. So all we’re gonna do is add the title of each post to the result object too, so that way later, we can add the <code>a</code> tags with the URLs and titles.</p>
+
+<h3 id="piece-5">Piece 5</h3>
+<p>Each object also has a field called <code>score</code>, which lunr.js generates. This is a number between 0 and 1, which reflects the strength of the match. So if we have a match with a score of <code>0.09</code>, and a match with a score of <code>0.0062</code>, the one with <code>0.09</code> matched higher, based on lunr’s algorithm.</p>
+
+<h3 id="piece-6">Piece 6</h3>
+<p>So, we’ll use a little bit of math. If we have two matches, result #1 at <code>0.09</code> and result #2 at <code>0.0062</code>, the total is <code>0.0962</code>, right? So result #1’s fraction of the total is <code>result.score / totalScore</code>, which is about <code>0.9355</code>, and result #2’s is about <code>0.0644</code>.</p>
+
+<h3 id="piece-7">Piece 7</h3>
+<p>In comes our <code>shade</code> method. We’re gonna add a thick border to the side of each search result, and we’ll darken it by each result’s percentage. Thus, the higher strength of the match for a result, the darker the side border is, which shows the user, intuitively, that that specific match is “stronger”, since it has a “stronger” color. As a side note, when we loop through the elements and display them in a list with jQuery, the results are in order from highest score to lowest score by default (thanks to lunr.js), so the results are automatically ordered from high to low in your resulting HTML.</p>
+
+<h1 id="tocAnchor-1-9">Conclusion</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
+<p>So that’s it. We’ve successfully implemented a client-side only (or, mostly, since we use AJAX) search system.</p>
+
+<h2 id="tocAnchor-1-9-1">Benefits</h2>
+
+<ol>
+  <li>We can use it on GitHub pages, or whatever hosting site you use that doesn’t support a backend with PHP, Node.js, etc.</li>
+  <li>Everything is written in JavaScript and HTML, so it’s relatively simple</li>
+  <li>We can render all the JSON ourselves (with Liquid and Jekyll), and serve it up statically</li>
+  <li>… It works.</li>
+</ol>
+
+<h2 id="tocAnchor-1-9-2">Drawbacks</h2>
+
+<ol>
+  <li>Could be slow, depending on how many results you have. If you have a lot of results, you might want to consider using some loading icons or some sort of AJAX progress bar to show the progress of the loading so the user isn’t looking at a blank screen thinking nothing is happening. Also, you could display only a certain amount of results at a time, and wait to render to the second or third, etc., set of results until the user clicks a “next” button, or whatever.</li>
+  <li>JSON is finnicky. You have to render your JSON file with Liquid very detailed.</li>
+  <li>It’s a little bit hacky (using Liquid to make the JSON file)</li>
+</ol>
+
+<h1 id="tocAnchor-1-12">Example</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
+<p>As of the date of this post, I am using this on my website. Scroll down to the footer to utilize the search feature.</p>
+
+<h1 id="tocAnchor-1-13">Credits</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
+<p>Thanks to <a href="https://github.com/christian-fei/Simple-Jekyll-Search">christian-fei</a> for the inspiration for the JSON creation via Liquid.</p>
+
+<p>Also, thanks <a href="http://lunrjs.com/">Lunr.js</a>!</p>
 
 
   </article>
@@ -332,9 +665,9 @@ follow me on Twitter</a>!</div>
         <p class="text">Website and blog of full-stack JavaScript developer, Josh Beam.
 </p>
         <p class="text">&copy; 2015 Joshua Beam</p>
-        <div class="search">
-          <input type="text" class="search-box" id="search" /><input type="button" class="search-button" value="Search" />
-        </div>
+        <form class="search">
+          <input type="text" class="search-box" id="search" /><input type="submit" class="search-button" value="Search" />
+        </form>
       </div>
     </div>
 

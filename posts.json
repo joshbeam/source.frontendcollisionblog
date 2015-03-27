@@ -5,7 +5,7 @@
     {
       "title"    : "{{ post.title | escape }}",
       "category" : "{{ post.categories | join: ' ' }}",
-      "content"	 : "{{post.content | strip_html | strip_newlines | remove:  "	" | escape}}",
+      "content"	 : "{{post.content | strip_html | strip_newlines | remove:  "	" | escape | remove: "\"}}",
       "url"      : "{{ site.baseurl }}{{ post.url }}",
       "date"     : "{{ post.date }}"
     }{% unless forloop.last %},{% endunless %}

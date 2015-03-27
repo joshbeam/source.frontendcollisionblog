@@ -4,26 +4,19 @@ $(function(utils,Query) {
 	var query = new Query(),
 		site = location.protocol + "//" + location.host, $searchBox = $('.search-box'),
 		utils = utils,
-		exec = function() {
+		exec = function(e) {
+			e.preventDefault();
 			query.set($searchBox.val().trim()).goToLocation('/search');
 		};
 
-	$('.search-button').on('click',exec);
-
-	$searchBox.on('keydown',function(e) {
-		if(e.keyCode == 13) {
-			exec();
-		}
-	});	
+	$('.search').on('submit',exec);
 
 	if(/query/.test(location.search) && /search/.test(location.pathname)) {
-
 		query
 			.setFromURL('query')
 			.getJSON('/posts.json')
 			.done(function(data) {
 				var searchIndex, results, $resultsCount = $('.search-results-count'), $results = $('.search-results'), totalScore = 0, percentOfTotal;
-
 				// set up the allowable fields
 				searchIndex = lunr(function() {
 					this.field('title');
