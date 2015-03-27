@@ -4,10 +4,10 @@
     <title>Front End Collision</title>
     <description>Website and blog of full-stack JavaScript developer, Josh Beam.
 </description>
-    <link>http://joshbeam.github.io/</link>
-    <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 26 Mar 2015 19:19:22 -0500</pubDate>
-    <lastBuildDate>Thu, 26 Mar 2015 19:19:22 -0500</lastBuildDate>
+    <link>localhost:4000/</link>
+    <atom:link href="localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 27 Mar 2015 12:19:40 -0500</pubDate>
+    <lastBuildDate>Fri, 27 Mar 2015 12:19:40 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -261,7 +261,7 @@
 	&lt;span class=&quot;nx&quot;&gt;global&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;utils&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;utils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;})(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;We’ve simply wrapped it in a module, because later on we could add more methods to module (if we wanted to). For example, a &lt;a href=&quot;http://joshbeam.github.io/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html#tocAnchor-1-8&quot;&gt;custom forEach&lt;/a&gt; function.&lt;/p&gt;
+&lt;p&gt;We’ve simply wrapped it in a module, because later on we could add more methods to module (if we wanted to). For example, a &lt;a href=&quot;localhost:4000/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html#tocAnchor-1-8&quot;&gt;custom forEach&lt;/a&gt; function.&lt;/p&gt;
 
 &lt;h2 id=&quot;step-3-mdash-use-lunrjs-and-display-the-results&quot;&gt;Step 3 — Use lunr.js and display the results&lt;/h2&gt;
 
@@ -389,8 +389,8 @@
 
 </description>
         <pubDate>Thu, 26 Mar 2015 09:41:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</guid>
+        <link>localhost:4000/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</link>
+        <guid isPermaLink="true">localhost:4000/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</guid>
         
         
         <category>javascript</category>
@@ -494,7 +494,7 @@
 
 &lt;p&gt;As you can see above, &lt;code&gt;i&lt;/code&gt; is only defined once. If it wasn’t, it would increase by itself each iteration, and we wouldn’t see every number of &lt;code&gt;arr&lt;/code&gt; in the output. So it seems we’ve got to a nice, optimized way of writing the loop. But in comes the “personal style” element:&lt;/p&gt;
 
-&lt;p&gt;#3 — I like the last one, because it &lt;strong&gt;defines everything at the top of the function&lt;/strong&gt;, much like how I described as a best practice in &lt;a href=&quot;http://joshbeam.github.io/javascript/2015/03/20/what-is-hoisting-in-javascript.html&quot;&gt;my post about hoisting&lt;/a&gt;. You can see everything easier, and predict what is going to be used, and where. However, &lt;strong&gt;this is not the best style to use, if you need to re-define the length, or limit, every iteration (for instance, if you’re removing or adding items to an array)&lt;/strong&gt;. I think it also is very minimalistic and clean.&lt;/p&gt;
+&lt;p&gt;#3 — I like the last one, because it &lt;strong&gt;defines everything at the top of the function&lt;/strong&gt;, much like how I described as a best practice in &lt;a href=&quot;localhost:4000/javascript/2015/03/20/what-is-hoisting-in-javascript.html&quot;&gt;my post about hoisting&lt;/a&gt;. You can see everything easier, and predict what is going to be used, and where. However, &lt;strong&gt;this is not the best style to use, if you need to re-define the length, or limit, every iteration (for instance, if you’re removing or adding items to an array)&lt;/strong&gt;. I think it also is very minimalistic and clean.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// #3&lt;/span&gt;
 
@@ -632,12 +632,12 @@
 	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;})(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;utils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Boom! &lt;strong&gt;Why all the strange semicolons? Why the weird function notation?&lt;/strong&gt; Check out my post on &lt;a href=&quot;http://joshbeam.github.io/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html&quot;&gt;weird semicolons&lt;/a&gt; and on &lt;a href=&quot;http://joshbeam.github.io/javascript/2015/03/22/lightweight-dependency-modularization.html&quot;&gt;a simple way to modularize dependencies&lt;/a&gt; for some answers to these question. Also, check out &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide&quot;&gt;John Papa’s AngularJS style guide&lt;/a&gt;. It applies specifically to &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS&lt;/a&gt;, but a lot of the principles translate well into vanilla JavaScript principles.&lt;/p&gt;
+&lt;p&gt;Boom! &lt;strong&gt;Why all the strange semicolons? Why the weird function notation?&lt;/strong&gt; Check out my post on &lt;a href=&quot;localhost:4000/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html&quot;&gt;weird semicolons&lt;/a&gt; and on &lt;a href=&quot;localhost:4000/javascript/2015/03/22/lightweight-dependency-modularization.html&quot;&gt;a simple way to modularize dependencies&lt;/a&gt; for some answers to these question. Also, check out &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide&quot;&gt;John Papa’s AngularJS style guide&lt;/a&gt;. It applies specifically to &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS&lt;/a&gt;, but a lot of the principles translate well into vanilla JavaScript principles.&lt;/p&gt;
 
 </description>
         <pubDate>Tue, 24 Mar 2015 17:18:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html</guid>
+        <link>localhost:4000/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html</link>
+        <guid isPermaLink="true">localhost:4000/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html</guid>
         
         
         <category>javascript</category>
@@ -675,8 +675,8 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 &lt;p&gt;If I don’t add the comments in the post, the template with simply extract the content of the post, strip the HTML tags, and truncate it 20 words, followed by an ellipsis &lt;code&gt;...&lt;/code&gt;.&lt;/p&gt;
 </description>
         <pubDate>Mon, 23 Mar 2015 04:50:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</guid>
+        <link>localhost:4000/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</link>
+        <guid isPermaLink="true">localhost:4000/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</guid>
         
         
         <category>jekyll</category>
@@ -732,8 +732,8 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 
 </description>
         <pubDate>Sun, 22 Mar 2015 18:34:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html</guid>
+        <link>localhost:4000/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html</link>
+        <guid isPermaLink="true">localhost:4000/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html</guid>
         
         
         <category>javascript</category>
@@ -815,8 +815,8 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 &lt;/ol&gt;
 </description>
         <pubDate>Sun, 22 Mar 2015 16:00:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/2015/03/22/lightweight-dependency-modularization.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/03/22/lightweight-dependency-modularization.html</guid>
+        <link>localhost:4000/javascript/2015/03/22/lightweight-dependency-modularization.html</link>
+        <guid isPermaLink="true">localhost:4000/javascript/2015/03/22/lightweight-dependency-modularization.html</guid>
         
         
         <category>javascript</category>
@@ -1006,8 +1006,8 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 &lt;p&gt;This is a topic for another post, but it demonstrates how you can check the types of a variable based on your definition of existence in the context of your specific function.&lt;/p&gt;
 </description>
         <pubDate>Fri, 20 Mar 2015 17:39:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/2015/03/20/how-do-i-check-if-a-parameter-was-passed-in-to-a-javascript-function.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/03/20/how-do-i-check-if-a-parameter-was-passed-in-to-a-javascript-function.html</guid>
+        <link>localhost:4000/javascript/2015/03/20/how-do-i-check-if-a-parameter-was-passed-in-to-a-javascript-function.html</link>
+        <guid isPermaLink="true">localhost:4000/javascript/2015/03/20/how-do-i-check-if-a-parameter-was-passed-in-to-a-javascript-function.html</guid>
         
         
         <category>javascript</category>
@@ -1157,8 +1157,8 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 
 </description>
         <pubDate>Fri, 20 Mar 2015 12:31:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/2015/03/20/what-is-hoisting-in-javascript.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/03/20/what-is-hoisting-in-javascript.html</guid>
+        <link>localhost:4000/javascript/2015/03/20/what-is-hoisting-in-javascript.html</link>
+        <guid isPermaLink="true">localhost:4000/javascript/2015/03/20/what-is-hoisting-in-javascript.html</guid>
         
         
         <category>javascript</category>

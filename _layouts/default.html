@@ -15,6 +15,33 @@
 
     {% include footer.html %}
     <script src="{{"/js/dist/scripts.js" | prepend:site.baseurl }}"></script>
+
+    {% if page.results %}
+    <script src="{{"/js/dist/search/results.js" | prepend:site.baseurl }}"></script>
+    {% endif %}
+
+    {% if page.comments %}
+    <script type="text/javascript">
+        //var disqus_developer = 1;
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'frontendcollision';
+        
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+    {% endif %}
+
+    <script>
+        $('pre').each(function() {
+            $(this).html($(this).html().trim());
+        });
+    </script>
+    
   </body>
 
 </html>

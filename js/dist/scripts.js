@@ -9218,111 +9218,6 @@ return jQuery;
 
 }));
 
-;(function(global,$) {
-
-	'use strict';
-
-	Query.prototype = {
-		set: function(val) {
-			this.q = val;
-			return this;
-		},
-		goToLocation: function(route) {
-			if(typeof this.q !== 'undefined' && typeof this.q === 'string') {
-				document.location.href=route+'/?query='+this.q;
-			} else {
-				return;
-			}
-		},
-		get: function() {
-			return this.q;
-		},
-		setFromURL: function(name) {
-			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-			    results = regex.exec(location.search);
-
-			this.q = results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-
-			return this;				
-		},
-		getJSON: function(file) {
-			return $.get(file);
-		}
-	};
-
-	function Query(q) {
-		if(typeof q !== 'undefined' && typeof q === 'string') {
-			this.q = q;
-		}
-	}
-
-	global.Query = Query;
-})(this,$);
-$(function(utils,Query) {
-	'use strict';
-
-	var query = new Query(),
-		site = location.protocol + "//" + location.host, $searchBox = $('.search-box'),
-		utils = utils,
-		exec = function(e) {
-			e.preventDefault();
-			query.set($searchBox.val().trim()).goToLocation('/search');
-		};
-
-	$('.search').on('submit',exec);
-
-	if(/query/.test(location.search) && /search/.test(location.pathname)) {
-		query
-			.setFromURL('query')
-			.getJSON('/posts.json')
-			.done(function(data) {
-				var searchIndex, results, $resultsCount = $('.search-results-count'), $results = $('.search-results'), totalScore = 0, percentOfTotal;
-				// set up the allowable fields
-				searchIndex = lunr(function() {
-					this.field('title');
-					this.field('category');
-					this.field('content');
-					this.ref('url');
-					this.field('date');
-				});
-				
-				// add each item from posts.json to the index
-				$.each(data,function(i,item) {
-					searchIndex.add(item);
-				});
-
-				// search for the query and store the results as an array
-				results = searchIndex.search(query.get());
-				
-				// add the title of each post into each result, too (this doesn't come standard with lunr.js)
-				for(var result in results) {
-					results[result].title = data.filter(function(post) {
-						return post.url === results[result].ref;
-					})[0].title;
-				}
-
-				// show how many results there were, in the DOM
-				$resultsCount.append(results.length + (results.length === 1 ? ' result' : ' results') + ' for "' + query.get() +'"');
-
-				// get the total score of all items, so that we can divide each result into it, giving us a percentage
-				$.each(results, function(i, result) {
-					totalScore+=result.score;
-				});
-
-				// append each result link, with a border that corresponds to a color with a strength equal to its percentage
-				// of the total score
-				$.each(results, function(i,result) {
-					percentOfTotal = result.score/totalScore;
-
-					$results.append('<li><a href="'+ site + result.ref +'">'+result.title+'</a></li>');
-					$results.children('li').last().css({
-						'border-left': '20px solid '+utils.shade('#ffffff',-percentOfTotal)
-					});
-				});
-			});
-	}
-}(utils,Query));
 /**
  * lunr - http://lunrjs.com - A bit like Solr, but much smaller and not as bright - 0.5.7
  * Copyright (C) 2014 Oliver Nightingale
@@ -11233,3 +11128,57 @@ lunr.TokenStore.prototype.toJSON = function () {
     return lunr
   }))
 })()
+;(function(global,$) {
+
+	'use strict';
+
+	Query.prototype = {
+		set: function(val) {
+			this.q = val;
+			return this;
+		},
+		goToLocation: function(route) {
+			if(typeof this.q !== 'undefined' && typeof this.q === 'string') {
+				document.location.href=route+'/?query='+this.q;
+			} else {
+				return;
+			}
+		},
+		get: function() {
+			return this.q;
+		},
+		setFromURL: function(name) {
+			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			    results = regex.exec(location.search);
+
+			this.q = results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+
+			return this;				
+		},
+		getJSON: function(file) {
+			return $.get(file);
+		}
+	};
+
+	function Query(q) {
+		if(typeof q !== 'undefined' && typeof q === 'string') {
+			this.q = q;
+		}
+	}
+
+	global.Query = Query;
+})(this,$);
+$(function(utils,Query) {
+	'use strict';
+
+	var query = new Query();
+
+	$('.search').on('submit',exec);
+
+	function exec(e) {
+		e.preventDefault();
+		query.set($('.search-box').val().trim()).goToLocation('/search');		
+	}
+
+}(utils,Query));

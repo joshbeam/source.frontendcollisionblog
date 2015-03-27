@@ -289,6 +289,10 @@
         margin-top: 1.5em;
         position: relative;
 
+        &:first-of-type {
+            margin-top: 0.5em;
+        }
+
         @include media-query($on-laptop) {
             font-size: 32px;
         }        

@@ -17,7 +17,7 @@ html, body {
 body {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.75;
   font-weight: 300;
   color: #111;
   background: #eee;
@@ -28,8 +28,7 @@ body {
  */
 h1, h2, h3, h4, h5, h6,
 p, blockquote, pre,
-ul, ol, dl, figure,
-.highlight {
+ul, ol, dl, figure {
   margin-bottom: 15px; }
 
 /**
@@ -164,7 +163,7 @@ pre {
 
 .note {
   padding: 1em;
-  margin: 1em 0;
+  margin: 0 0 1em 0;
   background: #fff8bf;
   font-style: italic;
   -webkit-box-shadow: 0 0 30px #e8e8e8;
@@ -243,7 +242,7 @@ pre {
     display: none; }
   .site-nav .page-link {
     color: #515151;
-    line-height: 1.5;
+    line-height: 1.75;
     background: rgba(255, 255, 255, 0.5);
     padding: .75rem;
     -webkit-border-radius: 10px;
@@ -418,6 +417,8 @@ pre {
     border-bottom: 1px solid #e8e8e8;
     margin-top: 1.5em;
     position: relative; }
+    .post-content h1:first-of-type {
+      margin-top: 0.5em; }
     @media screen and (max-width: 800px) {
       .post-content h1 {
         font-size: 32px; } }
@@ -503,7 +504,8 @@ pre {
  * Syntax highlighting styles
  */
 .highlight {
-  background: #fff; }
+  background: #fff;
+  margin: 0 0 3em 0; }
   .highlight .c {
     color: #998;
     font-style: italic; }

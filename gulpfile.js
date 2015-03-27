@@ -5,18 +5,26 @@ var child = require('child_process');
 var gulp = require('gulp');
 
 gulp.task('js',function() {
-	return gulp.src([
+	gulp.src([
 		'js/src/utils/*.js',
 		'bower_components/jquery/dist/jquery.js',
-		'js/src/Query.js',
-		'js/src/search.js',
-		'js/src/lib/*.js'
+		'js/src/lib/lunr.js',
+		'js/src/search/Query.js',
+		'js/src/search/search.js'
 		])
 		.pipe(concat('scripts.js'))
 		.pipe(gulp.dest('js/dist'))
 		.pipe(rename('scripts.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest('js/dist'));
+
+	return gulp.src([
+		'js/src/search/results.js'
+		])
+		.pipe(gulp.dest('js/dist/search'))
+		.pipe(rename('results.min.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest('js/dist/search'));
 });
 
 gulp.task('watch',function() {
