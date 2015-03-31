@@ -7,9 +7,13 @@ author: Josh Beam
 comments: true
 ---
 
+<div class="note"><!--excerpt.start-->
+This post is going to discuss the reasoning behind a strange-looking syntax style that some people use when declaring JavaScript modules (in the context of immediately invoked function expressions). Simply put, the point of this trick is to get around minification issues when using other people's code (or your own).<!--excerpt.end-->
+</div>
+
 Simple answer: because of **minification issues**.
 
-<!--excerpt.start-->Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn't careful.<!--excerpt.end-->
+Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn't careful.
 
 {% highlight javascript %}
 

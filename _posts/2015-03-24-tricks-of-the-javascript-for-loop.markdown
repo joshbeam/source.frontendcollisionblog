@@ -7,6 +7,10 @@ author: Josh Beam
 comments: true
 ---
 
+<div class="note"><!--excerpt.start-->
+I'm sure you've seen the common for loop written a thousand different ways. Well, in this post, you'll learn one readable way that is good for pretty much most instances where you'll use a for loop (some exceptions are noted, too). Oh, and scroll all the way down for a bonus snippet (we'll create something pretty cool, I think).<!--excerpt.end-->
+</div>
+
 We use the `for` loop generally to cycle through, say, an array of items. We can do something with each item. For example:
 
 {% highlight javascript %}

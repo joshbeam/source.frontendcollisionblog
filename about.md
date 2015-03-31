@@ -7,18 +7,22 @@ comments: false
 
 Welcome! This is the blog of (me) Josh Beam.
 
-I'm a full-stack JavaScript enthusiast developer with 3+ years experience developing applications using technologies like AngularJS, MongoDB, Node.js, and HTML/CSS. I also like Ruby.
+**I develop web sites and apps, like this nifty little <a href="http://periodictable.herokuapp.com">Periodic Table of Elements</a> that college students can use to get better grades in chemistry class without thinking too hard.**
+
+In more jargony technical terms, I'm a full-stack JavaScript enthusiast developer with 3+ years experience developing applications using technologies like AngularJS, MongoDB, Node.js, and HTML/CSS. I also like Ruby.
 
 If you need to contact me for any reason at all, just email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
 
-## Profiles
+***"Why the name Front End Collision?"*** Front-end development mixed with head-on collision sounded cool. And I guess you can make it sound philosophical.
+
+# Find out info about me in other places
 
 <ul class="unstyled">
 	<li><a href="http://careers.stackoverflow.com/joshbeam">StackOverflow Careers 2.0</a></li>
 	<li><a href="https://github.com/joshbeam/">GitHub</a></li>
 </ul>
 
-## Projects
+# Check out some of my projects
 
 <dl>
 	<dt><a href="http://periodictable.herokuapp.com">Periodic Table of Elements</a></dt>

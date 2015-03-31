@@ -7,7 +7,9 @@ author: Josh Beam
 comments: true
 ---
 
-<div class="note">This tutorial is in the context of Jekyll and GitHub pages</div>
+<div class="note"><!--excerpt.start-->
+Today we'll talk about how to build a JavaScript-only search engine (using JSON and AJAX) to avoid databases and server-side programming. We'll do it all specifically in the context of Jekyll and GitHub Pages!<!--excerpt.end-->
+</div>
 
 # What do you mean "no server"?
 

@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Lightweight dependency modularization</title>
-  <meta name="description" content="A common approachA common approach when utilizing the module pattern or something close to it, is to attach the end object to the window, or return the objec...">
+  <meta name="description" content="So what's this post all about? We're going to examine an interesting alternative for passing dependencies between JavaScript modules. The goal is to avoid an...">
 
   <link rel="shortcut icon" href="/images/favicon.ico?v=1.1"> 
   <link rel="stylesheet" href="/css/main.css">
@@ -112,7 +112,12 @@
          </tr>
       </tbody>
    </table>
-</div><h1 id="tocAnchor-1-1">A common approach</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+</div><div class="note"><!--excerpt.start-->
+So what's this post all about? We're going to examine an interesting alternative for passing dependencies between JavaScript modules. The goal is to avoid any overhead (by using libraries like RequireJS), but also to avoid attaching too many things to the global namespace...<!--excerpt.end-->
+</div>
+
+<h1 id="tocAnchor-1-1">A common approach</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
 <p>A common approach when utilizing the <a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#modulepatternjavascript">module pattern</a> or something close to it, is to attach the end object to the <code>window</code>, or return the object inside some sort of local variable to create a namespace for your module.</p>
 
 <p>So you might end up having something like this:</p>
@@ -164,8 +169,7 @@
 
 <p>For <a href="http://github.com/joshbeam/angular-state-manager">angular-state-manager</a>, I utilized a global object called <code>stateManagerDependencies</code>, or something along that line, to attach all of my modules to that would eventually go into the main <code>stateManager</code> module.</p>
 
-<!--excerpt.start-->
-<p>The purpose of this was to only have one object (the <code>stateManagerDependencies</code> object) be attached to the global scope (i.e. <code>window</code> object), and that would hold all of the dependencies, as opposed to attaching each dependency to the global scope at the end of each module.<!--excerpt.end--></p>
+<p>The purpose of this was to only have one object (the <code>stateManagerDependencies</code> object) be attached to the global scope (i.e. <code>window</code> object), and that would hold all of the dependencies, as opposed to attaching each dependency to the global scope at the end of each module.</p>
 
 <div class="highlight">
    <pre>
@@ -282,7 +286,7 @@ follow me on Twitter</a>!</div>
 
 </footer>
 
-    <script src="/js/dist/scripts.js"></script>
+    <script src="/js/dist/scripts.min.js"></script>
 
     
 

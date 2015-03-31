@@ -7,9 +7,13 @@ author: Josh Beam
 comments: true
 ---
 
+<div class="note"><!--excerpt.start-->
+What is this strange word "hoisting"? As of the current version of JavaScript (ECMAScript5), there's not really such a thing as block scope, which is something common to lots of other programming languages (there is a caveat though, which we'll learn towards the end of this post.) Hoisting and the non-existence of "block scope" can be confusing. Learn how to overcome this issue.<!--excerpt.end-->
+</div>
+
 # Hoisting is small concept that's pretty important
 
-<!--excerpt.start-->Hoisting is a concept that really defines a fundamental principle of JavaScript: **there's no such thing as *block scope***.<!--excerpt.end-->
+Hoisting is a concept that really defines a fundamental principle of JavaScript: **there's no such thing as *block scope***.
 
 What does that mean? Well, we know there's a thing called *function scope*:
 

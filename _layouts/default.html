@@ -14,10 +14,10 @@
     </div>
 
     {% include footer.html %}
-    <script src="{{"/js/dist/scripts.js" | prepend:site.baseurl }}"></script>
+    <script src="{{"/js/dist/scripts.min.js" | prepend:site.baseurl }}"></script>
 
     {% if page.results %}
-    <script src="{{"/js/dist/search/results.js" | prepend:site.baseurl }}"></script>
+    <script src="{{"/js/dist/search/results.min.js" | prepend:site.baseurl }}"></script>
     {% endif %}
 
     {% if page.comments %}

@@ -238,9 +238,11 @@ pre {
     @include box-shadow(0,0,30px,$grey-color-light);
 
     h1 {
-        background: darken(#fff8bf,5%);
+        //background: darken(#fff8bf,5%);
         color: $grey-color-dark;
-        padding: .25em;
+        padding: 0em;
         font-size: 1.25em;
+        font-style: normal;
+        font-weight: bold;
     }
 }

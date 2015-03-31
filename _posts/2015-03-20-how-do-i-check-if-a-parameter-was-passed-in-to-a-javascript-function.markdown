@@ -7,7 +7,12 @@ author: Josh Beam
 comments: true
 ---
 
+<div class="note"><!--excerpt.start-->
+This post is going to talk about checking for the "existence" of a parameter, if we expected one to be there and how to handle this "flow of control", and how we define "checking for existence" in the first place. The fundamental concept behind all of this, as we'll learn, is the fuzzy idea of truthiness (which is different depending on which programming language you're referring too.) We'll see that JavaScript has a very broad idea of truthiness.<!--excerpt.end-->
+</div>
+
 # What's a parameter?
+
 A parameter can also be called an argument. It's the thing passed into a function that you do something with:
 
 {% highlight javascript %}
@@ -196,7 +201,7 @@ console.log(!!c); // ==> ReferenceError! Your program is dead.
 
 # Best Practice
 
-I think in this circumstance, <!--excerpt.start-->**the best practice depends on however you define "existence" in the context of your specific function**. This means that you have to take into consideration the concepts of truthiness, the use of the `typeof` operator, the principle of declared vs. defined, etc.<!--excerpt.end-->
+I think in this circumstance, **the best practice depends on however you define "existence" in the context of your specific function**. This means that you have to take into consideration the concepts of truthiness, the use of the `typeof` operator, the principle of declared vs. defined, etc.
 
 Keep in mind, too, that there are many ways to check the types of of variables you encounter. For example:
 {% highlight javascript %}

@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 31 Mar 2015 11:32:28 -0500</pubDate>
-    <lastBuildDate>Tue, 31 Mar 2015 11:32:28 -0500</lastBuildDate>
+    <pubDate>Tue, 31 Mar 2015 12:04:48 -0500</pubDate>
+    <lastBuildDate>Tue, 31 Mar 2015 12:04:48 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -120,7 +120,9 @@ This post is going to talk briefly about the common ways people are shown to wri
     
       <item>
         <title>Getting started with a search engine for your site (no server required!)</title>
-        <description>&lt;div class=&quot;note&quot;&gt;This tutorial is in the context of Jekyll and GitHub pages&lt;/div&gt;
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+Today we&#39;ll talk about how to build a JavaScript-only search engine (using JSON and AJAX) to avoid databases and server-side programming. We&#39;ll do it all specifically in the context of Jekyll and GitHub Pages!&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
 
 &lt;h1 id=&quot;what-do-you-mean-no-server&quot;&gt;What do you mean “no server”?&lt;/h1&gt;
 
@@ -511,7 +513,11 @@ This post is going to talk briefly about the common ways people are shown to wri
     
       <item>
         <title>Tricks of the JavaScript for loop</title>
-        <description>&lt;p&gt;We use the &lt;code&gt;for&lt;/code&gt; loop generally to cycle through, say, an array of items. We can do something with each item. For example:&lt;/p&gt;
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+I&#39;m sure you&#39;ve seen the common for loop written a thousand different ways. Well, in this post, you&#39;ll learn one readable way that is good for pretty much most instances where you&#39;ll use a for loop (some exceptions are noted, too). Oh, and scroll all the way down for a bonus snippet (we&#39;ll create something pretty cool, I think).&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We use the &lt;code&gt;for&lt;/code&gt; loop generally to cycle through, say, an array of items. We can do something with each item. For example:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
@@ -750,7 +756,11 @@ This post is going to talk briefly about the common ways people are shown to wri
     
       <item>
         <title>How to show a summary of your post with Jekyll</title>
-        <description>&lt;p&gt;I am using the static-site generator &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; to compile my website into a bunch of static files (the main benefit being a generally more secure and potentially quicker website due to a lack of server round-trips to a database).&lt;/p&gt;
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+In this little snippet, we&#39;re going to explore an option to show a summary of your blog post or article, if you&#39;re using the awesome static-site generator called Jekyll.&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I am using the static-site generator &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; to compile my website into a bunch of static files (the main benefit being a generally more secure and potentially quicker website due to a lack of server round-trips to a database).&lt;/p&gt;
 
 &lt;p&gt;I ran across &lt;a href=&quot;http://stackoverflow.com/questions/15497207/how-to-display-post-summary-on-index-page-using-jekyll&quot;&gt;several solutions&lt;/a&gt; for displaying a summary or excerpt of the post in the main blog page (if you’re using the basic Jekyll theme that comes standard, it’ll probably be your &lt;code&gt;index.html&lt;/code&gt;).&lt;/p&gt;
 
@@ -791,10 +801,13 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
     
       <item>
         <title>Why do people add semicolons before modules?</title>
-        <description>&lt;p&gt;Simple answer: because of &lt;strong&gt;minification issues&lt;/strong&gt;.&lt;/p&gt;
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+This post is going to discuss the reasoning behind a strange-looking syntax style that some people use when declaring JavaScript modules (in the context of immediately invoked function expressions). Simply put, the point of this trick is to get around minification issues when using other people&#39;s code (or your own).&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
 
-&lt;!--excerpt.start--&gt;
-&lt;p&gt;Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn’t careful.&lt;!--excerpt.end--&gt;&lt;/p&gt;
+&lt;p&gt;Simple answer: because of &lt;strong&gt;minification issues&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn’t careful.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 	&lt;span class=&quot;c1&quot;&gt;// code&lt;/span&gt;
@@ -848,7 +861,12 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
     
       <item>
         <title>Lightweight dependency modularization</title>
-        <description>&lt;h1 id=&quot;a-common-approach&quot;&gt;A common approach&lt;/h1&gt;
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+So what&#39;s this post all about? We&#39;re going to examine an interesting alternative for passing dependencies between JavaScript modules. The goal is to avoid any overhead (by using libraries like RequireJS), but also to avoid attaching too many things to the global namespace...&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;a-common-approach&quot;&gt;A common approach&lt;/h1&gt;
+
 &lt;p&gt;A common approach when utilizing the &lt;a href=&quot;http://addyosmani.com/resources/essentialjsdesignpatterns/book/#modulepatternjavascript&quot;&gt;module pattern&lt;/a&gt; or something close to it, is to attach the end object to the &lt;code&gt;window&lt;/code&gt;, or return the object inside some sort of local variable to create a namespace for your module.&lt;/p&gt;
 
 &lt;p&gt;So you might end up having something like this:&lt;/p&gt;
@@ -892,8 +910,7 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 
 &lt;p&gt;For &lt;a href=&quot;http://github.com/joshbeam/angular-state-manager&quot;&gt;angular-state-manager&lt;/a&gt;, I utilized a global object called &lt;code&gt;stateManagerDependencies&lt;/code&gt;, or something along that line, to attach all of my modules to that would eventually go into the main &lt;code&gt;stateManager&lt;/code&gt; module.&lt;/p&gt;
 
-&lt;!--excerpt.start--&gt;
-&lt;p&gt;The purpose of this was to only have one object (the &lt;code&gt;stateManagerDependencies&lt;/code&gt; object) be attached to the global scope (i.e. &lt;code&gt;window&lt;/code&gt; object), and that would hold all of the dependencies, as opposed to attaching each dependency to the global scope at the end of each module.&lt;!--excerpt.end--&gt;&lt;/p&gt;
+&lt;p&gt;The purpose of this was to only have one object (the &lt;code&gt;stateManagerDependencies&lt;/code&gt; object) be attached to the global scope (i.e. &lt;code&gt;window&lt;/code&gt; object), and that would hold all of the dependencies, as opposed to attaching each dependency to the global scope at the end of each module.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// dependencies.js&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;win&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -929,7 +946,12 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
     
       <item>
         <title>How do I check if a parameter was passed in to a function in JavaScript?</title>
-        <description>&lt;h1 id=&quot;whats-a-parameter&quot;&gt;What’s a parameter?&lt;/h1&gt;
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+This post is going to talk about checking for the &quot;existence&quot; of a parameter, if we expected one to be there and how to handle this &quot;flow of control&quot;, and how we define &quot;checking for existence&quot; in the first place. The fundamental concept behind all of this, as we&#39;ll learn, is the fuzzy idea of truthiness (which is different depending on which programming language you&#39;re referring too.) We&#39;ll see that JavaScript has a very broad idea of truthiness.&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;whats-a-parameter&quot;&gt;What’s a parameter?&lt;/h1&gt;
+
 &lt;p&gt;A parameter can also be called an argument. It’s the thing passed into a function that you do something with:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -1091,7 +1113,7 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 
 &lt;h1 id=&quot;best-practice&quot;&gt;Best Practice&lt;/h1&gt;
 
-&lt;p&gt;I think in this circumstance, &lt;!--excerpt.start--&gt;&lt;strong&gt;the best practice depends on however you define “existence” in the context of your specific function&lt;/strong&gt;. This means that you have to take into consideration the concepts of truthiness, the use of the &lt;code&gt;typeof&lt;/code&gt; operator, the principle of declared vs. defined, etc.&lt;!--excerpt.end--&gt;&lt;/p&gt;
+&lt;p&gt;I think in this circumstance, &lt;strong&gt;the best practice depends on however you define “existence” in the context of your specific function&lt;/strong&gt;. This means that you have to take into consideration the concepts of truthiness, the use of the &lt;code&gt;typeof&lt;/code&gt; operator, the principle of declared vs. defined, etc.&lt;/p&gt;
 
 &lt;p&gt;Keep in mind, too, that there are many ways to check the types of of variables you encounter. For example:&lt;/p&gt;
 
@@ -1120,10 +1142,13 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
     
       <item>
         <title>What is hoisting in JavaScript?</title>
-        <description>&lt;h1 id=&quot;hoisting-is-small-concept-thats-pretty-important&quot;&gt;Hoisting is small concept that’s pretty important&lt;/h1&gt;
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+What is this strange word &quot;hoisting&quot;? As of the current version of JavaScript (ECMAScript5), there&#39;s not really such a thing as block scope, which is something common to lots of other programming languages (there is a caveat though, which we&#39;ll learn towards the end of this post.) Hoisting and the non-existence of &quot;block scope&quot; can be confusing. Learn how to overcome this issue.&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
 
-&lt;!--excerpt.start--&gt;
-&lt;p&gt;Hoisting is a concept that really defines a fundamental principle of JavaScript: &lt;strong&gt;there’s no such thing as &lt;em&gt;block scope&lt;/em&gt;&lt;/strong&gt;.&lt;!--excerpt.end--&gt;&lt;/p&gt;
+&lt;h1 id=&quot;hoisting-is-small-concept-thats-pretty-important&quot;&gt;Hoisting is small concept that’s pretty important&lt;/h1&gt;
+
+&lt;p&gt;Hoisting is a concept that really defines a fundamental principle of JavaScript: &lt;strong&gt;there’s no such thing as &lt;em&gt;block scope&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;What does that mean? Well, we know there’s a thing called &lt;em&gt;function scope&lt;/em&gt;:&lt;/p&gt;
 

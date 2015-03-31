@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>How do I check if a parameter was passed in to a function in JavaScript?</title>
-  <meta name="description" content="What’s a parameter?A parameter can also be called an argument. It’s the thing passed into a function that you do something with:">
+  <meta name="description" content="This post is going to talk about checking for the "existence" of a parameter, if we expected one to be there and how to handle this "flow of control", and ho...">
 
   <link rel="shortcut icon" href="/images/favicon.ico?v=1.1"> 
   <link rel="stylesheet" href="/css/main.css">
@@ -141,7 +141,12 @@
          </tr>
       </tbody>
    </table>
-</div><h1 id="tocAnchor-1-1">What’s a parameter?</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+</div><div class="note"><!--excerpt.start-->
+This post is going to talk about checking for the "existence" of a parameter, if we expected one to be there and how to handle this "flow of control", and how we define "checking for existence" in the first place. The fundamental concept behind all of this, as we'll learn, is the fuzzy idea of truthiness (which is different depending on which programming language you're referring too.) We'll see that JavaScript has a very broad idea of truthiness.<!--excerpt.end-->
+</div>
+
+<h1 id="tocAnchor-1-1">What’s a parameter?</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+
 <p>A parameter can also be called an argument. It’s the thing passed into a function that you do something with:</p>
 
 <div class="highlight">
@@ -343,7 +348,7 @@
 
 <h1 id="tocAnchor-1-12">Best Practice</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
 
-<p>I think in this circumstance, <!--excerpt.start--><strong>the best practice depends on however you define “existence” in the context of your specific function</strong>. This means that you have to take into consideration the concepts of truthiness, the use of the <code>typeof</code> operator, the principle of declared vs. defined, etc.<!--excerpt.end--></p>
+<p>I think in this circumstance, <strong>the best practice depends on however you define “existence” in the context of your specific function</strong>. This means that you have to take into consideration the concepts of truthiness, the use of the <code>typeof</code> operator, the principle of declared vs. defined, etc.</p>
 
 <p>Keep in mind, too, that there are many ways to check the types of of variables you encounter. For example:</p>
 
@@ -453,7 +458,7 @@ follow me on Twitter</a>!</div>
 
 </footer>
 
-    <script src="/js/dist/scripts.js"></script>
+    <script src="/js/dist/scripts.min.js"></script>
 
     
 

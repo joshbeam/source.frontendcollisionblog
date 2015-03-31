@@ -7,6 +7,10 @@ author: Josh Beam
 comments: true
 ---
 
+<div class="note"><!--excerpt.start-->
+In this little snippet, we're going to explore an option to show a summary of your blog post or article, if you're using the awesome static-site generator called Jekyll.<!--excerpt.end-->
+</div>
+
 I am using the static-site generator <a href="http://jekyllrb.com/">Jekyll</a> to compile my website into a bunch of static files (the main benefit being a generally more secure and potentially quicker website due to a lack of server round-trips to a database).
 
 I ran across <a href="http://stackoverflow.com/questions/15497207/how-to-display-post-summary-on-index-page-using-jekyll">several solutions</a> for displaying a summary or excerpt of the post in the main blog page (if you're using the basic Jekyll theme that comes standard, it'll probably be your `index.html`).

@@ -170,10 +170,11 @@ pre {
   -moz-box-shadow: 0 0 30px #e8e8e8;
   box-shadow: 0 0 30px #e8e8e8; }
   .note h1 {
-    background: #fff5a6;
     color: #424242;
-    padding: .25em;
-    font-size: 1.25em; }
+    padding: 0em;
+    font-size: 1.25em;
+    font-style: normal;
+    font-weight: bold; }
 
 /**
  * Site header
@@ -209,13 +210,14 @@ pre {
     color: #424242;
     letter-spacing: -1px;
     margin: 0;
-    padding: 0; }
+    padding: 0;
+    font-weight: bold; }
     .site-title a:hover {
       text-decoration: underline; }
   .site-title small {
     display: block;
     color: #757575;
-    margin: -5px 0 0 0;
+    margin: -15px 0 0 0;
     padding: 0; }
   .site-title div {
     float: right; }

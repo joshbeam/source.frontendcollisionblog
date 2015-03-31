@@ -81,6 +81,11 @@
       <div class="wrapper">
         <div class="home">
 
+  <div class="note">
+      <h1>What's on this site, and why should you care?</h1>
+      Well first off, welcome! This site is a place for open-ended articles (and discussion) about mostly JavaScript. Things like best practices, little tips and tutorials (especially about AngularJS), and random thoughts. And a little bit of Ruby is thrown in for good measure, too. <a href="/about">Josh Beam</a>, a JavaScript developer, is the creator and primary author of this site.
+  </div>
+
   <h1 class="page-heading">
 	Posts (8)
 	&mdash;
@@ -129,7 +134,8 @@ This post is going to talk briefly about the common ways people are shown to wri
         </h2>
         <p class="post-excerpt">
           
-            This tutorial is in the context of Jekyll and GitHub pages What do you mean “no server”? Lots of search features on websites rely on communicating with the server to deliver search results. For example, a user might click a search button that sends, say, a POST request to the server, where a .php file handles the request, and sends the results back. With the way we’re gonna do it here, we’re going to handle the request entirely on the...
+            
+Today we'll talk about how to build a JavaScript-only search engine (using JSON and AJAX) to avoid databases and server-side programming. We'll do it all specifically in the context of Jekyll and GitHub Pages!
           
         </p>
       </li>
@@ -148,7 +154,8 @@ This post is going to talk briefly about the common ways people are shown to wri
         </h2>
         <p class="post-excerpt">
           
-            We use the for loop generally to cycle through, say, an array of items. We can do something with each item. For example: var arr = [1,2,3,4,5]; for(var i = 0; i &lt; arr.length; i++) { console.log(arr[i]); } The code above obviously just increases i, starting at 0 and ending at the length of arr, which gives us the ability to access each of the items of arr by its index. How do you declare the loop? There’s frequently discussion...
+            
+I'm sure you've seen the common for loop written a thousand different ways. Well, in this post, you'll learn one readable way that is good for pretty much most instances where you'll use a for loop (some exceptions are noted, too). Oh, and scroll all the way down for a bonus snippet (we'll create something pretty cool, I think).
           
         </p>
       </li>
@@ -169,7 +176,8 @@ This post is going to talk briefly about the common ways people are shown to wri
         </h2>
         <p class="post-excerpt">
           
-            I am using the static-site generator Jekyll to compile my website into a bunch of static files (the main benefit being a generally more secure and potentially quicker website due to a lack of server round-trips to a database). I ran across several solutions for displaying a summary or excerpt of the post in the main blog page (if you’re using the basic Jekyll theme that comes standard, it’ll probably be your index.html). Anyway, the solution I came up with...
+            
+In this little snippet, we're going to explore an option to show a summary of your blog post or article, if you're using the awesome static-site generator called Jekyll.
           
         </p>
       </li>
@@ -191,7 +199,7 @@ This post is going to talk briefly about the common ways people are shown to wri
         <p class="post-excerpt">
           
             
-Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn’t careful.
+This post is going to discuss the reasoning behind a strange-looking syntax style that some people use when declaring JavaScript modules (in the context of immediately invoked function expressions). Simply put, the point of this trick is to get around minification issues when using other people's code (or your own).
           
         </p>
       </li>
@@ -211,7 +219,7 @@ Minification can cause modules to use each other as their arguments (unintention
         <p class="post-excerpt">
           
             
-The purpose of this was to only have one object (the stateManagerDependencies object) be attached to the global scope (i.e. window object), and that would hold all of the dependencies, as opposed to attaching each dependency to the global scope at the end of each module.
+So what's this post all about? We're going to examine an interesting alternative for passing dependencies between JavaScript modules. The goal is to avoid any overhead (by using libraries like RequireJS), but also to avoid attaching too many things to the global namespace...
           
         </p>
       </li>
@@ -230,7 +238,8 @@ The purpose of this was to only have one object (the stateManagerDependencies ob
         </h2>
         <p class="post-excerpt">
           
-            the best practice depends on however you define “existence” in the context of your specific function. This means that you have to take into consideration the concepts of truthiness, the use of the typeof operator, the principle of declared vs. defined, etc.
+            
+This post is going to talk about checking for the "existence" of a parameter, if we expected one to be there and how to handle this "flow of control", and how we define "checking for existence" in the first place. The fundamental concept behind all of this, as we'll learn, is the fuzzy idea of truthiness (which is different depending on which programming language you're referring too.) We'll see that JavaScript has a very broad idea of truthiness.
           
         </p>
       </li>
@@ -250,7 +259,7 @@ The purpose of this was to only have one object (the stateManagerDependencies ob
         <p class="post-excerpt">
           
             
-Hoisting is a concept that really defines a fundamental principle of JavaScript: there’s no such thing as block scope.
+What is this strange word "hoisting"? As of the current version of JavaScript (ECMAScript5), there's not really such a thing as block scope, which is something common to lots of other programming languages (there is a caveat though, which we'll learn towards the end of this post.) Hoisting and the non-existence of "block scope" can be confusing. Learn how to overcome this issue.
           
         </p>
       </li>
@@ -325,7 +334,7 @@ Hoisting is a concept that really defines a fundamental principle of JavaScript:
 
 </footer>
 
-    <script src="/js/dist/scripts.js"></script>
+    <script src="/js/dist/scripts.min.js"></script>
 
     
 

@@ -19,6 +19,7 @@
         letter-spacing: -1px;
         margin: 0;
         padding: 0;
+        font-weight: bold;
 
         &:hover {
             text-decoration: underline;
@@ -28,7 +29,7 @@
     small {
         display: block;
         color: lighten($grey-color-dark,20%);
-        margin: -5px 0 0 0;
+        margin: -15px 0 0 0;
         padding: 0;
     }
 

@@ -7,7 +7,12 @@ author: Josh Beam
 comments: true
 ---
 
+<div class="note"><!--excerpt.start-->
+So what's this post all about? We're going to examine an interesting alternative for passing dependencies between JavaScript modules. The goal is to avoid any overhead (by using libraries like RequireJS), but also to avoid attaching too many things to the global namespace...<!--excerpt.end-->
+</div>
+
 # A common approach
+
 A common approach when utilizing the <a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#modulepatternjavascript">module pattern</a> or something close to it, is to attach the end object to the `window`, or return the object inside some sort of local variable to create a namespace for your module.
 
 So you might end up having something like this:
@@ -54,7 +59,7 @@ Of course, the obvious problems with this are:
 
 For <a href="http://github.com/joshbeam/angular-state-manager">angular-state-manager</a>, I utilized a global object called `stateManagerDependencies`, or something along that line, to attach all of my modules to that would eventually go into the main `stateManager` module.
 
-<!--excerpt.start-->The purpose of this was to only have one object (the `stateManagerDependencies` object) be attached to the global scope (i.e. `window` object), and that would hold all of the dependencies, as opposed to attaching each dependency to the global scope at the end of each module.<!--excerpt.end-->
+The purpose of this was to only have one object (the `stateManagerDependencies` object) be attached to the global scope (i.e. `window` object), and that would hold all of the dependencies, as opposed to attaching each dependency to the global scope at the end of each module.
 
 {% highlight javascript %}
 // dependencies.js
