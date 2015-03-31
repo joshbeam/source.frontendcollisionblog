@@ -2,7 +2,7 @@
 layout: post
 title:  "Getting started with a search engine for your site (no server required!)"
 date:   2015-03-26 14:41:00
-categories: javascript jekyll json lunr.js tutorial
+categories: javascript jekyll tutorial
 author: Josh Beam
 comments: true
 ---

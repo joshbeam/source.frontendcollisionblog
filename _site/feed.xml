@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 30 Mar 2015 20:59:06 -0500</pubDate>
-    <lastBuildDate>Mon, 30 Mar 2015 20:59:06 -0500</lastBuildDate>
+    <pubDate>Tue, 31 Mar 2015 10:40:38 -0500</pubDate>
+    <lastBuildDate>Tue, 31 Mar 2015 10:40:38 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -389,17 +389,13 @@
 
 </description>
         <pubDate>Thu, 26 Mar 2015 09:41:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/jekyll/json/lunr.js/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</guid>
+        <link>http://joshbeam.github.io/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</guid>
         
         
         <category>javascript</category>
         
         <category>jekyll</category>
-        
-        <category>json</category>
-        
-        <category>lunr.js</category>
         
         <category>tutorial</category>
         
