@@ -6,9 +6,117 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 31 Mar 2015 10:40:38 -0500</pubDate>
-    <lastBuildDate>Tue, 31 Mar 2015 10:40:38 -0500</lastBuildDate>
+    <pubDate>Tue, 31 Mar 2015 11:32:28 -0500</pubDate>
+    <lastBuildDate>Tue, 31 Mar 2015 11:32:28 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Something no one tells you about minifying AngularJS controllers (until it&#39;s too late)</title>
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+This post is going to talk briefly about the common ways people are shown to write AngularJS controllers, why minifying your code will break your application if you write them in this way, and how to fix this problem.&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;the-usual-approach-to-writing-controllers&quot;&gt;The usual approach to writing controllers&lt;/h1&gt;
+
+&lt;p&gt;In many online AngularJS tutorials, you’re taught (for simplicity’s sake) to write a controller as such:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myModule&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;MyController&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;doSomething&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;c1&quot;&gt;// some code here&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The above code has several advantages. First, it’s simple to read. Second, it’s simple to write. However, it is generally recommended to minify your JavaScript code before deploying it live, since this reduces the size of the file that the server has to send (in other words, this can dramatically increase the user’s perception of how fast your application loads).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Minifying the above controller will break your application. Here’s why…&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Quick little tangent&lt;/strong&gt;: if you’re curious, I use &lt;a href=&quot;http://gulpjs.com/&quot;&gt;Gulp&lt;/a&gt; to concatenate and minify my project files. If you’re just writing some code in &lt;a href=&quot;http://jsbin.com&quot;&gt;JSBin&lt;/a&gt;, for example, you can just head over to an online minifier like &lt;a href=&quot;http://jscompress.com/&quot;&gt;jscompress&lt;/a&gt;, which will do the job just fine in most cases.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Continuing on…&lt;/strong&gt; if you minify our above example and open your app, you’ll see that nothing happens. And you’ll get this error in your console:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Error: [$injector:unpr]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;So what is this error? If we click on the error in our console, it will take us to the AngularJS website, which will say something like this:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This error results from the $injector being unable to resolve a required dependency. To fix this, make sure the dependency is defined and spelled correctly.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In other words, because of the way AngularJS uses dependency injection (it actually parses the arguments of your functions), when the code is minified, &lt;code&gt;$scope&lt;/code&gt; is no longer &lt;code&gt;$scope&lt;/code&gt;, &lt;code&gt;$route&lt;/code&gt; is no longer &lt;code&gt;$route&lt;/code&gt;, etc. Instead, they’re just minified variables, like &lt;code&gt;e&lt;/code&gt; or &lt;code&gt;a&lt;/code&gt;, which don’t make any sense to AngularJS (if you want to understand a little bit more about dependency injection and how it works in JavaScript, check out these two posts: one by &lt;a href=&quot;http://anandmanisankar.com/posts/angularjs-dependency-injection-demystified/&quot;&gt;Anand&lt;/a&gt; and one by &lt;a href=&quot;http://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html&quot;&gt;Alex&lt;/a&gt;. For now, just know that minfiying breaks dependency injection.)&lt;/p&gt;
+
+&lt;p&gt;In fact, I’ve written two JSBin examples for you to see what exactly is going on.&lt;/p&gt;
+
+&lt;h2 id=&quot;working-example&quot;&gt;Working example&lt;/h2&gt;
+
+&lt;p&gt;&lt;a class=&quot;jsbin-embed&quot; href=&quot;http://jsbin.com/gijujiqixe/2/embed?js,output&quot;&gt;JS Bin&lt;/a&gt;&lt;script src=&quot;http://static.jsbin.com/js/embed.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;non-working-minified-example&quot;&gt;Non-working (minified) example&lt;/h2&gt;
+
+&lt;p&gt;&lt;a class=&quot;jsbin-embed&quot; href=&quot;http://jsbin.com/migine/1/embed?js,output&quot;&gt;JS Bin&lt;/a&gt;&lt;script src=&quot;http://static.jsbin.com/js/embed.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Open up your console (if you’re on Mac with Chrome, hit &lt;kbd&gt;CMD&lt;/kbd&gt;+&lt;kbd&gt;opt&lt;/kbd&gt;+&lt;kbd&gt;j&lt;/kbd&gt;), and you’ll actually see the injector error live on this site (since I embedded the JSBin).&lt;/p&gt;
+
+&lt;h1 id=&quot;how-to-fix-it&quot;&gt;How to fix it&lt;/h1&gt;
+
+&lt;p&gt;When you click on your error message in the console, which leads to the AngularJS website, they actually provide you with a solution to this error:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myApp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;MyController&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myService&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;myService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// Do something with myService&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}]);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This way works completely fine. If you minify, AngularJS instead looks at each item in the array (which is the second argument passed to the controller in the above example), and resolves any minified dependency to match its correct string name.&lt;/p&gt;
+
+&lt;p&gt;But as you may or may not know, I am a big fan of John Papa’s &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide&quot;&gt;Style Guide&lt;/a&gt;, and he specifically recommends &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide#style-y091&quot;&gt;against the above example&lt;/a&gt;, for several reasons. However, the biggest reason to me, is that with a long list of dependencies, the above code can get &lt;strong&gt;very hard to read, very quickly&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Just imagine if we have something like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myApp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;MyController&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$scope&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;$route&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Item&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;items&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;utils&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;shade&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;utils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shade&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// Do something&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}]);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Okay, okay, it’s not &lt;strong&gt;terrible&lt;/strong&gt;. But I think there’s a better way to write it. As John Papa says:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Why?: Avoid creating in-line dependencies as long lists can be difficult to read in the array. Also it can be confusing that the array is a series of strings while the last item is the component’s function.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;Use &lt;code&gt;$inject&lt;/code&gt;:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myApp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]);&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;MyController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$inject&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;$scope&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;$route&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Item&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;items&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;utils&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;shade&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;myApp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;MyController&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MyController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MyController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;utils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shade&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;c1&quot;&gt;// do something&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The above makes me breathe a sigh of relief, due to the now ease of readability. And, &lt;strong&gt;we’ve solved our issue of minification. We are now minification-safe!&lt;/strong&gt; Anyone looking at the code can now understand exactly what is happening. &lt;em&gt;“Oh, okay, so we have &lt;strong&gt;injected&lt;/strong&gt; several services into this controller…&lt;/em&gt;”&lt;/p&gt;
+
+&lt;p&gt;You’ll notice too that I separated the declarations of the module (I didn’t chain &lt;code&gt;.controller&lt;/code&gt; to &lt;code&gt;angular.module(&#39;myApp&#39;,[])&lt;/code&gt;). Once again, I recommend reading John Papa’s style guide for quick clarification on that.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;This doesn’t just go for controllers. It goes for anything where you inject anything. Directives, configs, runs, factories, etc. I am of the opinion that following the above implementation of dependency injection, at least in the current version of AngularJS at the time of writing this (end of March 2015), is probably one of the best solutions to solving the minification and readibility issues caused by other solutions.&lt;/p&gt;
+
+&lt;p&gt;So to recap what we learned… Minifying code that uses string-dependent dependency injection can break your application, unless you explicitly define the strings to use for the dependencies, which &lt;code&gt;$inject&lt;/code&gt; is perfect for.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 31 Mar 2015 05:48:00 -0500</pubDate>
+        <link>http://joshbeam.github.io/javascript/angularjs/2015/03/31/something-no-one-tells-you-about-minifying-angularjs-controllers-until-its-too-late.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/javascript/angularjs/2015/03/31/something-no-one-tells-you-about-minifying-angularjs-controllers-until-its-too-late.html</guid>
+        
+        
+        <category>javascript</category>
+        
+        <category>angularjs</category>
+        
+      </item>
     
       <item>
         <title>Getting started with a search engine for your site (no server required!)</title>
