@@ -220,9 +220,9 @@
     > li {
         margin-bottom: $spacing-unit;
         //border-bottom: 1px solid $grey-color-light;
-        border-bottom: 2px solid $brand-color-opposite;
+        //border-bottom: 2px solid $brand-color-opposite;
         @extend %clearfix;
-        @include box-shadow(0,0,20px,darken($grey-color-light,10%));
+        @include box-shadow(0,0,50px,darken($grey-color-light,10%));
         padding: 1rem;
 
         .post-excerpt {
@@ -335,8 +335,8 @@
 .twitter-plug {
     @include box-shadow(0,0,30px,$grey-color-light);
     background: lighten($brand-color-complement,10%);
-    padding: 1rem;
-    margin: 2rem 0;
+    padding: 1em;
+    margin: 2em 0;
 }
 
 .ask-for-comments {
@@ -348,9 +348,9 @@
 */
 .archive-list {
     > li {
-        padding: 0.5em;
+        padding: 1em;
         margin: 0 0 1em 0;
-        @include box-shadow(0,0,10px,darken($grey-color-light,10%));        
+        @include box-shadow(0,0,30px,darken($grey-color-light,10%));        
     }
 
     .archive-list-meta {

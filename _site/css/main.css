@@ -16,10 +16,10 @@ html, body {
 
 body {
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.75;
   font-weight: 300;
-  color: #111;
+  color: #444;
   background: #eee;
   -webkit-text-size-adjust: 100%; }
 
@@ -45,7 +45,7 @@ figure > img {
   display: block; }
 
 figcaption {
-  font-size: 14px; }
+  font-size: 15.75px; }
 
 /**
  * Lists
@@ -123,8 +123,8 @@ pre {
  * Wrapper
  */
 .wrapper {
-  max-width: -webkit-calc(800px - (30px * 2));
-  max-width: calc(800px - (30px * 2));
+  max-width: -webkit-calc(800px - (30px * 0));
+  max-width: calc(800px - (30px * 0));
   margin-right: auto;
   margin-left: auto;
   padding-right: 30px;
@@ -241,7 +241,7 @@ pre {
   .site-nav .menu-icon {
     display: none; }
   .site-nav .page-link {
-    color: #515151;
+    color: #848484;
     line-height: 1.75;
     background: rgba(255, 255, 255, 0.5);
     padding: .75rem;
@@ -366,10 +366,9 @@ pre {
   list-style: none; }
   .post-list > li {
     margin-bottom: 30px;
-    border-bottom: 2px solid #eeb9a9;
-    -webkit-box-shadow: 0 0 20px #cecece;
-    -moz-box-shadow: 0 0 20px #cecece;
-    box-shadow: 0 0 20px #cecece;
+    -webkit-box-shadow: 0 0 50px #cecece;
+    -moz-box-shadow: 0 0 50px #cecece;
+    box-shadow: 0 0 50px #cecece;
     padding: 1rem; }
     .post-list > li .post-excerpt {
       color: #757575; }
@@ -377,10 +376,10 @@ pre {
       color: #757575;
       font-style: italic;
       float: right;
-      font-size: 10.66667px; }
+      font-size: 12px; }
 
 .post-meta {
-  font-size: 14px;
+  font-size: 15.75px;
   color: #828282; }
 
 .post-link {
@@ -449,8 +448,8 @@ pre {
   -moz-box-shadow: 0 0 30px #e8e8e8;
   box-shadow: 0 0 30px #e8e8e8;
   background: #d4f6d4;
-  padding: 1rem;
-  margin: 2rem 0; }
+  padding: 1em;
+  margin: 2em 0; }
 
 .ask-for-comments {
   margin: 2rem 0; }
@@ -459,11 +458,11 @@ pre {
     Archive
 */
 .archive-list > li, .search-results > li {
-  padding: 0.5em;
+  padding: 1em;
   margin: 0 0 1em 0;
-  -webkit-box-shadow: 0 0 10px #cecece;
-  -moz-box-shadow: 0 0 10px #cecece;
-  box-shadow: 0 0 10px #cecece; }
+  -webkit-box-shadow: 0 0 30px #cecece;
+  -moz-box-shadow: 0 0 30px #cecece;
+  box-shadow: 0 0 30px #cecece; }
 .archive-list .archive-list-meta, .search-results .archive-list-meta {
   margin-right: 1em;
   color: #424242; }
