@@ -38,12 +38,12 @@ module Jekyll
         # Find H1 tag and all its H2 siblings until next H1
         doc.css('h1').each do |h1|
 
-            #h1.inner_html += ' <a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>'
-            toc_link = Nokogiri::XML::Node.new('a',doc)
-            toc_link['class'] = 'jump-to-toc-link'
-            toc_link['href'] = '#toctitle'
-            toc_link.inner_html = 'Table of Contents'
-            h1.add_next_sibling(toc_link)
+            # h1.inner_html += ' <a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>'
+            # toc_link = Nokogiri::XML::Node.new('a',doc)
+            # toc_link['class'] = 'jump-to-toc-link'
+            # toc_link['href'] = '#toctitle'
+            # toc_link.inner_html = 'Table of Contents'
+            # h1.add_next_sibling(toc_link)
             # TODO This XPATH expression can greatly improved
             ct  = h1.xpath('count(following-sibling::h1)')
             h2s = h1.xpath("following-sibling::h2[count(following-sibling::h1)=#{ct}]")

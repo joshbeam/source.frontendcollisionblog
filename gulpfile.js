@@ -10,7 +10,9 @@ gulp.task('js',function() {
 		'bower_components/jquery/dist/jquery.js',
 		'js/src/lib/lunr.js',
 		'js/src/search/Query.js',
-		'js/src/search/search.js'
+		'js/src/search/search.js',
+		'js/src/menu/menu.js',
+		'js/src/github/github.js'
 		])
 		.pipe(concat('scripts.js'))
 		.pipe(gulp.dest('js/dist'))
@@ -29,6 +31,7 @@ gulp.task('js',function() {
 
 gulp.task('watch',function() {
 	gulp.watch('js/src/*.js',['js']);
+	gulp.watch('js/src/*/*.js',['js']);
 });
 
 gulp.task('default',['js','watch']);

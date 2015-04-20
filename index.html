@@ -1,41 +1,24 @@
 ---
 layout: default
 ---
+<section>
 
-<div class="home">
-
-  <div class="note">
-      <h1>What's on this site, and why should you care?</h1>
-      Well first off, welcome! This site is a place for open-ended articles (and discussion) about mostly JavaScript. Things like best practices, little tips and tutorials (especially about AngularJS), and random thoughts. And a little bit of Ruby is thrown in for good measure, too. <a href="/about">Josh Beam</a>, a JavaScript developer, is the creator and primary author of this site.
-  </div>
-
-  {% include total-posts.html %}
-
-  <ul class="post-list">
+  <ul class="posts">
     {% for post in site.posts %}
       <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-        <span class="post-tags">
-          {% if post.categories %}
-            {% for tag in post.categories %}
-              {{tag}} 
-            {% endfor %}
-          {% endif %}
-        </span>
-        <h2>
-          <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-        <p class="post-excerpt">
-          {% if post.content contains '<!--excerpt.start-->' and post.content contains '<!--excerpt.end-->' %}
-            {{ ((post.content | split:'<!--excerpt.start-->' | last) | split: '<!--excerpt.end-->' | first) | strip_html | truncatewords: 80 }}
-          {% else %}
-            {{ post.content | strip_html | truncatewords: 80 }}
-          {% endif %}
-        </p>
+        <div>
+          <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+          <p>
+            {% if post.content contains '<!--excerpt.start-->' and post.content contains '<!--excerpt.end-->' %}
+              {{ ((post.content | split:'<!--excerpt.start-->' | last) | split: '<!--excerpt.end-->' | first) | strip_html | truncatewords: 80 }}
+            {% else %}
+              {{ post.content | strip_html | truncatewords: 80 }}
+            {% endif %}
+          </p>
+        </div>
+        <span>{{ post.date | date: "%b %-d, %Y" }}</span>
       </li>
     {% endfor %}
   </ul>
 
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
-</div>
+</section>

@@ -42,3 +42,9 @@
     box-shadow: $top $left $blur $color;
   }
 }
+
+@mixin box-sizing($sizing) {
+  -webkit-box-sizing: $sizing;
+  -moz-box-sizing: $sizing;
+  box-sizing: $sizing;
+}

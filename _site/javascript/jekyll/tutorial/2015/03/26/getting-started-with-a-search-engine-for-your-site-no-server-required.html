@@ -9,10 +9,11 @@
   <title>Getting started with a search engine for your site (no server required!)</title>
   <meta name="description" content="Today we'll talk about how to build a JavaScript-only search engine (using JSON and AJAX) to avoid databases and server-side programming. We'll do it all spe...">
 
+  <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic" rel="stylesheet" type="text/css">
   <link rel="shortcut icon" href="/images/favicon.ico?v=1.1"> 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://joshbeam.github.io/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html">
-  <link rel="alternate" type="application/rss+xml" title="Front End Collision" href="http://joshbeam.github.io/feed.xml" />
+  <link rel="canonical" href="localhost:4000/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html">
+  <link rel="alternate" type="application/rss+xml" title="Front End Collision" href="localhost:4000/feed.xml" />
   <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -22,183 +23,108 @@
 	ga('create', 'UA-60978864-1', 'auto');
 	ga('send', 'pageview');
 </script>
+  <!--[if lt IE 9]>
+    <script src="/bower_components/html5shiv/dist/html5shiv.js"></script>
+<![endif]-->
 </head>
 
 
   <body>
 
-    <header class="site-header">
-
-  <div class="wrapper">
-    <div class="site-title">
-      <img class="profile-picture" src="/images/me.jpg" />
-
-      <div>
-      <a href="/">Front End Collision</a>
-      <small>Blog of web developer Josh Beam</small>
-      </div>
-    </div>
-    <nav class="site-nav">
-      <a href="#" class="menu-icon">
-        <svg viewBox="0 0 18 15">
-          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
-          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
-          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
-        </svg>
-      </a>
-
-      <div class="trigger">
-          <a class="page-link" href="/">Blog</a>
-        
-          
-          <a class="page-link" href="/about/">About</a>
-          
-        
-          
-          <a class="page-link" href="/archive/">Archive</a>
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-          
-        
-      </div>
-    </nav>
-
-  </div>
-
+    <header>
+  <a href="/">
+    <img src="/images/me.jpg">
+    <hgroup>
+      <h1>Front End Collision</h1>
+      <h5>Blog of web developer Josh Beam</h5>
+    </hgroup>
+  </a>
 </header>
+    <a class="menu-icon" href="#">
+    <svg viewBox="0 0 18 15">
+        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+    </svg>
+</a>
+<div class="black-out"></div>
+<nav>
+  <ul>
+    <li>
+      <a href="/">Home</a>
+    </li>
+    <li>
+      <a href="/about">About</a>
+    </li>
+    <li>
+      <a href="/archive">Archive</a>
+    </li>
+  </ul>
+</nav>
 
+    <main>
+        <section>
 
-    <div class="page-content">
-      <div class="wrapper">
-        <div class="post">
-  <a href="/" class="view-all-link">&laquo; View All</a>
-  <br><br>
-  <header class="post-header">
-    <h1 class="post-title">Getting started with a search engine for your site (no server required!)</h1>
-    <p class="post-meta">Mar 26, 2015 &mdash; Josh Beam &mdash; <em>javascript</em> <em>jekyll</em> <em>tutorial</em> </p>
+  <header>
+    <h1>Getting started with a search engine for your site (no server required!)</h1>
+    <p>
+      Mar 26, 2015 &mdash; Josh Beam &mdash; <em>javascript</em> <em>jekyll</em> <em>tutorial</em> 
+    </p>
+    <a href="/" class="view-all-link">View All</a>
   </header>
 
-  <article class="post-content">
-    <div id="toc-container">
-   <table class="toc" id="toc">
-      <tbody>
-         <tr>
-            <td>
-               <div id="toctitle">
-                  <h2>Contents</h2>
-               </div>
-               <ul>
-                  <li class="toc_level-1 toc_section-1">
-                     <a href="#tocAnchor-1-1"><span class="tocnumber">1</span> <span class="toctext">What do you mean “no server”?</span></a>
-                  </li>
-                  <li class="toc_level-1 toc_section-2">
-                     <a href="#tocAnchor-1-2"><span class="tocnumber">2</span> <span class="toctext">Why not process on the server?</span></a>
-                  </li>
-                  <li class="toc_level-1 toc_section-3">
-                     <a href="#tocAnchor-1-3"><span class="tocnumber">3</span> <span class="toctext">Tutorial</span></a>
-                     <ul>
-                        <li class="toc_level-2 toc_section-4">
-                           <a href="#tocAnchor-1-3-1"><span class="tocnumber">3.1</span> <span class="toctext">Technologies used</span></a>
-                        </li>
-                        <li class="toc_level-2 toc_section-5">
-                           <a href="#tocAnchor-1-3-2"><span class="tocnumber">3.2</span> <span class="toctext">Architecture</span></a>
-                        </li>
-                        <li class="toc_level-2 toc_section-6">
-                           <a href="#tocAnchor-1-3-3"><span class="tocnumber">3.3</span> <span class="toctext">Step 1 — Make the JSON file</span></a>
-                        </li>
-                        <li class="toc_level-2 toc_section-7">
-                           <a href="#tocAnchor-1-3-4"><span class="tocnumber">3.4</span> <span class="toctext">Step 2 — Send an AJAX request</span></a>
-                        </li>
-                        <li class="toc_level-2 toc_section-8">
-                           <a href="#tocAnchor-1-3-5"><span class="tocnumber">3.5</span> <span class="toctext">Step 3 — Use lunr.js and display the results</span></a>
-                        </li>
-                     </ul>
-                  </li>
-                  <li class="toc_level-1 toc_section-9">
-                     <a href="#tocAnchor-1-9"><span class="tocnumber">4</span> <span class="toctext">Conclusion</span></a>
-                     <ul>
-                        <li class="toc_level-2 toc_section-10">
-                           <a href="#tocAnchor-1-9-1"><span class="tocnumber">4.1</span> <span class="toctext">Benefits</span></a>
-                        </li>
-                        <li class="toc_level-2 toc_section-11">
-                           <a href="#tocAnchor-1-9-2"><span class="tocnumber">4.2</span> <span class="toctext">Drawbacks</span></a>
-                        </li>
-                     </ul>
-                  </li>
-                  <li class="toc_level-1 toc_section-12">
-                     <a href="#tocAnchor-1-12"><span class="tocnumber">5</span> <span class="toctext">Example</span></a>
-                  </li>
-                  <li class="toc_level-1 toc_section-13">
-                     <a href="#tocAnchor-1-13"><span class="tocnumber">6</span> <span class="toctext">Credits</span></a>
-                  </li>
-               </ul>
-            </td>
-         </tr>
-      </tbody>
-   </table>
-</div><div class="note"><!--excerpt.start-->
+  <article>
+    <div class="note"><!--excerpt.start-->
 Today we'll talk about how to build a JavaScript-only search engine (using JSON and AJAX) to avoid databases and server-side programming. We'll do it all specifically in the context of Jekyll and GitHub Pages!<!--excerpt.end-->
 </div>
 
-<h1 id="tocAnchor-1-1">What do you mean “no server”?</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+<h1 id="what-do-you-mean-no-server">What do you mean “no server”?</h1>
 
 <p>Lots of search features on websites rely on communicating with the server to deliver search results. For example, a user might click a <code>search</code> button that sends, say, a <code>POST</code> request to the server, where a <code>.php</code> file handles the request, and sends the results back.</p>
 
 <p>With the way we’re gonna do it here, <strong>we’re going to handle the request entirely on the client. No server-side code processing required.</strong> We’ll go over the architecture in a minute.</p>
 
-<h1 id="tocAnchor-1-2">Why <em>not</em> process on the server?</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+<h1 id="why-not-process-on-the-server">Why <em>not</em> process on the server?</h1>
 
 <p>Nothing wrong with the traditional way of doing it. For my website, though, <strong>I’m using <a href="http://jekyllrb.com/">Jekyll</a>, and I’m hosting it on <a href="https://pages.github.com/">GitHub pages</a>. GitHub pages doesn’t support processing with PHP, Node.js, etc.</strong> Therefore, the only way to do it is on the client (with a little bit of pre-processing, which we’ll go over in a second).</p>
 
-<h1 id="tocAnchor-1-3">Tutorial</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+<h1 id="tutorial">Tutorial</h1>
 
-<h2 id="tocAnchor-1-3-1">Technologies used</h2>
+<h2 id="technologies-used">Technologies used</h2>
 <ol>
   <li><a href="http://jekyllrb.com/">Jekyll</a> (a static site generator)</li>
   <li><a href="http://lunrjs.com/">lunr.js</a> (a JavaScript search indexer)</li>
   <li><a href="http://jquery.com/">jQuery</a> (to make the AJAX stuff and displaying the results easier)</li>
 </ol>
 
-<h2 id="tocAnchor-1-3-2">Architecture</h2>
+<h2 id="architecture">Architecture</h2>
 <ol>
   <li>Take advantage of Liquid (the template system that Jekyll uses) to <strong>create a JSON file of <em>all</em> our searchable content</strong> (in this example, blog posts)</li>
   <li>Write some JavaScript that <strong>sends an AJAX request to retrieve the JSON file</strong> whenever the user searches for something</li>
   <li>Use lunr.js to <strong>match the search query against all the blog posts</strong> in the JSON file and <strong>display the search results</strong> in order by the strength of the match</li>
 </ol>
 
-<div class="ellipsis">…</div>
+<div class="ellipsis">&hellip;</div>
 
-<h2 id="tocAnchor-1-3-3">Step 1 — Make the JSON file</h2>
+<h2 id="step-1-mdash-make-the-json-file">Step 1 — Make the JSON file</h2>
 
 <p>We’re going to kind of “hack” our way through Liquid to create a JSON file.</p>
 
 <p>Create a new file in your <em>root</em> called <code>posts.json</code>. Open it up:</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="o">---</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">---</span>
 <span class="o">---</span>
 <span class="p">[</span>
   <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="nx">post</span> <span class="k">in</span> <span class="nx">site</span><span class="p">.</span><span class="nx">posts</span> <span class="o">%</span><span class="p">}</span>
     <span class="p">{</span>
-      <span class="s2">"title"</span>    <span class="o">:</span> <span class="s2">"{{ post.title | escape }}"</span><span class="p">,</span>
-      <span class="s2">"category"</span> <span class="o">:</span> <span class="s2">"{{ post.categories | join: ' ' }}"</span><span class="p">,</span>
-      <span class="s2">"content"</span>	 <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | escape | remove: "</span><span class="err">\</span><span class="s2">"}}"</span><span class="p">,</span>
-      <span class="s2">"url"</span>      <span class="o">:</span> <span class="s2">"{{ site.baseurl }}{{ post.url }}"</span><span class="p">,</span>
-      <span class="s2">"date"</span>     <span class="o">:</span> <span class="s2">"{{ post.date }}"</span>
+      <span class="s2">&quot;title&quot;</span>    <span class="o">:</span> <span class="s2">&quot;{{ post.title | escape }}&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;category&quot;</span> <span class="o">:</span> <span class="s2">&quot;{{ post.categories | join: &#39; &#39; }}&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;content&quot;</span>	 <span class="o">:</span> <span class="s2">&quot;{{post.content | strip_html | strip_newlines | remove:  &quot;</span>	<span class="s2">&quot; | escape | remove: &quot;</span><span class="err">\</span><span class="s2">&quot;}}&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;url&quot;</span>      <span class="o">:</span> <span class="s2">&quot;{{ site.baseurl }}{{ post.url }}&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;date&quot;</span>     <span class="o">:</span> <span class="s2">&quot;{{ post.date }}&quot;</span>
     <span class="p">}{</span><span class="o">%</span> <span class="nx">unless</span> <span class="nx">forloop</span><span class="p">.</span><span class="nx">last</span> <span class="o">%</span><span class="p">},{</span><span class="o">%</span> <span class="nx">endunless</span> <span class="o">%</span><span class="p">}</span>
   <span class="p">{</span><span class="o">%</span> <span class="nx">endfor</span> <span class="o">%</span><span class="p">}</span>
-<span class="p">]</span></code>
-   </pre>
-</div>
+<span class="p">]</span></code></pre></div>
 
 <p>You’ll notice some strange things. First, if you’re using syntax highlighting, <strong>you’ll get all kinds of weird “errors”. Ignore them.</strong> JSON or JavaScript syntax highlighting doesn’t understand that we’re using Liquid.</p>
 
@@ -206,11 +132,7 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 
 <p>Most of the templating above is self-explanatory if you understand the basics of <a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">Liquid filters</a>. However there is <strong>one line I’d like to explain</strong>.</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="s2">"content"</span>   <span class="o">:</span> <span class="s2">"{{post.content | strip_html | strip_newlines | remove:  "</span>	<span class="s2">" | escape | remove: "</span><span class="err">\</span><span class="s2">"}}"</span><span class="p">,</span></code>
-   </pre>
-</div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">&quot;content&quot;</span>   <span class="o">:</span> <span class="s2">&quot;{{post.content | strip_html | strip_newlines | remove:  &quot;</span>	<span class="s2">&quot; | escape | remove: &quot;</span><span class="err">\</span><span class="s2">&quot;}}&quot;</span><span class="p">,</span></code></pre></div>
 
 <p>The content of our post might contain raw <code>tab</code> characters, as well as double quotes (<code>"</code>). Well, as it turns out, <strong>having <code>tab</code> characters inside a JSON string is <em>invalid</em> JSON</strong>, so when we call our AJAX request later, <strong>nothing would be returned! Not good.</strong></p>
 
@@ -218,93 +140,77 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 
 <p>Also, <strong>I want to explain this part:</strong></p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="p">}{</span><span class="o">%</span> <span class="nx">unless</span> <span class="nx">forloop</span><span class="p">.</span><span class="nx">last</span> <span class="o">%</span><span class="p">},{</span><span class="o">%</span> <span class="nx">endunless</span> <span class="o">%</span><span class="p">}</span></code>
-   </pre>
-</div>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">}{</span><span class="o">%</span> <span class="nx">unless</span> <span class="nx">forloop</span><span class="p">.</span><span class="nx">last</span> <span class="o">%</span><span class="p">},{</span><span class="o">%</span> <span class="nx">endunless</span> <span class="o">%</span><span class="p">}</span></code></pre></div>
 
 <p><strong>If you don’t have that line of code</strong>, your output would look something like this:</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="p">[</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span>
 	<span class="p">{</span> <span class="cm">/* content */</span> <span class="p">},</span>
 	<span class="p">{</span> <span class="cm">/* content */</span> <span class="p">},</span>
 	<span class="p">{</span> <span class="cm">/* content */</span> <span class="p">},</span>
-<span class="p">]</span></code>
-   </pre>
-</div>
+<span class="p">]</span></code></pre></div>
 
 <p>See the trailing comma on the last object? <strong>This is also invalid JSON. Not good.</strong> So, we run a some Liquid that says <em>don’t put a comma at the end if it’s the last object</em>.</p>
 
-<p>
-   <strong>Now, run <code>jekyll build</code>, and you’ll end up with a compiled <code>posts.json</code> underneath <code>_site</code>, which contains the entire built site. Here’s the compiled JSON:</strong>
-</p>
+<p><strong>Now, run <code>jekyll build</code>, and you’ll end up with a compiled <code>posts.json</code> underneath <code>_site</code>, which contains the entire built site. Here’s the compiled JSON:</strong></p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="p">[</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span>
     <span class="p">{</span>
-      <span class="s2">"title"</span>    <span class="o">:</span> <span class="s2">"Why do people add semicolons before modules?"</span><span class="p">,</span>
-      <span class="s2">"category"</span> <span class="o">:</span> <span class="s2">"javascript snippet"</span><span class="p">,</span>
-      <span class="s2">"content"</span>	 <span class="o">:</span> <span class="s2">"Simple answer: because of minification issues.Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn’t careful.(function() {// code})()(function() {// code})();If you look closely enough at the above, you’ll see the first IIFE is missing a semicolon at the end.That means that when minified, it’ll look like this:The broken code:(function() {})()(function() {})();// (a)()(b)()The problem is that now function a is being called with function b passed in as an argument. Interesting.So, we just add a ; to the beginning of the module, and to the end. This acts as a safeguard to ensure we don’t run into that problem when we minify.So, when we try doing the above example with semicolons at the beginning and at the end, and you minify the code, you get this instead:The working code:;(function() {})();;(function() {})();The cool thing is, the above doesn’t throw any errors. In fact, JSHint won’t yell at you either.Why is this? Check out the MDN article on empty:  An empty statement is used to provide no statement, although the JavaScript syntax would expect one.So those extra semicolons are not a syntax error, because a random semicolon anywhere in the code can be interpreted as an empty statement. Cool, huh?"</span><span class="p">,</span>
-      <span class="s2">"url"</span>      <span class="o">:</span> <span class="s2">"/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html"</span><span class="p">,</span>
-      <span class="s2">"date"</span>     <span class="o">:</span> <span class="s2">"2015-03-22 18:34:00 -0500"</span>
+      <span class="s2">&quot;title&quot;</span>    <span class="o">:</span> <span class="s2">&quot;Why do people add semicolons before modules?&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;category&quot;</span> <span class="o">:</span> <span class="s2">&quot;javascript snippet&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;content&quot;</span>	 <span class="o">:</span> <span class="s2">&quot;Simple answer: because of minification issues.Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn’t careful.(function() {// code})()(function() {// code})();If you look closely enough at the above, you’ll see the first IIFE is missing a semicolon at the end.That means that when minified, it’ll look like this:The broken code:(function() {})()(function() {})();// (a)()(b)()The problem is that now function a is being called with function b passed in as an argument. Interesting.So, we just add a ; to the beginning of the module, and to the end. This acts as a safeguard to ensure we don’t run into that problem when we minify.So, when we try doing the above example with semicolons at the beginning and at the end, and you minify the code, you get this instead:The working code:;(function() {})();;(function() {})();The cool thing is, the above doesn’t throw any errors. In fact, JSHint won’t yell at you either.Why is this? Check out the MDN article on empty:  An empty statement is used to provide no statement, although the JavaScript syntax would expect one.So those extra semicolons are not a syntax error, because a random semicolon anywhere in the code can be interpreted as an empty statement. Cool, huh?&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;url&quot;</span>      <span class="o">:</span> <span class="s2">&quot;/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;date&quot;</span>     <span class="o">:</span> <span class="s2">&quot;2015-03-22 18:34:00 -0500&quot;</span>
     <span class="p">},</span>
     <span class="cm">/* and several other posts*/</span>
-<span class="p">]</span></code>
-   </pre>
-</div>
+<span class="p">]</span></code></pre></div>
 
 <div class="note">I strongly recommend running your output through <a href="http://jsonlint.com/">JSONLint</a> if your code isn't working right. It'll help you find whatever errors you might have in your JSON syntax.</div>
 
-<h2 id="tocAnchor-1-3-4">Step 2 — Send an AJAX request</h2>
+<h2 id="step-2-mdash-send-an-ajax-request">Step 2 — Send an AJAX request</h2>
 
 <h3 id="create-a-query-object">Create a “Query” object</h3>
 
 <p>Don’t confuse our <code>Query</code> object with <code>jQuery</code>. Our <code>Query</code> object will serve as a container for everything related to our search. I’ve commented the code so you can see what everything does.</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="c1">//Create a module using an IIFE</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//Create a module using an IIFE</span>
 
 <span class="p">;(</span><span class="kd">function</span><span class="p">(</span><span class="nx">global</span><span class="p">,</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
   <span class="cm">/*</span>
-<span class="cm">    Put ourselves into "strict" mode</span>
+<span class="cm">    Put ourselves into &quot;strict&quot; mode</span>
 <span class="cm">    This just helps us write cleaner JavaScript</span>
 <span class="cm">  */</span>
-  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
 
   <span class="nx">Query</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="c1">// this.q is our search query (for example, "javascript tutorial")</span>
+    <span class="c1">// this.q is our search query (for example, &quot;javascript tutorial&quot;)</span>
     <span class="nx">set</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">val</span><span class="p">;</span>
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
     <span class="p">},</span>
     <span class="c1">// brings us to our search page with a query string attached</span>
     <span class="nx">goToLocation</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">route</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">!==</span> <span class="s1">'undefined'</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">===</span> <span class="s1">'string'</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="o">=</span><span class="nx">route</span><span class="o">+</span><span class="s1">'/?query='</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">q</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="o">=</span><span class="nx">route</span><span class="o">+</span><span class="s1">&#39;/?query=&#39;</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">q</span><span class="p">;</span>
       <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
         <span class="k">return</span><span class="p">;</span>
       <span class="p">}</span>
     <span class="p">},</span>
-    <span class="c1">// returns our search query (for example, "javascript tutorial")</span>
+    <span class="c1">// returns our search query (for example, &quot;javascript tutorial&quot;)</span>
     <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
       <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">q</span><span class="p">;</span>
     <span class="p">},</span>
-    <span class="c1">// "grab" the query from the query string in the URL and set this.q to it</span>
+    <span class="c1">// &quot;grab&quot; the query from the query string in the URL and set this.q to it</span>
     <span class="nx">setFromURL</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[\[]/</span><span class="p">,</span> <span class="s2">"\\["</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[\]]/</span><span class="p">,</span> <span class="s2">"\\]"</span><span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">"[\\?&amp;]"</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">"=([^&amp;#]*)"</span><span class="p">),</span>
+      <span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[\[]/</span><span class="p">,</span> <span class="s2">&quot;\\[&quot;</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/[\]]/</span><span class="p">,</span> <span class="s2">&quot;\\]&quot;</span><span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;[\\?&amp;]&quot;</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;=([^&amp;#]*)&quot;</span><span class="p">),</span>
           <span class="nx">results</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">);</span>
 
-      <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">results</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="s2">""</span> <span class="o">:</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">results</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\+/g</span><span class="p">,</span> <span class="s2">" "</span><span class="p">));</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">results</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="s2">&quot;&quot;</span> <span class="o">:</span> <span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">results</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/\+/g</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">));</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>        
     <span class="p">},</span>
-    <span class="c1">// a wrapper for jQuery's $.get</span>
+    <span class="c1">// a wrapper for jQuery&#39;s $.get</span>
     <span class="nx">getJSON</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">file</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">$</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">file</span><span class="p">);</span>
     <span class="p">}</span>
@@ -312,16 +218,14 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 
   <span class="c1">// when we initialize a query, we have the option of giving it a query string</span>
   <span class="kd">function</span> <span class="nx">Query</span><span class="p">(</span><span class="nx">q</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">q</span> <span class="o">!==</span> <span class="s1">'undefined'</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">q</span> <span class="o">===</span> <span class="s1">'string'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">q</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">q</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">q</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
 
   <span class="c1">// attach the Query object to the window</span>
   <span class="nx">global</span><span class="p">.</span><span class="nx">Query</span> <span class="o">=</span> <span class="nx">Query</span><span class="p">;</span>
-<span class="p">})(</span><span class="k">this</span><span class="p">,</span><span class="nx">$</span><span class="p">);</span></code>
-   </pre>
-</div>
+<span class="p">})(</span><span class="k">this</span><span class="p">,</span><span class="nx">$</span><span class="p">);</span></code></pre></div>
 
 <p>Whew! That’s a lot of stuff. Let’s write a little API documentation to show you what everything does:</p>
 
@@ -338,29 +242,23 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 
 <h3 id="let-the-user-search-for-something">Let the user search for something</h3>
 
-<div class="highlight">
-   <pre>
-      <code class="language-html" data-lang="html"><span class="c">&lt;!-- Your search form --&gt;</span>
-<span class="nt">&lt;form</span> <span class="na">class=</span><span class="s">"search"</span><span class="nt">&gt;</span>
- 	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"search-box"</span> <span class="na">id=</span><span class="s">"search"</span> <span class="nt">/&gt;</span>
- 	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">class=</span><span class="s">"search-button"</span> <span class="na">value=</span><span class="s">"Search"</span> <span class="nt">/&gt;</span>
-<span class="nt">&lt;/form&gt;</span></code>
-   </pre>
-</div>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- Your search form --&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">class=</span><span class="s">&quot;search&quot;</span><span class="nt">&gt;</span>
+ 	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">class=</span><span class="s">&quot;search-box&quot;</span> <span class="na">id=</span><span class="s">&quot;search&quot;</span> <span class="nt">/&gt;</span>
+ 	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">class=</span><span class="s">&quot;search-button&quot;</span> <span class="na">value=</span><span class="s">&quot;Search&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span></code></pre></div>
 
 <p>I hate forms. But here, we use them for a very specific reason. It’s so that we can execute our search function both whenever the user clicks the “Search” button, or whenever the user hits the “enter” key on the keyboard. HTML has this built-in functionality. If we didn’t use a <code>form</code>, and just used, say, a <code>div</code>, we would have to write code that would listen to both the <code>click</code> event on the button, and the <code>keydown</code> event on the text box.</p>
 
 <p>So on all pages where there is the above search form, we should also have this JavaScript:</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="c1">// search.js</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// search.js</span>
 <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">Query</span><span class="p">)</span> <span class="p">{</span>
-	<span class="s1">'use strict'</span><span class="p">;</span>
+	<span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
 
 	<span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Query</span><span class="p">();</span>
 
-	<span class="nx">$</span><span class="p">(</span><span class="s1">'.search'</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">'submit'</span><span class="p">,</span><span class="nx">exec</span><span class="p">);</span>	
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.search&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span><span class="nx">exec</span><span class="p">);</span>	
 
 	<span class="kd">function</span> <span class="nx">submit</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 		<span class="c1">// stop the form from doing its default behavior</span>
@@ -368,25 +266,19 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 
 		<span class="c1">// set the query, and go to the search page with our query URL</span>
 		<span class="nx">query</span>
-		<span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.search-box'</span><span class="p">).</span><span class="nx">val</span><span class="p">().</span><span class="nx">trim</span><span class="p">())</span>
-		<span class="p">.</span><span class="nx">goToLocation</span><span class="p">(</span><span class="s1">'/search'</span><span class="p">);</span>
+		<span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.search-box&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">().</span><span class="nx">trim</span><span class="p">())</span>
+		<span class="p">.</span><span class="nx">goToLocation</span><span class="p">(</span><span class="s1">&#39;/search&#39;</span><span class="p">);</span>
 	<span class="p">}</span>
-<span class="p">}(</span><span class="nx">Query</span><span class="p">));</span></code>
-   </pre>
-</div>
+<span class="p">}(</span><span class="nx">Query</span><span class="p">));</span></code></pre></div>
 
 <p>We could easily write the above code as such:</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="c1">// search.js</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// search.js</span>
 <span class="kd">function</span> <span class="nx">submit</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
 
-	<span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="o">=</span><span class="s1">'/search/?query='</span><span class="o">+</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.search-box'</span><span class="p">).</span><span class="nx">val</span><span class="p">().</span><span class="nx">trim</span><span class="p">();</span>
-<span class="p">}</span></code>
-   </pre>
-</div>
+	<span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">href</span><span class="o">=</span><span class="s1">&#39;/search/?query=&#39;</span><span class="o">+</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.search-box&#39;</span><span class="p">).</span><span class="nx">val</span><span class="p">().</span><span class="nx">trim</span><span class="p">();</span>
+<span class="p">}</span></code></pre></div>
 
 <p>However, the only reason we’re using our custom Query object is because <strong>it separates concerns, and we’ve also created a reusable, easy-to-read and understandable module</strong>.</p>
 
@@ -394,25 +286,21 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 
 <p>We’ll have the following code <strong>on our <code>/search</code> page</strong>:</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="c1">// results.js</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// results.js</span>
 <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">Query</span><span class="p">,</span><span class="nx">utils</span><span class="p">)</span> <span class="p">{</span>
 	<span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Query</span><span class="p">(),</span>
-		<span class="nx">site</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s2">"//"</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span>
+		<span class="nx">site</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s2">&quot;//&quot;</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="p">,</span>
 		<span class="c1">// some utility functions</span>
 		<span class="nx">utils</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">;</span>
 
 	<span class="nx">query</span>
-	<span class="p">.</span><span class="nx">setFromURL</span><span class="p">(</span><span class="s1">'query'</span><span class="p">)</span>
-	<span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">'/posts.json'</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">setFromURL</span><span class="p">(</span><span class="s1">&#39;query&#39;</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s1">&#39;/posts.json&#39;</span><span class="p">)</span>
 	<span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
 		<span class="c1">// show our results</span>
 	<span class="p">});</span>	
-<span class="p">}(</span><span class="nx">Query</span><span class="p">,</span><span class="nx">utils</span><span class="p">));</span></code>
-   </pre>
-</div>
+<span class="p">}(</span><span class="nx">Query</span><span class="p">,</span><span class="nx">utils</span><span class="p">));</span></code></pre></div>
 
 <div class="note">Remember my tip about <a href="http://jsonlint.com/">JSONLint</a>? Seriously, use it. Open up your console, and you should see your JSON (since we wrote <code>console.log(data)</code> in the above code). If you don't see it, your JSON might be improperly formatted.</div>
 
@@ -420,11 +308,9 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 
 <p><code>utils</code> is a little package of a function that we’ll call <code>shade</code>. This function will be used to color our results based on the strength of the match against our query.</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="c1">// utils.js</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// utils.js</span>
 <span class="p">;(</span><span class="kd">function</span><span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
-	<span class="s1">'use strict'</span><span class="p">;</span>
+	<span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
 
 	<span class="kd">var</span> <span class="nx">utils</span> <span class="o">=</span> <span class="p">{</span>
 		<span class="nx">shade</span><span class="o">:</span> <span class="nx">shade</span>
@@ -433,49 +319,41 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 	<span class="kd">function</span> <span class="nx">shade</span><span class="p">(</span><span class="nx">color</span><span class="p">,</span><span class="nx">percent</span><span class="p">)</span> <span class="p">{</span>
 		<span class="c1">//Comes from: http://stackoverflow.com/a/13542669/2714730</span>
 		<span class="kd">var</span> <span class="nx">f</span><span class="o">=</span><span class="nb">parseInt</span><span class="p">(</span><span class="nx">color</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">16</span><span class="p">),</span><span class="nx">t</span><span class="o">=</span><span class="nx">percent</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">?</span><span class="mi">0</span><span class="o">:</span><span class="mi">255</span><span class="p">,</span><span class="nx">p</span><span class="o">=</span><span class="nx">percent</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">?</span><span class="nx">percent</span><span class="o">*-</span><span class="mi">1</span><span class="o">:</span><span class="nx">percent</span><span class="p">,</span><span class="nx">R</span><span class="o">=</span><span class="nx">f</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">,</span><span class="nx">G</span><span class="o">=</span><span class="nx">f</span><span class="o">&gt;&gt;</span><span class="mi">8</span><span class="o">&amp;</span><span class="mh">0x00FF</span><span class="p">,</span><span class="nx">B</span><span class="o">=</span><span class="nx">f</span><span class="o">&amp;</span><span class="mh">0x0000FF</span><span class="p">;</span>
-		<span class="k">return</span> <span class="s2">"#"</span><span class="o">+</span><span class="p">(</span><span class="mh">0x1000000</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">R</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">R</span><span class="p">)</span><span class="o">*</span><span class="mh">0x10000</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">G</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">G</span><span class="p">)</span><span class="o">*</span><span class="mh">0x100</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">B</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">B</span><span class="p">)).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+		<span class="k">return</span> <span class="s2">&quot;#&quot;</span><span class="o">+</span><span class="p">(</span><span class="mh">0x1000000</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">R</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">R</span><span class="p">)</span><span class="o">*</span><span class="mh">0x10000</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">G</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">G</span><span class="p">)</span><span class="o">*</span><span class="mh">0x100</span><span class="o">+</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">((</span><span class="nx">t</span><span class="o">-</span><span class="nx">B</span><span class="p">)</span><span class="o">*</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">B</span><span class="p">)).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">).</span><span class="nx">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 	<span class="p">}</span>
 
 	<span class="nx">global</span><span class="p">.</span><span class="nx">utils</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">;</span>
-<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code>
-   </pre>
-</div>
+<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code></pre></div>
 
-<p>We’ve simply wrapped it in a module, because later on we could add more methods to module (if we wanted to). For example, a <a href="http://joshbeam.github.io/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html#tocAnchor-1-8">custom forEach</a> function.</p>
+<p>We’ve simply wrapped it in a module, because later on we could add more methods to module (if we wanted to). For example, a <a href="localhost:4000/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html#tocAnchor-1-8">custom forEach</a> function.</p>
 
-<h2 id="tocAnchor-1-3-5">Step 3 — Use lunr.js and display the results</h2>
+<h2 id="step-3-mdash-use-lunrjs-and-display-the-results">Step 3 — Use lunr.js and display the results</h2>
 
 <p>Here comes the fun part. First, here’s the HTML for our <code>/search</code> page:</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-html" data-lang="html"><span class="c">&lt;!-- /search --&gt;</span>
-<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"search-results-count"</span><span class="nt">&gt;&lt;/div&gt;</span>
-<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"search-results"</span><span class="nt">&gt;&lt;/ul&gt;</span></code>
-   </pre>
-</div>
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- /search --&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;search-results-count&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;search-results&quot;</span><span class="nt">&gt;&lt;/ul&gt;</span></code></pre></div>
 
 <p>That’s literally it. Our JavaScript is a bit more interesting:</p>
 
-<div class="highlight">
-   <pre>
-      <code class="language-javascript" data-lang="javascript"><span class="c1">// results.js</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// results.js</span>
 <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
 	<span class="kd">var</span> <span class="nx">searchIndex</span><span class="p">,</span>
 		<span class="nx">results</span><span class="p">,</span>
-		<span class="nx">$resultsCount</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'.search-results-count'</span><span class="p">),</span>
-		<span class="nx">$results</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'.search-results'</span><span class="p">),</span>
+		<span class="nx">$resultsCount</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.search-results-count&#39;</span><span class="p">),</span>
+		<span class="nx">$results</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.search-results&#39;</span><span class="p">),</span>
 		<span class="nx">totalScore</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 		<span class="nx">percentOfTotal</span><span class="p">;</span>
 
 	<span class="c1">// PIECE 1</span>
 	<span class="c1">// set up the allowable fields</span>
 	<span class="nx">searchIndex</span> <span class="o">=</span> <span class="nx">lunr</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'title'</span><span class="p">);</span>
-		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'category'</span><span class="p">);</span>
-		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'content'</span><span class="p">);</span>
-		<span class="k">this</span><span class="p">.</span><span class="nx">ref</span><span class="p">(</span><span class="s1">'url'</span><span class="p">);</span>
-		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'date'</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">ref</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">);</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">&#39;date&#39;</span><span class="p">);</span>
 	<span class="p">});</span>
 	
 	<span class="c1">// PIECE 2</span>
@@ -489,7 +367,7 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 	<span class="nx">results</span> <span class="o">=</span> <span class="nx">searchIndex</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="nx">query</span><span class="p">.</span><span class="nx">get</span><span class="p">());</span>
 	
 	<span class="c1">// PIECE 4</span>
-	<span class="c1">// add the title of each post into each result, too (this doesn't come standard with lunr.js)</span>
+	<span class="c1">// add the title of each post into each result, too (this doesn&#39;t come standard with lunr.js)</span>
 	<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">result</span> <span class="k">in</span> <span class="nx">results</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">results</span><span class="p">[</span><span class="nx">result</span><span class="p">].</span><span class="nx">title</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">post</span><span class="p">)</span> <span class="p">{</span>
 			<span class="k">return</span> <span class="nx">post</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="nx">results</span><span class="p">[</span><span class="nx">result</span><span class="p">].</span><span class="nx">ref</span><span class="p">;</span>
@@ -497,7 +375,7 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 	<span class="p">}</span>
 
 	<span class="c1">// show how many results there were, in the DOM</span>
-	<span class="nx">$resultsCount</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">?</span> <span class="s1">' result'</span> <span class="o">:</span> <span class="s1">' results'</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' for "'</span> <span class="o">+</span> <span class="nx">query</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span> <span class="o">+</span><span class="s1">'"'</span><span class="p">);</span>
+	<span class="nx">$resultsCount</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span> <span class="p">(</span><span class="nx">results</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">?</span> <span class="s1">&#39; result&#39;</span> <span class="o">:</span> <span class="s1">&#39; results&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; for &quot;&#39;</span> <span class="o">+</span> <span class="nx">query</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span> <span class="o">+</span><span class="s1">&#39;&quot;&#39;</span><span class="p">);</span>
 
 	<span class="c1">// PIECE 5</span>
 	<span class="c1">// get the total score of all items, so that we can divide each result into it, giving us a percentage</span>
@@ -511,14 +389,12 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 	<span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">results</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">percentOfTotal</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">score</span><span class="o">/</span><span class="nx">totalScore</span><span class="p">;</span>
 
-		<span class="nx">$results</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">'&lt;li&gt;&lt;a href="'</span><span class="o">+</span> <span class="nx">site</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">ref</span> <span class="o">+</span><span class="s1">'"&gt;'</span><span class="o">+</span><span class="nx">result</span><span class="p">.</span><span class="nx">title</span><span class="o">+</span><span class="s1">'&lt;/a&gt;&lt;/li&gt;'</span><span class="p">);</span>
-		<span class="nx">$results</span><span class="p">.</span><span class="nx">children</span><span class="p">(</span><span class="s1">'li'</span><span class="p">).</span><span class="nx">last</span><span class="p">().</span><span class="nx">css</span><span class="p">({</span>
-			<span class="s1">'border-left'</span><span class="o">:</span> <span class="s1">'20px solid '</span><span class="o">+</span><span class="nx">utils</span><span class="p">.</span><span class="nx">shade</span><span class="p">(</span><span class="s1">'#ffffff'</span><span class="p">,</span><span class="o">-</span><span class="nx">percentOfTotal</span><span class="p">)</span>
+		<span class="nx">$results</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;&#39;</span><span class="o">+</span> <span class="nx">site</span> <span class="o">+</span> <span class="nx">result</span><span class="p">.</span><span class="nx">ref</span> <span class="o">+</span><span class="s1">&#39;&quot;&gt;&#39;</span><span class="o">+</span><span class="nx">result</span><span class="p">.</span><span class="nx">title</span><span class="o">+</span><span class="s1">&#39;&lt;/a&gt;&lt;/li&gt;&#39;</span><span class="p">);</span>
+		<span class="nx">$results</span><span class="p">.</span><span class="nx">children</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">).</span><span class="nx">last</span><span class="p">().</span><span class="nx">css</span><span class="p">({</span>
+			<span class="s1">&#39;border-left&#39;</span><span class="o">:</span> <span class="s1">&#39;20px solid &#39;</span><span class="o">+</span><span class="nx">utils</span><span class="p">.</span><span class="nx">shade</span><span class="p">(</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span><span class="o">-</span><span class="nx">percentOfTotal</span><span class="p">)</span>
 		<span class="p">});</span>
 	<span class="p">});</span>		
-<span class="p">});</span></code>
-   </pre>
-</div>
+<span class="p">});</span></code></pre></div>
 
 <p>Let’s go over this in pieces:</p>
 
@@ -544,11 +420,11 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
 <h3 id="piece-7">Piece 7</h3>
 <p>In comes our <code>shade</code> method. We’re gonna add a thick border to the side of each search result, and we’ll darken it by each result’s percentage. Thus, the higher strength of the match for a result, the darker the side border is, which shows the user, intuitively, that that specific match is “stronger”, since it has a “stronger” color. As a side note, when we loop through the elements and display them in a list with jQuery, the results are in order from highest score to lowest score by default (thanks to lunr.js), so the results are automatically ordered from high to low in your resulting HTML.</p>
 
-<h1 id="tocAnchor-1-9">Conclusion</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+<h1 id="conclusion">Conclusion</h1>
 
 <p>So that’s it. We’ve successfully implemented a client-side only (or, mostly, since we use AJAX) search system.</p>
 
-<h2 id="tocAnchor-1-9-1">Benefits</h2>
+<h2 id="benefits">Benefits</h2>
 
 <ol>
   <li>We can use it on GitHub pages, or whatever hosting site you use that doesn’t support a backend with PHP, Node.js, etc.</li>
@@ -557,7 +433,7 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
   <li>… It works.</li>
 </ol>
 
-<h2 id="tocAnchor-1-9-2">Drawbacks</h2>
+<h2 id="drawbacks">Drawbacks</h2>
 
 <ol>
   <li>Could be slow, depending on how many results you have. If you have a lot of results, you might want to consider using some loading icons or some sort of AJAX progress bar to show the progress of the loading so the user isn’t looking at a blank screen thinking nothing is happening. Also, you could display only a certain amount of results at a time, and wait to render to the second or third, etc., set of results until the user clicks a “next” button, or whatever.</li>
@@ -565,131 +441,136 @@ Today we'll talk about how to build a JavaScript-only search engine (using JSON 
   <li>It’s a little bit hacky (using Liquid to make the JSON file)</li>
 </ol>
 
-<h1 id="tocAnchor-1-12">Example</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+<h1 id="example">Example</h1>
 
 <p>As of the date of this post, I am using this on my website. Scroll down to the footer to utilize the search feature.</p>
 
-<h1 id="tocAnchor-1-13">Credits</h1><a class="jump-to-toc-link" href="#toctitle">Table of Contents</a>
+<h1 id="credits">Credits</h1>
 
 <p>Thanks to <a href="https://github.com/christian-fei/Simple-Jekyll-Search">christian-fei</a> for the inspiration for the JSON creation via Liquid.</p>
 
 <p>Also, thanks <a href="http://lunrjs.com/">Lunr.js</a>!</p>
 
 
-  </article>
-
-  <a href="/" class="view-all-link">&laquo; View All</a>
-
-  <div class="twitter-plug">Like this post?
-<a href="https://twitter.com/intent/tweet?url=http://joshbeam.github.io/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html&text=Getting started with a search engine for your site (no server required!)&via=joshbeam92" 
+    <div class="twitter-plug">Like this post?
+<a href="https://twitter.com/intent/tweet?url=localhost:4000/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html&text=Getting started with a search engine for your site (no server required!)&via=joshbeam92" 
 target="_blank">
 Share it with your followers</a> 
 or 
 <a href="https://twitter.com/joshbeam92">
 follow me on Twitter</a>!</div>
-
-	<hr>
-
-  <div class="ask-for-comments">
-  	<em>What do you think? Did I get something wrong, or did I get something right? Comment below to let me and everyone else know.</em>
-  </div>
+  </article>
 
   
   <div id="disqus_thread"></div>
   
 
-</div>
+</section>
 
-      </div>
-    </div>
+    </main>
 
-    <footer class="site-footer">
+    <footer>
+  <div>
+    <p>
+      © 2015 Joshua Beam
+    </p>
 
-  <div class="wrapper">
-
-    <h2 class="footer-heading">Front End Collision</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col  footer-col-1">
-        <ul class="contact-list">
-          <li>Josh Beam (author)</li>
-          <li><a href="mailto:frontendcollisionblog@gmail.com">frontendcollisionblog@gmail.com</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-col  footer-col-2">
-        <ul class="social-media-list">
-          
-          <li>
-            <a href="https://github.com/joshbeam">
-              <span class="icon  icon--github">
-                <svg viewBox="0 0 16 16">
-                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
-                </svg>
-              </span>
-
-              <span class="username">joshbeam</span>
-            </a>
-          </li>
-          
-
-          
-          <li>
-            <a href="https://twitter.com/joshbeam92">
-              <span class="icon  icon--twitter">
-                <svg viewBox="0 0 16 16">
-                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
-                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
-                </svg>
-              </span>
-
-              <span class="username">joshbeam92</span>
-            </a>
-          </li>
-          
-        </ul>
-      </div>
-
-      <div class="footer-col  footer-col-3">
-        <p class="text">Website and blog of full-stack JavaScript developer, Josh Beam.
-</p>
-        <p class="text">&copy; 2015 Joshua Beam</p>
-        <form class="search">
-          <input type="text" class="search-box" id="search" /><input type="submit" class="search-button" value="Search" />
-        </form>
-      </div>
-    </div>
-
+    <ul class="list-unstyled list-inline">
+      <li><a href="http://github.com/joshbeam">GitHub</a></li>
+      <li><a href="http://careers.stackoverflow.com/joshbeam">Careers 2.0</a></li>
+      <li><a href="http://twitter.com/joshbeam92">@joshbeam92</a></li>
+      <li><a href="mailto:frontendcollisionblog@gmail.com">frontendcollisionblog@gmail.com</a></li>
+    </ul>
   </div>
+  
+  <form class="search">
+    <input type="text" class="search-box" id="search" /><input type="submit" class="search-button" value="Search" />
+  </form>
 
 </footer>
 
-    <script src="/js/dist/scripts.min.js"></script>
 
-    
+    <script src="/js/dist/scripts.js"></script>
+<script>
+  var parser = document.createElement('a')
 
-    
-    <script type="text/javascript">
-        //var disqus_developer = 1;
-        /* * * CONFIGURATION VARIABLES * * */
-        var disqus_shortname = 'frontendcollision';
-        
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-    
+  parser.href = document.location;
 
-    <script>
-        $('pre').each(function() {
-            $(this).html($(this).html().trim());
+  if(parser.pathname === '/about/') {
+    function populateGitHub(res) {
+      var repos = res.data,
+          popular = [];
+
+      repos.forEach(function(info) {
+        if(info.stargazers_count > 1) {
+          popular.push(info);
+        }
+      });
+
+      $('.github-title').prepend([
+        'Showing '+popular.length+' of '+repos.length+' public repos '
+      ].join(''));
+
+      popular.forEach(function(repo) {
+        $('.github').append([
+            //'<dl>',
+              '<dt>',
+                '<a href="'+repo.html_url+'">'+repo.name+'</a>',
+                ' <span>('+repo.language+', '+repo.stargazers_count+' starrers)</span>',
+              '</dt>',
+              '<dd>'+repo.description+'</dd>',
+            //'</dl>'
+          ].join(''));
+      });
+    }
+
+    var script = document.createElement('script');
+    script.src = 'https://api.github.com/users/joshbeam/repos?callback=populateGitHub';
+
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+</script>
+<script>
+  $(function() {
+    $('pre').each(function() {
+      $this = $(this);
+
+      $this.html($this.html().trim());
+    });
+  });
+</script>
+
+<script>
+  $(function() {
+      $('.posts li').each(function() {
+        $this = $(this);
+
+        $this.css('cursor','pointer');
+
+        $this.on('click', function() {
+          document.location = $this.find('a')[0].href;
         });
-    </script>
-    
-  </body>
+      });
+  });
+</script>
 
+
+
+
+<script type="text/javascript">
+    //var disqus_developer = 1;
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'frontendcollision';
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+  </body>
 </html>
