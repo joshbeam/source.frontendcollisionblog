@@ -73,12 +73,52 @@ pre {
   background: $extra-light-gray;
 
   padding: .5rem;
-  margin: 0 auto;
+  margin: 1rem auto;
   width: 80%;
 
   @include border-radius(5px);
 
   @include media-query($tablet) {
     width: 100%;
+  }
+}
+
+table {
+  width: 100%;
+  margin: 2rem 0;
+  border-collapse: collapse;
+
+  @include box-shadow(0, 0, 20px, $light-gray);
+
+  pre {
+    width: 100%;
+    margin: 0;
+
+    line-height: 1rem;
+  }
+
+  tbody th {
+    color: $light-gray;
+    border: none;
+
+    padding-top: 2rem;
+  }
+
+  tr {
+    vertical-align: top;
+  }
+
+  td,
+  th {
+    padding: .5rem;
+
+    $border: 1px solid $extra-light-gray;
+
+    border-top: $border;
+    border-bottom: $border;
+
+    &:not(:last-child) {
+      border-right: $border;
+    }
   }
 }

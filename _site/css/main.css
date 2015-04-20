@@ -63,7 +63,7 @@ pre {
   font-size: .75rem;
   background: #eee;
   padding: .5rem;
-  margin: 0 auto;
+  margin: 1rem auto;
   width: 80%;
   -webkit-border-radius: 5px;
   border-radius: 5px;
@@ -72,6 +72,32 @@ pre {
   @media screen and (max-width: 768px) {
     pre {
       width: 100%; } }
+
+table {
+  width: 100%;
+  margin: 2rem 0;
+  border-collapse: collapse;
+  -webkit-box-shadow: 0 0 20px #ccc;
+  -moz-box-shadow: 0 0 20px #ccc;
+  box-shadow: 0 0 20px #ccc; }
+  table pre {
+    width: 100%;
+    margin: 0;
+    line-height: 1rem; }
+  table tbody th {
+    color: #ccc;
+    border: none;
+    padding-top: 2rem; }
+  table tr {
+    vertical-align: top; }
+  table td,
+  table th {
+    padding: .5rem;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee; }
+    table td:not(:last-child),
+    table th:not(:last-child) {
+      border-right: 1px solid #eee; }
 
 article {
   width: 66.66%;
@@ -253,8 +279,7 @@ nav {
  * Syntax highlighting styles
  */
 .highlight {
-  background: #fff;
-  margin: 0 0 3em 0; }
+  background: #fff; }
   .highlight .c {
     color: #998;
     font-style: italic; }
