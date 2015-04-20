@@ -56,7 +56,7 @@
         $this.css('cursor','pointer');
 
         $this.on('click', function() {
-          document.location = $this.find('a')[0].href;
+          document.location = $(this).find('a')[0].href;
         });
       });
   });
