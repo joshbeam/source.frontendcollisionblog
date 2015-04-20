@@ -226,6 +226,24 @@ nav {
   }
 }
 
+.protip {
+  @include box-shadow(0, 0, 20px, $light-gray);
+
+  & > * {
+    padding: .5rem;
+    margin: 0;
+  }
+
+  h1 {
+    border: none;
+    background: $light-gray;
+  }
+
+  p {
+    background: $extra-light-gray;
+  }
+}
+
 .search-results {
   li {
     padding: .5rem;

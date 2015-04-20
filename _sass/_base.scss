@@ -21,6 +21,21 @@ a {
   }
 }
 
+blockquote {
+  font-style: italic;
+
+  padding-left: 1rem;
+
+  border-left: 5px solid $extra-light-gray;
+}
+
+*:not(pre) > code {
+  background: $extra-light-gray;
+  font-size: .75em;
+  padding: .5em;
+  border: 1px solid $light-gray;
+}
+
 dl {
   dd {
     padding: 0 0 1rem 0;

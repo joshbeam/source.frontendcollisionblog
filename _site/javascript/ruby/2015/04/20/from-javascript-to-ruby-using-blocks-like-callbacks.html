@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>From JavaScript to Ruby: Using Blocks Like Callbacks</title>
+  <meta name="description" content="This post is the first in the series of “From JavaScript to Ruby”, which is aimed at helping JavaScript developers transition their thinking from JavaScript ...">
+
+  <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link rel="shortcut icon" href="/images/favicon.ico?v=1.1"> 
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html">
+  <link rel="alternate" type="application/rss+xml" title="Front End Collision" href="http://joshbeam.github.io/feed.xml" />
+  <script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-60978864-1', 'auto');
+	ga('send', 'pageview');
+</script>
+  <!--[if lt IE 9]>
+    <script src="/bower_components/html5shiv/dist/html5shiv.js"></script>
+<![endif]-->
+</head>
+
+
+  <body>
+
+    <header>
+  <a href="/">
+    <img src="/images/me.jpg">
+    <hgroup>
+      <h1>Front End Collision</h1>
+      <h5>Blog of web developer Josh Beam</h5>
+    </hgroup>
+  </a>
+</header>
+    <a class="menu-icon" href="#">
+    <svg viewBox="0 0 18 15">
+        <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+        <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+        <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+    </svg>
+</a>
+<div class="black-out"></div>
+<nav>
+  <ul>
+    <li>
+      <a href="/">Home</a>
+    </li>
+    <li>
+      <a href="/about">About</a>
+    </li>
+    <li>
+      <a href="/archive">Archive</a>
+    </li>
+  </ul>
+</nav>
+
+    <main>
+        <section>
+
+  <header>
+    <h1>From JavaScript to Ruby: Using Blocks Like Callbacks</h1>
+    <p>
+      Apr 20, 2015 &mdash; Josh Beam &mdash; <em>javascript</em> <em>ruby</em> 
+    </p>
+    <a href="/" class="view-all-link">View All</a>
+  </header>
+
+  <article>
+    <!--excerpt.start-->
+<p>This post is the first in the series of <strong><em>“From JavaScript to Ruby”</em></strong>, which is aimed at helping JavaScript developers transition their thinking from JavaScript to Ruby. This post will answer this fundamental question: how do I do “callbacks” in Ruby? The answer is: the “idiomatic” way (we’ll talk about what “idiomatic” means) to use so-called callbacks in Ruby is to use <strong>blocks</strong>. We’ll discuss blocks, and their similarities to JavaScript callbacks.
+<!--excerpt.end--></p>
+
+<h1 id="defining-callback-through-practical-examples">Defining “callback” through practical examples</h1>
+
+<p>A callback is a function that happens after we call another function, but the catch is, they’re coupled. However, being coupled in this way doesn’t mean we can’t reuse the callback function.</p>
+
+<p>We often use anonymous functions in JavaScript as callbacks. Here’s an example using <code>Array.prototype.forEach</code>:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Sue&#39;</span><span class="p">,</span> <span class="s1">&#39;Aron&#39;</span><span class="p">,</span> <span class="s1">&#39;Joseph&#39;</span><span class="p">];</span>
+
+<span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// =&gt; &quot;Hello Bob&quot;</span>
+<span class="c1">// =&gt; &quot;Hello Sue&quot;</span>
+<span class="c1">// =&gt; &quot;Hello Aron&quot;</span>
+<span class="c1">// =&gt; &quot;Hello Joseph&quot;</span></code></pre></div>
+
+<p>We can actually sort of “scoop out” the function that we passed into <code>Array.prototype.forEach</code> in order to make it <strong>reusable</strong>:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Sue&#39;</span><span class="p">,</span> <span class="s1">&#39;Aron&#39;</span><span class="p">,</span> <span class="s1">&#39;Joseph&#39;</span><span class="p">];</span>
+
+<span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">sayHello</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">sayHello</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// =&gt; &quot;Hello Bob&quot;</span>
+<span class="c1">// =&gt; &quot;Hello Sue&quot;</span>
+<span class="c1">// =&gt; &quot;Hello Aron&quot;</span>
+<span class="c1">// =&gt; &quot;Hello Joseph&quot;</span></code></pre></div>
+
+<h1 id="how-do-we-do-this-in-ruby-and-what-does-idiomatic-mean">How do we do this in Ruby? And what does “idiomatic” mean?</h1>
+
+<p>You’ll hear a lot of Rubyists use the word “idiomatic”. Read:</p>
+
+<blockquote>
+  <p>The idiomatic way to pass arguments to a method in Ruby is such and such…</p>
+</blockquote>
+
+<blockquote>
+  <p>The idiomatic way to use a “callback” in Ruby is to such and such…</p>
+</blockquote>
+
+<p>In normal-people speak, you’d say:</p>
+
+<blockquote>
+  <p>The common way to go about doing this is such and such…</p>
+</blockquote>
+
+<p>Make sense? In other words, <strong>there are certain patterns and best practices (solutions) for common problems in Ruby: we call these solutions “idioms”.</strong> So, the idiomatic way to use callbacks in Ruby is <strong>not to use callbacks at all. Instead, we use blocks.</strong></p>
+
+<p>Here’s how we can do the <strong>same exact thing in Ruby, instead of JavaScript</strong>:</p>
+
+<iframe src="//repl.it/embed/jkQ" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+
+<p>If you run the above, you’ll see <code>Hello &lt;name&gt;</code> printed for each name, and at the end it’ll actually return the entire array for you to use.</p>
+
+<p><strong>Let’s compare the two. Essentially, this JavaScript…:</strong></p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
+<span class="p">});</span></code></pre></div>
+
+<p><strong>…is the same as this Ruby:</strong></p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span> 
+<span class="k">end</span></code></pre></div>
+
+<p><strong>We can also write the above Ruby in another, shorter way:</strong></p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span></code></pre></div>
+
+<p>So here’s a few things we’ve learned from the above.</p>
+
+<h2 id="st-thing-we-learned-string-interpolation">1st thing we learned (string interpolation)</h2>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Notice the necessary double-quotes. Interpolation doesn&#39;t work without them.</span>
+<span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span> 
+<span class="c1"># That&#39;s &quot;string interpolation&quot;. It&#39;s the same as this:</span>
+<span class="nb">puts</span> <span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nb">name</span></code></pre></div>
+
+<p>Both ways are correct, but the string interpolation notation is more idiomatic.</p>
+
+<p>In JavaScript, we call it “string concatenation”:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span></code></pre></div>
+
+<h2 id="nd-thing-we-learned-block-syntax">2nd thing we learned (block syntax)</h2>
+
+<p>We also learned two styles, or syntaxes, for writing blocks:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+  <span class="c1"># stuff here</span>
+<span class="k">end</span>
+
+<span class="c1"># do ... end is one type of block notation. The other type is:</span>
+
+<span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="p">}</span>
+
+<span class="c1"># The curly braces replace the &quot;do&quot; and &quot;end&quot;.</span></code></pre></div>
+
+<div class="protip">
+  <h1>Pro Tip</h1>
+
+  <p>
+    Before we continue, I want to point out a couple style points. Rubyists often use "soft tabs", or 2 spaces instead of just a 4-character tab, only because it different environments it remains readable (see <a href="http://stackoverflow.com/questions/9446109/soft-tabs-or-hard-tabs">this StackOVerflow question</a>). Also, look at the spacing between the curly braces and pipes. I recommend something to you: <a href="https://github.com/bbatsov/rubocop">Rubocop</a>, which is sort of the de-facto command line tool that tells you if your code looks bad according to the <a href="https://github.com/bbatsov/ruby-style-guide">community style guide on GitHub</a>. It's good stuff.
+  </p>
+</div>
+
+<h2 id="rd-thing-we-learned-enumerableeach--arrayprototypeforeach">3rd thing we learned (<code>Enumerable#each == Array.prototype.forEach</code>)</h2>
+
+<p><strong>Continuing, we learned that Ruby’s <code>Enumerable#each</code> is equivalent to JavaScript’s <code>Array.prototype.forEach</code> (more or less).</strong> I have found only one online blog post so far that has made Ruby’s <code>#each</code> make sense to me. It is by <a href="http://www.eriktrautman.com/posts/ruby-explained-map-select-and-other-enumerable-methods">Erik Trautman</a>.</p>
+
+<h1 id="scooping-out-the-block-like-a-reusable-callback">“Scooping out” the block like a reusable callback</h1>
+
+<p>There are two common ways to make a reusable “callback” in Ruby. They are the <strong><code>lambda</code> and the <code>Proc</code></strong>. There are <strong>very subtle differences between the two ways</strong>.</p>
+
+<h2 id="lambda">Lambda</h2>
+
+<iframe src="//repl.it/embed/jkQ/1" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+
+<p>By the way, that’s the <strong>new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you’re curious)</strong>. If you want to do a <strong>multi-line lambda</strong>, you do:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sayHello</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+            <span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
+           <span class="k">end</span></code></pre></div>
+
+<p>Now that’s some weird-ass looking syntax, huh? Let’s make it look even weirder:</p>
+
+<h2 id="proc-short-for-procedure">Proc (short for “procedure”)</h2>
+
+<iframe src="//repl.it/embed/jkQ/2" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+
+<p>Did you notice, by the way, <strong>that you can do multi-line variable assignment?</strong> Pretty cool; you can’t do that in JavaScript.</p>
+
+<h2 id="differences">Differences</h2>
+
+<ul>
+  <li><strong>Lambda</strong>:
+    <ul>
+      <li><strong>You don’t have to pass in all the arguments if you don’t want to</strong>. If your “callback” needs, say, 3 arguments, and you only pass in 2 when you use it, <strong>there will be no error</strong>. This is just like a JavaScript callback… but in JavaScript, the undefined arguments will be <code>undefined</code>, and in Ruby, the undefined arguments will be <code>nil</code>.</li>
+      <li><strong>If you call <code>return &lt;whatever&gt;</code>, the lambda stops, but any method that the lambda is in <em>does not</em> stop</strong>. You can use the lambda’s returned value in the rest of the containing method.</li>
+    </ul>
+  </li>
+  <li><strong>Proc</strong>:
+    <ul>
+      <li><strong>You must pass in all the arguments</strong>, or you’ll get an error.</li>
+      <li><strong>If you call <code>return &lt;whatever&gt;</code>, the Proc <em>and</em> any method that it is in <em>will stop</em></strong>. The Proc will return its value to the containing method, and the containing method will also return that same value.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong><code>lambda</code> in JavaScript:</strong></p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This is a JavaScript lambda</span>
+<span class="kd">function</span> <span class="nx">world</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">&#39;world!&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// This is the &quot;containing method&quot; that uses the lambda</span>
+<span class="kd">function</span> <span class="nx">hello</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// world() returns, but it just gives up its value, and the function continues</span>
+  <span class="kd">var</span> <span class="nx">who</span> <span class="o">=</span> <span class="nx">world</span><span class="p">();</span>
+
+  <span class="k">return</span> <span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">who</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// =&gt; &quot;Hello world&quot;</span></code></pre></div>
+
+<p><strong><code>Proc</code> in JavaScript:</strong></p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This is a JavaScript Proc</span>
+<span class="kd">function</span> <span class="nx">world</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">&#39;world!&#39;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// This is the &quot;containing method&quot; that uses the Proc</span>
+<span class="kd">function</span> <span class="nx">hello</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// The containing function returns the return value of the Proc</span>
+  <span class="k">return</span> <span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">world</span><span class="p">();</span>
+
+  <span class="c1">// Any code below here obviously won&#39;t run:</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;nothing will log here&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// =&gt; &quot;Hello world&quot;</span></code></pre></div>
+
+<p>In Ruby, though, as a side note, we rarely use an explicit <code>return</code> statement. You can just type a value.</p>
+
+<p><strong>This JavaScript…:</strong></p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">hello</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">&#39;Hello&#39;</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+<p><strong>…is equivalent to this Ruby:</strong></p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span>
+  <span class="s1">&#39;Hello&#39;</span>
+<span class="k">end</span></code></pre></div>
+
+<h2 id="the-ampersand-">The ampersand (<code>&amp;</code>)</h2>
+
+<p>This confusing thing basically just makes sure the thing you’re passing into the method is a Proc, sort of. You can read about that in detail on <a href="http://ablogaboutcode.com/2012/01/04/the-ampersand-operator-in-ruby/">a.blog.about.code</a>.</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">sayHello</span><span class="p">)</span> <span class="c1"># =&gt; error: wrong number of arguments (1 for 0)</span></code></pre></div>
+
+<p>The above error is basically saying, “why did you pass me an argument? I expected 0 arguments for <code>#each</code>”. <code>&amp;sayHello</code> is <strong>not</strong> an argument! It is a <code>Proc</code>, <strong>and Ruby does not count <code>Proc</code>s as arguments!</strong></p>
+
+<p>It’s weird, huh? That’s because <strong>you can pass in a block at the end of pretty much any method in Ruby, and it won’t see it as an argument, in the typical sense</strong>.</p>
+
+<p>Check it out:</p>
+<iframe src="//repl.it/embed/jld/3" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="260"></iframe>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What&#39;s up</span>
+<span class="c1"># =&gt; What&#39;s up</span></code></pre></div>
+
+<p>We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say <code>yield</code>:</p>
+
+<iframe src="//repl.it/embed/jld/2" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="280"></iframe>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What&#39;s up</span>
+<span class="c1"># =&gt; What&#39;s up</span>
+<span class="c1"># =&gt;  you</span></code></pre></div>
+
+<p><code>#block_given?</code> is a native method that returns a boolean (<code>true</code> or <code>false</code>) that checks if a block was passed in to the method. We have to use it in the above example, because if we just say <code>yield</code> instead of <code>yield if block_given?</code>, then we’ll get an error that says <code>no block given (yield)</code>.</p>
+
+<p>Also, the question mark <code>?</code> is Ruby’s way of meaningfully letting the user know that the method is supposed to return a boolean. There’s nothing really special about it.</p>
+
+<p><strong>Now, going back to the original error (<code>error: wrong number of arguments (1 for 0)</code>):</strong></p>
+
+<p>I’ll try my best to sort of construe a similar error in JavaScript:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="nx">sayHello</span><span class="p">);</span> <span class="c1">// TypeError: [object Array] is not a function</span>
+
+<span class="c1">// It&#39;s saying &quot;names&quot; is not a function, which is true...</span>
+<span class="c1">// forEach expects one argument (a function)</span>
+
+<span class="c1">// we expected: names.forEach(sayHello);</span></code></pre></div>
+
+<p>If the above code were Ruby, you’d get an error something like <code>wrong number of arguments (2 for 1)</code>. Once again, I want to emphasize this is because Ruby doesn’t see the <code>Proc</code> as an argument.</p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<ul>
+  <li><strong>Use blocks as if they were callbacks.</strong></li>
+  <li><strong>Use a <code>lambda</code> or a  <code>Proc</code>.</strong> Remember the two subtle differences between them (number of arguments, and return values).</li>
+  <li><strong>Put a <code>&amp;</code> before the block that you pass into the method,</strong> if you pass it in to a native Ruby method that will run a block, like <code>Enumberable#each</code>.</li>
+</ul>
+
+<h1 id="further-reading">Further reading</h1>
+
+<ul>
+  <li><a href="http://www.reactive.io/tips/2008/12/21/understanding-ruby-blocks-procs-and-lambdas/">Reactive.IO: Understanding Ruby Blocks, Procs, and Lambdas</a></li>
+  <li><a href="http://makandracards.com/makandra/17305-short-lambda-syntax-in-ruby-1-9">makandracards: Short Lambda Syntax in Ruby 1.9</a></li>
+</ul>
+
+    <div class="twitter-plug">Like this post?
+<a href="https://twitter.com/intent/tweet?url=http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html&text=From JavaScript to Ruby: Using Blocks Like Callbacks&via=joshbeam92" 
+target="_blank">
+Share it with your followers</a> 
+or 
+<a href="https://twitter.com/joshbeam92">
+follow me on Twitter</a>!</div>
+  </article>
+
+  
+  <div id="disqus_thread"></div>
+  
+
+</section>
+
+    </main>
+
+    <footer>
+  <div>
+    <p>
+      © 2015 Joshua Beam
+    </p>
+
+    <ul class="list-unstyled list-inline">
+      <li><a href="http://github.com/joshbeam">GitHub</a></li>
+      <li><a href="http://careers.stackoverflow.com/joshbeam">Careers 2.0</a></li>
+      <li><a href="http://twitter.com/joshbeam92">@joshbeam92</a></li>
+      <li><a href="mailto:frontendcollisionblog@gmail.com">frontendcollisionblog@gmail.com</a></li>
+    </ul>
+  </div>
+  
+  <form class="search">
+    <input type="text" class="search-box" id="search" /><input type="submit" class="search-button" value="Search" />
+  </form>
+
+</footer>
+
+
+    <script src="/js/dist/scripts.js"></script>
+<script>
+  var parser = document.createElement('a')
+
+  parser.href = document.location;
+
+  if(parser.pathname === '/about/') {
+    function populateGitHub(res) {
+      var repos = res.data,
+          popular = [];
+
+      repos.forEach(function(info) {
+        if(info.stargazers_count > 1) {
+          popular.push(info);
+        }
+      });
+
+      $('.github-title').prepend([
+        'Showing '+popular.length+' of '+repos.length+' public repos '
+      ].join(''));
+
+      popular.forEach(function(repo) {
+        $('.github').append([
+            //'<dl>',
+              '<dt>',
+                '<a href="'+repo.html_url+'">'+repo.name+'</a>',
+                ' <span>('+repo.language+', '+repo.stargazers_count+' starrers)</span>',
+              '</dt>',
+              '<dd>'+repo.description+'</dd>',
+            //'</dl>'
+          ].join(''));
+      });
+    }
+
+    var script = document.createElement('script');
+    script.src = 'https://api.github.com/users/joshbeam/repos?callback=populateGitHub';
+
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+</script>
+<script>
+  $(function() {
+    $('pre').each(function() {
+      $this = $(this);
+
+      $this.html($this.html().trim());
+    });
+  });
+</script>
+
+<script>
+  $(function() {
+      $('.posts li').each(function() {
+        $this = $(this);
+
+        $this.css('cursor','pointer');
+
+        $this.on('click', function() {
+          document.location = $this.find('a')[0].href;
+        });
+      });
+  });
+</script>
+
+
+
+
+<script type="text/javascript">
+    //var disqus_developer = 1;
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'frontendcollision';
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+  </body>
+</html>
