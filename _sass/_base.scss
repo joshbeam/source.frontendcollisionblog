@@ -15,6 +15,10 @@ body * {
 a {
   color: $brand;
   text-decoration: none;
+
+  &:hover {
+    color: darken($brand, 10%);
+  }
 }
 
 dl {
@@ -58,4 +62,8 @@ pre {
   width: 80%;
 
   @include border-radius(5px);
+
+  @include media-query($tablet) {
+    width: 100%;
+  }
 }

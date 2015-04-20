@@ -7,7 +7,7 @@ description: > # this means to ignore newlines until "baseurl:"
   Website and blog of full-stack JavaScript developer, Josh Beam.
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://joshbeam.github.io" # the base hostname & protocol for your site
-#url: "localhost:4000"
+# url: "localhost:4000"
 twitter_username: joshbeam92
 github_username:  joshbeam
 

@@ -20,6 +20,8 @@ body * {
 a {
   color: #3de38d;
   text-decoration: none; }
+  a:hover {
+    color: #1ecf73; }
 
 dl dd {
   padding: 0 0 1rem 0;
@@ -56,6 +58,9 @@ pre {
   border-radius: 5px;
   background-clip: padding-box;
   /* stops bg color from leaking outside the border: */ }
+  @media screen and (max-width: 768px) {
+    pre {
+      width: 100%; } }
 
 article {
   width: 66.66%;
@@ -64,6 +69,9 @@ article {
   article h1 {
     border-bottom: 1px solid #eee;
     padding: 0 0 .5rem 0; }
+  @media screen and (max-width: 768px) {
+    article {
+      width: 100%; } }
 
 .black-out {
   position: fixed;
@@ -79,6 +87,9 @@ article {
   .black-out.showing {
     display: block; }
 
+#disqus_thread {
+  margin-top: 2rem; }
+
 footer {
   padding: 2rem; }
   footer div {
@@ -93,7 +104,10 @@ footer {
       box-shadow: 0 3px 0 #eee; }
     @media screen and (max-width: 768px) {
       footer form {
-        float: left; } }
+        float: left; }
+        footer form input {
+          font-size: 1.25rem;
+          margin-bottom: .25rem; } }
 
 header {
   padding: 1rem;
@@ -116,7 +130,8 @@ header {
 
 .list-inline li {
   display: inline-block;
-  padding: 0 .5rem; }
+  padding: 0 .5rem 0 0;
+  margin: 0 .5rem 0 0; }
   .list-inline li:not(:last-child) {
     border-right: 1px solid #ccc; }
 
@@ -131,21 +146,33 @@ main section {
   main section header {
     margin: 5rem 0;
     background: #eee; }
+    @media screen and (max-width: 768px) {
+      main section header {
+        margin: 1rem 0; } }
 
 .menu-icon {
   position: fixed;
   top: 10px;
   left: 10px;
   z-index: 9;
+  padding: .5rem;
+  background: white;
   cursor: pointer;
-  width: 46px;
-  height: 36px;
   line-height: 0; }
   .menu-icon > svg {
     width: 21px;
     height: 18px; }
     .menu-icon > svg path {
       fill: #333; }
+  @media screen and (max-width: 768px) {
+    .menu-icon {
+      -webkit-box-shadow: 0 0 10px #ccc;
+      -moz-box-shadow: 0 0 10px #ccc;
+      box-shadow: 0 0 10px #ccc;
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      background-clip: padding-box;
+      /* stops bg color from leaking outside the border: */ } }
 
 nav {
   display: none;
@@ -155,6 +182,7 @@ nav {
   z-index: 999;
   width: 25%;
   height: 100%;
+  overflow: auto;
   background: #333;
   -webkit-box-shadow: 20px 0 200px #333;
   -moz-box-shadow: 20px 0 200px #333;

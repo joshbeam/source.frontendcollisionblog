@@ -7,6 +7,10 @@ article {
     border-bottom: 1px solid $extra-light-gray;
     padding: 0 0 .5rem 0;
   }
+
+  @include media-query($tablet) {
+    width: 100%;
+  }
 }
 
 .black-out {
@@ -29,6 +33,10 @@ article {
   }
 }
 
+#disqus_thread {
+  margin-top: 2rem;
+}
+
 footer {
   padding: 2rem;
   @extend .clearfix;
@@ -48,6 +56,11 @@ footer {
 
     @include media-query($tablet) {
       float: left;
+
+      & input {
+        font-size: 1.25rem;
+        margin-bottom: .25rem;
+      }
     }
   }
 }
@@ -82,10 +95,12 @@ header {
 .list-inline {
   li {
     display: inline-block;
-    padding: 0 .5rem;
+    padding: 0 .5rem 0 0;
+    margin: 0 .5rem 0 0;
     &:not(:last-child) {
       border-right: 1px solid $light-gray;
     }
+
   }
 }
 
@@ -103,6 +118,10 @@ main {
     header {
       margin: 5rem 0;
       background: $extra-light-gray;
+
+      @include media-query($tablet) {
+        margin: 1rem 0;
+      }
     }
   }
 }
@@ -113,9 +132,11 @@ main {
   left: 10px;
   z-index: 9;
 
+  padding: .5rem;
+
+  background: white;
+
   cursor: pointer;
-  width: 46px;
-  height: 36px;
   line-height: 0;
 
   > svg {
@@ -125,6 +146,11 @@ main {
       path {
           fill: $dark-gray;
       }
+  }
+
+  @include media-query($tablet) {
+    @include box-shadow(0, 0, 10px, $light-gray);
+    @include border-radius(5px);
   }
 }
 
@@ -138,6 +164,7 @@ nav {
 
   width: 25%;
   height: 100%;
+  overflow: auto;
 
   background: $dark-gray;
   @include box-shadow(20px, 0, 200px, $dark-gray);
