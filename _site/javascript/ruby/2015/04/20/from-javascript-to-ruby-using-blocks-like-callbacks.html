@@ -68,7 +68,7 @@
   <header>
     <h1>From JavaScript to Ruby: Using Blocks Like Callbacks</h1>
     <p>
-      Apr 20, 2015 &mdash; Josh Beam &mdash; <em>javascript</em> <em>ruby</em> 
+      20 April 2015 &mdash; Josh Beam &mdash; <em>javascript</em> <em>ruby</em> 
     </p>
     <a href="/" class="view-all-link">View All</a>
   </header>
@@ -132,7 +132,7 @@
 
 <p>Here’s how we can do the <strong>same exact thing in Ruby, instead of JavaScript</strong>:</p>
 
-<iframe src="//repl.it/embed/jkQ" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+<script src="//repl.it/embed/jkQ.js"></script>
 
 <p>If you run the above, you’ll see <code>Hello &lt;name&gt;</code> printed for each name, and at the end it’ll actually return the entire array for you to use.</p>
 
@@ -199,7 +199,7 @@
 
 <h2 id="lambda">Lambda</h2>
 
-<iframe src="//repl.it/embed/jkQ/1" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+<script src="//repl.it/embed/jkQ/1.js"></script>
 
 <p>By the way, that’s the <strong>new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you’re curious)</strong>. If you want to do a <strong>multi-line lambda</strong>, you do:</p>
 
@@ -211,7 +211,7 @@
 
 <h2 id="proc-short-for-procedure">Proc (short for “procedure”)</h2>
 
-<iframe src="//repl.it/embed/jkQ/2" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+<script src="//repl.it/embed/jkQ/2.js"></script>
 
 <p>Did you notice, by the way, <strong>that you can do multi-line variable assignment?</strong> Pretty cool; you can’t do that in JavaScript.</p>
 
@@ -292,14 +292,15 @@
 <p>It’s weird, huh? That’s because <strong>you can pass in a block at the end of pretty much any method in Ruby, and it won’t see it as an argument, in the typical sense</strong>.</p>
 
 <p>Check it out:</p>
-<iframe src="//repl.it/embed/jld/3" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="260"></iframe>
+
+<script src="//repl.it/embed/jld/3.js"></script>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What&#39;s up</span>
 <span class="c1"># =&gt; What&#39;s up</span></code></pre></div>
 
 <p>We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say <code>yield</code>:</p>
 
-<iframe src="//repl.it/embed/jld/2" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="280"></iframe>
+<script src="//repl.it/embed/jld/2.js"></script>
 
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What&#39;s up</span>
 <span class="c1"># =&gt; What&#39;s up</span>

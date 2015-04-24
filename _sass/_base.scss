@@ -1,10 +1,20 @@
 body,
 html {
-  margin: 0;
-  padding: 0;
   font-family: $font-family;
   font-size: 18px;
   line-height: 1.25rem;
+}
+
+body {
+  //padding-top: 2rem;
+  //margin: 0 5rem 5rem 5rem;
+
+  //@include box-shadow(0, 0, 30px, $light-gray);
+
+  //@include media-query($medium) {
+    //margin: 0;
+    //@include box-shadow(0, 0, 0, transparent);
+  //}
 }
 
 body * {

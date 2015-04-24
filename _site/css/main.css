@@ -5,8 +5,6 @@
 
 body,
 html {
-  margin: 0;
-  padding: 0;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 18px;
   line-height: 1.25rem; }
@@ -100,7 +98,7 @@ table {
       border-right: 1px solid #eee; }
 
 article {
-  width: 66.66%;
+  width: 75%;
   margin: 0 auto;
   line-height: 2.1rem; }
   article h1 {
@@ -189,8 +187,8 @@ main section {
 
 .menu-icon {
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 20px;
+  left: 20px;
   z-index: 9;
   padding: .5rem;
   background: white;
@@ -234,6 +232,8 @@ nav {
       width: 100%; }
       nav ul li a:hover {
         background: #eee; }
+    nav ul li:first-child {
+      border-top: 1px solid black; }
   @media screen and (max-width: 768px) {
     nav {
       width: 50%; } }

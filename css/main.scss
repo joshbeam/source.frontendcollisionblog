@@ -17,6 +17,7 @@ $light-gray: #ccc;
 $medium-gray: #888;
 $dark-gray: #333;
 
+$medium: 900px;
 $tablet: 768px;
 
 @mixin media-query($device) {

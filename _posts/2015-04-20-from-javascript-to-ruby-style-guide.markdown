@@ -47,7 +47,7 @@ Last updated: {{ "2015-04-20" | date: "%b %-d, %Y" }}
       <td>
 {% highlight javascript %}
 var world = 'world!',
-    helloWorld = 'hello' + world;
+    helloWorld = 'hello ' + world;
 {% endhighlight %}
       </td>
       <td>

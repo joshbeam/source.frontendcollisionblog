@@ -63,7 +63,7 @@ Make sense? In other words, **there are certain patterns and best practices (sol
 
 Here's how we can do the **same exact thing in Ruby, instead of JavaScript**:
 
-<iframe src="//repl.it/embed/jkQ" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+<script src="//repl.it/embed/jkQ.js"></script>
 
 If you run the above, you'll see `Hello <name>` printed for each name, and at the end it'll actually return the entire array for you to use.
 
@@ -137,7 +137,7 @@ There are two common ways to make a reusable "callback" in Ruby. They are the **
 
 ## Lambda
 
-<iframe src="//repl.it/embed/jkQ/1" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+<script src="//repl.it/embed/jkQ/1.js"></script>
 
 By the way, that's the **new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you're curious)**. If you want to do a **multi-line lambda**, you do:
 {% highlight ruby %}
@@ -150,7 +150,7 @@ Now that's some weird-ass looking syntax, huh? Let's make it look even weirder:
 
 ## Proc (short for "procedure")
 
-<iframe src="//repl.it/embed/jkQ/2" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="167"></iframe>
+<script src="//repl.it/embed/jkQ/2.js"></script>
 
 Did you notice, by the way, **that you can do multi-line variable assignment?** Pretty cool; you can't do that in JavaScript.
 
@@ -231,7 +231,8 @@ The above error is basically saying, "why did you pass me an argument? I expecte
 It's weird, huh? That's because **you can pass in a block at the end of pretty much any method in Ruby, and it won't see it as an argument, in the typical sense**.
 
 Check it out:
-<iframe src="//repl.it/embed/jld/3" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="260"></iframe>
+
+<script src="//repl.it/embed/jld/3.js"></script>
 
 {% highlight ruby %}
 # => What's up
@@ -240,7 +241,7 @@ Check it out:
 
 We passed in a block at the end, but it didn't run. But we didn't get any error either. If we want the block to actually run, we can just say `yield`:
 
-<iframe src="//repl.it/embed/jld/2" frameborder="0" sandbox="allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts" width="100%" height="280"></iframe>
+<script src="//repl.it/embed/jld/2.js"></script>
 
 {% highlight ruby %}
 # => What's up

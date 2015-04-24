@@ -16,7 +16,7 @@ layout: default
             {% endif %}
           </p>
         </div>
-        <span>{{ post.date | date: "%b %-d, %Y" }}</span>
+        <span>{{ post.date | date: "%-d %B %Y" }}</span>
       </li>
     {% endfor %}
   </ul>

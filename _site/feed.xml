@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 20 Apr 2015 15:47:32 -0500</pubDate>
-    <lastBuildDate>Mon, 20 Apr 2015 15:47:32 -0500</lastBuildDate>
+    <pubDate>Fri, 24 Apr 2015 10:15:53 -0500</pubDate>
+    <lastBuildDate>Fri, 24 Apr 2015 10:15:53 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -52,7 +52,7 @@
       &lt;td&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;world!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;helloWorld&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;hello&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;nx&quot;&gt;helloWorld&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;hello &amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
       &lt;/td&gt;
       &lt;td&gt;
@@ -231,7 +231,7 @@
 
 &lt;p&gt;Here’s how we can do the &lt;strong&gt;same exact thing in Ruby, instead of JavaScript&lt;/strong&gt;:&lt;/p&gt;
 
-&lt;iframe src=&quot;//repl.it/embed/jkQ&quot; frameborder=&quot;0&quot; sandbox=&quot;allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts&quot; width=&quot;100%&quot; height=&quot;167&quot;&gt;&lt;/iframe&gt;
+&lt;script src=&quot;//repl.it/embed/jkQ.js&quot;&gt;&lt;/script&gt;
 
 &lt;p&gt;If you run the above, you’ll see &lt;code&gt;Hello &amp;lt;name&amp;gt;&lt;/code&gt; printed for each name, and at the end it’ll actually return the entire array for you to use.&lt;/p&gt;
 
@@ -298,7 +298,7 @@
 
 &lt;h2 id=&quot;lambda&quot;&gt;Lambda&lt;/h2&gt;
 
-&lt;iframe src=&quot;//repl.it/embed/jkQ/1&quot; frameborder=&quot;0&quot; sandbox=&quot;allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts&quot; width=&quot;100%&quot; height=&quot;167&quot;&gt;&lt;/iframe&gt;
+&lt;script src=&quot;//repl.it/embed/jkQ/1.js&quot;&gt;&lt;/script&gt;
 
 &lt;p&gt;By the way, that’s the &lt;strong&gt;new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you’re curious)&lt;/strong&gt;. If you want to do a &lt;strong&gt;multi-line lambda&lt;/strong&gt;, you do:&lt;/p&gt;
 
@@ -310,7 +310,7 @@
 
 &lt;h2 id=&quot;proc-short-for-procedure&quot;&gt;Proc (short for “procedure”)&lt;/h2&gt;
 
-&lt;iframe src=&quot;//repl.it/embed/jkQ/2&quot; frameborder=&quot;0&quot; sandbox=&quot;allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts&quot; width=&quot;100%&quot; height=&quot;167&quot;&gt;&lt;/iframe&gt;
+&lt;script src=&quot;//repl.it/embed/jkQ/2.js&quot;&gt;&lt;/script&gt;
 
 &lt;p&gt;Did you notice, by the way, &lt;strong&gt;that you can do multi-line variable assignment?&lt;/strong&gt; Pretty cool; you can’t do that in JavaScript.&lt;/p&gt;
 
@@ -391,14 +391,15 @@
 &lt;p&gt;It’s weird, huh? That’s because &lt;strong&gt;you can pass in a block at the end of pretty much any method in Ruby, and it won’t see it as an argument, in the typical sense&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Check it out:&lt;/p&gt;
-&lt;iframe src=&quot;//repl.it/embed/jld/3&quot; frameborder=&quot;0&quot; sandbox=&quot;allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts&quot; width=&quot;100%&quot; height=&quot;260&quot;&gt;&lt;/iframe&gt;
+
+&lt;script src=&quot;//repl.it/embed/jld/3.js&quot;&gt;&lt;/script&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&amp;#39;s up&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&amp;#39;s up&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say &lt;code&gt;yield&lt;/code&gt;:&lt;/p&gt;
 
-&lt;iframe src=&quot;//repl.it/embed/jld/2&quot; frameborder=&quot;0&quot; sandbox=&quot;allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts&quot; width=&quot;100%&quot; height=&quot;280&quot;&gt;&lt;/iframe&gt;
+&lt;script src=&quot;//repl.it/embed/jld/2.js&quot;&gt;&lt;/script&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&amp;#39;s up&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&amp;#39;s up&lt;/span&gt;
