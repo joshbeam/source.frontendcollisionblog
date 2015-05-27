@@ -1,69 +1,11 @@
-<script src="{{ "/js/dist/scripts.js" | prepend: site.baseurl }}"></script>
-<script>
-  var parser = document.createElement('a')
-
-  parser.href = document.location;
-
-  if(parser.pathname === '/about/') {
-    function populateGitHub(res) {
-      var repos = res.data,
-          popular = [];
-
-      repos.forEach(function(info) {
-        if(info.stargazers_count > 1) {
-          popular.push(info);
-        }
-      });
-
-      $('.github-title').prepend([
-        'Showing '+popular.length+' of '+repos.length+' public repos '
-      ].join(''));
-
-      popular.forEach(function(repo) {
-        $('.github').append([
-            //'<dl>',
-              '<dt>',
-                '<a href="'+repo.html_url+'">'+repo.name+'</a>',
-                ' <span>('+repo.language+', '+repo.stargazers_count+' starrers)</span>',
-              '</dt>',
-              '<dd>'+repo.description+'</dd>',
-            //'</dl>'
-          ].join(''));
-      });
-    }
-
-    var script = document.createElement('script');
-    script.src = 'https://api.github.com/users/joshbeam/repos?callback=populateGitHub';
-
-    document.getElementsByTagName('head')[0].appendChild(script);
-  }
-</script>
-<script>
-  $(function() {
-    $('pre').each(function() {
-      $this = $(this);
-
-      $this.html($this.html().trim());
-    });
-  });
-</script>
-
-<script>
-  $(function() {
-      $('.posts li').each(function() {
-        $this = $(this);
-
-        $this.css('cursor','pointer');
-
-        $this.on('click', function() {
-          document.location = $(this).find('a')[0].href;
-        });
-      });
-  });
-</script>
+<script src="{{ "/js/dist/scripts.min.js" | prepend: site.baseurl }}"></script>
 
 {% if page.results %}
 <script src="{{"/js/dist/search/results.min.js" | prepend:site.baseurl }}"></script>
+{% endif %}
+
+{% if page.title == 'About' %}
+<script src="{{"/js/dist/github/github.min.js" | prepend:site.baseurl }}"></script>
 {% endif %}
 
 {% if page.comments %}

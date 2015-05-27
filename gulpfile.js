@@ -12,7 +12,8 @@ gulp.task('js',function() {
 		'js/src/search/Query.js',
 		'js/src/search/search.js',
 		'js/src/menu/menu.js',
-		'js/src/github/github.js'
+		'js/src/pre/pre.js',
+		'js/src/post-click/post-click.js'
 		])
 		.pipe(concat('scripts.js'))
 		.pipe(gulp.dest('js/dist'))
@@ -20,13 +21,21 @@ gulp.task('js',function() {
 		.pipe(uglify())
 		.pipe(gulp.dest('js/dist'));
 
-	return gulp.src([
+	gulp.src([
 		'js/src/search/results.js'
 		])
 		.pipe(gulp.dest('js/dist/search'))
 		.pipe(rename('results.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest('js/dist/search'));
+
+	gulp.src([
+		'js/src/github/github.js'
+		])
+		.pipe(gulp.dest('js/dist/github'))
+		.pipe(rename('github.min.js'))
+		.pipe(uglify())
+		.pipe(gulp.dest('js/dist/github'));
 });
 
 gulp.task('watch',function() {
