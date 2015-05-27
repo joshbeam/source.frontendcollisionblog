@@ -3,6 +3,7 @@ html {
   font-family: $font-family;
   font-size: 18px;
   line-height: 1.25rem;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {

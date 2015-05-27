@@ -17,19 +17,21 @@ article {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 99;
-  display: none;
+  z-index: -1;
 
   background: #000;
-  background: rgba(0, 0, 0, .5);
+  background: rgba(0, 0, 0, .6);
 
   width: 100%;
   height: 100%;
 
   cursor: pointer;
+  opacity: 0;
 
   &.showing {
-    display: block;
+    opacity: 1;
+    transition: 1250ms;
+    z-index: 99;
   }
 }
 
@@ -78,6 +80,11 @@ header {
     @include box-shadow(0, 0, 20px, $dark-gray);
 
     margin-bottom: 1rem;
+    transition: 5000ms;
+
+    &:hover {
+      @include box-shadow(0, 0, 100px, red);
+    }
   }
 
   hgroup {
@@ -127,50 +134,45 @@ main {
 }
 
 .menu-icon {
+  height: 20px;
+  left: 20px;
   position: fixed;
   top: 20px;
-  left: 20px;
+  width: 20px;
   z-index: 9;
+}
 
-  padding: .5rem;
-
-  background: white;
-
-  cursor: pointer;
-  line-height: 0;
-
-  > svg {
-      width: 21px;
-      height: 18px;
-
-      path {
-          fill: $dark-gray;
-      }
-  }
-
-  @include media-query($tablet) {
-    @include box-shadow(0, 0, 10px, $light-gray);
-    @include border-radius(5px);
-  }
+.menu-icon:before {
+  content: '';
+  width: 20px;
+  height: 2px;
+  background: black;
+  box-shadow: 
+    0 6px 0 0 black,
+    0 12px 0 0 black;
+  position: absolute;
 }
 
 nav {
-  display: none;
+  // display: none;
 
   position: fixed;
   top: 0;
-  left: 0;
+  left: -1000px;
   z-index: 999;
 
   width: 25%;
   height: 100%;
   overflow: auto;
 
-  background: $dark-gray;
+  //background: rgba(0, 0, 0, .7);
+  background: radial-gradient(ellipse at top right, rgba(50, 50, 50, .9) 20%, rgba(0, 0, 0, .9) 100%);
   @include box-shadow(20px, 0, 200px, $dark-gray);
 
+  transition: 500ms cubic-bezier(0, 0, 0, 1);
+
   &.drawer-out {
-    display: block;
+    left: 0;
   }
 
   ul {
@@ -179,19 +181,23 @@ nav {
     li {
       a {
         display: block;
+        font-weight: 100;
         padding: 1rem;
+        text-align: left;
+        transition: 200ms;
         width: 100%;
 
         &:hover {
           background: $extra-light-gray;
         }
       }
-
+      /*
       &:first-child {
         border-top: 1px solid black;
       }
 
       border-bottom: 1px solid black;
+      */
     }
   }
 
@@ -207,8 +213,13 @@ nav {
     border-bottom: 1px solid $extra-light-gray;
     position: relative;
     padding: 2rem;
+    transition: 250ms;
 
     @extend .clearfix;
+
+    &:hover {
+      background: $extra-light-gray;
+    }
 
     & * {
       margin: .5rem 0;
