@@ -6,9 +6,54 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 26 May 2015 20:13:51 -0500</pubDate>
-    <lastBuildDate>Tue, 26 May 2015 20:13:51 -0500</lastBuildDate>
+    <pubDate>Tue, 11 Aug 2015 18:30:29 -0700</pubDate>
+    <lastBuildDate>Tue, 11 Aug 2015 18:30:29 -0700</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>5 Things I Learned in My First Month at a Startup</title>
+        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
+In a departure from the normal content of this blog, I wanted to talk briefly about some of (what I think) are some important things I&#39;ve learned so far in my first month working for a Bay Area tech startup.&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In no particular order (and at a very high level of abstraction and with as little fluff as possible)…&lt;/p&gt;
+
+&lt;h1 id=&quot;dont-come-with-a-problem-come-with-a-working-prototype&quot;&gt;5) Don’t come with a problem. Come with a working prototype.&lt;/h1&gt;
+
+&lt;p&gt;A working prototype says much more about a proposed solution, than does talking about the proposed solution.&lt;/p&gt;
+
+&lt;h1 id=&quot;be-both-purist-and-pragmatic&quot;&gt;4) Be both purist and pragmatic&lt;/h1&gt;
+
+&lt;p&gt;This is a careful balance of business goals vs. coding nirvana, ruthless pragmatism vs. lofty purism. In other words, it’s both good to know exactly what the perfect solution &lt;em&gt;should&lt;/em&gt; look like, and to know what compromises you have to make to have a working solution based on business timeline constraints.&lt;/p&gt;
+
+&lt;h1 id=&quot;conflict-breeds-results-but-always-listen&quot;&gt;3) Conflict breeds results (but always listen)&lt;/h1&gt;
+
+&lt;p&gt;As our patient, level-headed CTO says, “One person scores, but the whole team gets them there.” By “conflict” I don’t mean the &lt;em&gt;bad&lt;/em&gt; type of conflict. I mean the conflict that arises from a group of passionate people all trying to arrive at the best solution.&lt;/p&gt;
+
+&lt;p&gt;The opposite side of the coin is: communication. “Today, I will learn nothing by speaking, but much by listening.” &lt;a href=&quot;https://twitter.com/mhkt/status/619526422906961920&quot;&gt;Beme engineer Matt Hackett (previously VP of Engineering at Tumblr) says&lt;/a&gt;: “Most important engineering skill: Humility.”&lt;/p&gt;
+
+&lt;h1 id=&quot;the-pieces-eventually-come-together&quot;&gt;2) The pieces eventually come together&lt;/h1&gt;
+
+&lt;p&gt;When working on teams of engineers (perhaps in an Agile environment), all the pieces of the product seem scattered, but eventually, everything will begin to cleanly merge back into the product that everyone has been imagining it would be.&lt;/p&gt;
+
+&lt;h1 id=&quot;work-hard&quot;&gt;1) Work hard&lt;/h1&gt;
+
+&lt;p&gt;You’re it. You directly influence the success or failure of your company. Dwayne Johnson says, “always be the hardest worker in the room.” This is a tough goal when everyone else is already working harder than everyone else in the room.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Great companies don’t hire skilled people and motivate them, they hire already motivated people and inspire them. People are either motivated or they are not. Unless you give motivated people something to believe in, something bigger than their job to work toward, they will motivate themselves to find a new job and you’ll be stuck with whoever’s left.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;— Simon Sinek, &lt;i&gt;&lt;a href=&quot;http://www.goodreads.com/work/quotes/7367737&quot;&gt;Start with Why: How Great Leaders Inspire Everyone to Take Action&lt;/a&gt;&lt;/i&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 11 Aug 2015 10:48:00 -0700</pubDate>
+        <link>http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</guid>
+        
+        
+        <category>engineering</category>
+        
+      </item>
     
       <item>
         <title>Modern Looking CSS Toggle Switch</title>
@@ -141,7 +186,7 @@
 
 &lt;p&gt;&lt;strong&gt;Key points&lt;/strong&gt;: The switch moves by just changing the padding, and you can add a transition to make it all smooth-like.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 26 May 2015 14:07:00 -0500</pubDate>
+        <pubDate>Tue, 26 May 2015 12:07:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/sass/2015/05/26/modern-looking-css-toggle-switch.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/sass/2015/05/26/modern-looking-css-toggle-switch.html</guid>
         
@@ -302,7 +347,7 @@
 &lt;/table&gt;
 
 </description>
-        <pubDate>Mon, 20 Apr 2015 09:57:00 -0500</pubDate>
+        <pubDate>Mon, 20 Apr 2015 07:57:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</guid>
         
@@ -579,7 +624,7 @@
   &lt;li&gt;&lt;a href=&quot;http://makandracards.com/makandra/17305-short-lambda-syntax-in-ruby-1-9&quot;&gt;makandracards: Short Lambda Syntax in Ruby 1.9&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Mon, 20 Apr 2015 06:40:00 -0500</pubDate>
+        <pubDate>Mon, 20 Apr 2015 04:40:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</guid>
         
@@ -687,7 +732,7 @@ This post is going to talk briefly about the common ways people are shown to wri
 
 &lt;p&gt;So to recap what we learned… Minifying code that uses string-dependent dependency injection can break your application, unless you explicitly define the strings to use for the dependencies, which &lt;code&gt;$inject&lt;/code&gt; is perfect for.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 31 Mar 2015 05:48:00 -0500</pubDate>
+        <pubDate>Tue, 31 Mar 2015 03:48:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/angularjs/2015/03/31/something-no-one-tells-you-about-minifying-angularjs-controllers-until-its-too-late.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/angularjs/2015/03/31/something-no-one-tells-you-about-minifying-angularjs-controllers-until-its-too-late.html</guid>
         
@@ -1078,7 +1123,7 @@ Today we&#39;ll talk about how to build a JavaScript-only search engine (using J
 &lt;p&gt;Also, thanks &lt;a href=&quot;http://lunrjs.com/&quot;&gt;Lunr.js&lt;/a&gt;!&lt;/p&gt;
 
 </description>
-        <pubDate>Thu, 26 Mar 2015 09:41:00 -0500</pubDate>
+        <pubDate>Thu, 26 Mar 2015 07:41:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/jekyll/tutorial/2015/03/26/getting-started-with-a-search-engine-for-your-site-no-server-required.html</guid>
         
@@ -1325,7 +1370,7 @@ I&#39;m sure you&#39;ve seen the common for loop written a thousand different wa
 &lt;p&gt;Boom! &lt;strong&gt;Why all the strange semicolons? Why the weird function notation?&lt;/strong&gt; Check out my post on &lt;a href=&quot;http://joshbeam.github.io/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html&quot;&gt;weird semicolons&lt;/a&gt; and on &lt;a href=&quot;http://joshbeam.github.io/javascript/2015/03/22/lightweight-dependency-modularization.html&quot;&gt;a simple way to modularize dependencies&lt;/a&gt; for some answers to these question. Also, check out &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide&quot;&gt;John Papa’s AngularJS style guide&lt;/a&gt;. It applies specifically to &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS&lt;/a&gt;, but a lot of the principles translate well into vanilla JavaScript principles.&lt;/p&gt;
 
 </description>
-        <pubDate>Tue, 24 Mar 2015 17:18:00 -0500</pubDate>
+        <pubDate>Tue, 24 Mar 2015 15:18:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/03/24/tricks-of-the-javascript-for-loop.html</guid>
         
@@ -1368,7 +1413,7 @@ Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--ex
 
 &lt;p&gt;If I don’t add the comments in the post, the template with simply extract the content of the post, strip the HTML tags, and truncate it 20 words, followed by an ellipsis &lt;code&gt;...&lt;/code&gt;.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 23 Mar 2015 04:50:00 -0500</pubDate>
+        <pubDate>Mon, 23 Mar 2015 02:50:00 -0700</pubDate>
         <link>http://joshbeam.github.io/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</guid>
         
@@ -1428,7 +1473,7 @@ This post is going to discuss the reasoning behind a strange-looking syntax styl
 &lt;p&gt;So those extra semicolons are &lt;em&gt;not&lt;/em&gt; a syntax error, because a random semicolon anywhere in the code can be interpreted as an &lt;code&gt;empty&lt;/code&gt; statement. Cool, huh?&lt;/p&gt;
 
 </description>
-        <pubDate>Sun, 22 Mar 2015 18:34:00 -0500</pubDate>
+        <pubDate>Sun, 22 Mar 2015 16:34:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html</guid>
         
@@ -1515,205 +1560,9 @@ So what&#39;s this post all about? We&#39;re going to examine an interesting alt
   &lt;li&gt;In each module that depends on the &lt;code&gt;dependencies&lt;/code&gt; object, there is no error-checking or method to list what modules are available inside the &lt;code&gt;dependencies&lt;/code&gt; object (a possible fix for this is to simply implement some of those methods, for example: &lt;code&gt;.list()&lt;/code&gt;, or &lt;code&gt;.checkFor()&lt;/code&gt;, etc.)&lt;/li&gt;
 &lt;/ol&gt;
 </description>
-        <pubDate>Sun, 22 Mar 2015 16:00:00 -0500</pubDate>
+        <pubDate>Sun, 22 Mar 2015 14:00:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/03/22/lightweight-dependency-modularization.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/03/22/lightweight-dependency-modularization.html</guid>
-        
-        
-        <category>javascript</category>
-        
-      </item>
-    
-      <item>
-        <title>How do I check if a parameter was passed in to a function in JavaScript?</title>
-        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
-This post is going to talk about checking for the &quot;existence&quot; of a parameter, if we expected one to be there and how to handle this &quot;flow of control&quot;, and how we define &quot;checking for existence&quot; in the first place. The fundamental concept behind all of this, as we&#39;ll learn, is the fuzzy idea of truthiness (which is different depending on which programming language you&#39;re referring too.) We&#39;ll see that JavaScript has a very broad idea of truthiness.&lt;!--excerpt.end--&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;whats-a-parameter&quot;&gt;What’s a parameter?&lt;/h1&gt;
-
-&lt;p&gt;A parameter can also be called an argument. It’s the thing passed into a function that you do something with:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; returns 2&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;two&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// this variable is now set to 2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;But what if a function can do something &lt;em&gt;without&lt;/em&gt; a parameter, or what if the functionality changes based on whether or not a parameter was passed in?&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;c1&quot;&gt;// do something&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;c1&quot;&gt;// do something else&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;In the above example, we expect that if &lt;code&gt;x&lt;/code&gt; “exists”, then we’ll do something; if not, we’ll do something else. But checking for existence is a little more difficult than that. It has to do with truthiness.&lt;/p&gt;
-
-&lt;h1 id=&quot;the-truth-about-truthiness&quot;&gt;The truth about truthiness&lt;/h1&gt;
-
-&lt;p&gt;In &lt;code&gt;if&lt;/code&gt; statements, JavaScript evaluates the statement to a boolean &lt;code&gt;true&lt;/code&gt; or &lt;code&gt;false&lt;/code&gt;, and acts accordingly. But when certain values are encountered, JavaScript “coerces” them to a boolean value. For example, these statements are all correct:&lt;/p&gt;
-
-&lt;h2 id=&quot;these-are-all-true&quot;&gt;These are all true:&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;cm&quot;&gt;/*&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	1 == true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	0 == false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	&amp;#39; &amp;#39; == true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	&amp;#39;&amp;#39; == false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	null == false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	undefined == false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;There are plenty of other examples. However, you’ll notice above that we’re using the &lt;code&gt;==&lt;/code&gt; operator. This is called the equality operator. It checks if two values are “equal”, but to do this, JavaScript coerces the types.&lt;/p&gt;
-
-&lt;h2 id=&quot;these-are-all-incorrect-they-will-evaluate-to-false&quot;&gt;These are all incorrect (they will evaluate to false):&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;cm&quot;&gt;/*&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	1 === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	0 === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	&amp;#39; &amp;#39; === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	&amp;#39;&amp;#39; === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	null === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	undefined === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;You’ll notice a very subtle, but important, difference here: we’re using the &lt;code&gt;===&lt;/code&gt; operator: also called the identity operator. &lt;code&gt;1&lt;/code&gt; does not have the identity of &lt;code&gt;true&lt;/code&gt;, &lt;em&gt;however&lt;/em&gt;, it is equal to true. This is confusing at first, but this is the principle of truthiness.&lt;/p&gt;
-
-&lt;p&gt;This brings us to a very important logical operator, the exlamation point &lt;code&gt;!&lt;/code&gt; (also called the “not” operator). It gives you the opposite of whatever boolean value you give.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-not-operator-in-action-the-following-statements-are-all-true&quot;&gt;The “not” operator in action (the following statements are all true)&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;cm&quot;&gt;/*&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!1 === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!0 === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!&amp;#39; &amp;#39; === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!&amp;#39;&amp;#39; === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!null === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!undefined === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;You’ll notice above that we are using the strict identity operator &lt;code&gt;===&lt;/code&gt;. This is okay, because the &lt;code&gt;!&lt;/code&gt; operator coerces the values on the left side of the equation to a boolean value. So really when we say &lt;code&gt;!1 === false&lt;/code&gt;, we’re actually saying &lt;code&gt;false === false&lt;/code&gt;. In other words, &lt;code&gt;false&lt;/code&gt; &lt;em&gt;does&lt;/em&gt; have the identity of &lt;code&gt;false&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;the-double-not-or-just-two-not-operators-mdash-these-are-also-all-true&quot;&gt;The “double not” (or just two “not” operators — these are also all true)&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;cm&quot;&gt;/*&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!!1 === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!!0 === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!!&amp;#39; &amp;#39; === true&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!!&amp;#39;&amp;#39; === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!!null === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;	!!undefined === false&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;The double not basically coerces each value into its equal boolean form. That’s a weird way to say it. Think of it like this: &lt;code&gt;0 == false&lt;/code&gt; is the same as &lt;code&gt;!!0 === false&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h1 id=&quot;so-how-do-we-check-for-existence&quot;&gt;So how do we check for existence?&lt;/h1&gt;
-
-&lt;p&gt;Well, it depends on how we want to define existence. Do we want to say that the parameter doesn’t exist, if it is &lt;code&gt;null&lt;/code&gt;,&lt;code&gt;undefined&lt;/code&gt;,&lt;code&gt;0&lt;/code&gt;,&lt;code&gt;false&lt;/code&gt;, or some other non-truthy value? What if we want to pass in an empty string (&lt;code&gt;&#39;&#39;&lt;/code&gt;) as a value?&lt;/p&gt;
-
-&lt;h2 id=&quot;bad-example&quot;&gt;Bad example:&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;we passed the &amp;quot;if&amp;quot; test&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;empty strings are okay too&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// logs nothing&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; &amp;#39;we passed the &amp;quot;if&amp;quot; test&amp;#39;; &amp;#39;empty strings are okay too&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// logs nothing... uh oh&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// By the way, if(!!x) is basically shorthand for if(x == true)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;So we can combine instead combine logical statements to check for our idea of existence:&lt;/p&gt;
-
-&lt;h2 id=&quot;better-example&quot;&gt;Better example:&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;we passed the &amp;quot;if&amp;quot; test&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;empty strings are okay too&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// logs nothing&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; &amp;#39;we passed the &amp;quot;if&amp;quot; test&amp;#39;; &amp;#39;empty strings are okay too&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; &amp;#39;we passed the &amp;quot;if&amp;quot; test&amp;#39;; &amp;#39;empty strings are okay too&amp;#39;&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// We could even use &amp;#39;typeof&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;we passed the &amp;quot;if&amp;quot; test&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;empty strings are okay too&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// the above function will output the same thing&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;checking-strictly-for-undefined-values&quot;&gt;Checking strictly for undefined values:&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;a exists!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// The above function will throw a ReferenceError: a is not defined&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;undefined&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;a exists!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// This second function won&amp;#39;t log anything, but it also won&amp;#39;t throw an error!&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;In the above example, &lt;code&gt;a&lt;/code&gt; &lt;strong&gt;was never declared&lt;/strong&gt;. If a variable is never declared and you try to check for its existence, you’ll get an error. But the &lt;code&gt;typeof&lt;/code&gt; operator is the only operator (to my knowledge) that gets around this. If you check the type of a variable that was never declared, &lt;strong&gt;you won’t get an error, and your program can continue&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;declared-vs-defined&quot;&gt;Declared vs. defined&lt;/h2&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// this is a declared variable that exists; its value is undefined&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// this is now a defined variable; its value is NO LONGER undefined&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; undefined&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; false&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; undefined&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// ==&amp;gt; ReferenceError! Your program is dead.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;best-practice&quot;&gt;Best Practice&lt;/h1&gt;
-
-&lt;p&gt;I think in this circumstance, &lt;strong&gt;the best practice depends on however you define “existence” in the context of your specific function&lt;/strong&gt;. This means that you have to take into consideration the concepts of truthiness, the use of the &lt;code&gt;typeof&lt;/code&gt; operator, the principle of declared vs. defined, etc.&lt;/p&gt;
-
-&lt;p&gt;Keep in mind, too, that there are many ways to check the types of of variables you encounter. For example:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// x.constructor === Array&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// typeof x === &amp;#39;object&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// x.toString() === &amp;#39;&amp;#39;&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;hello&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// y.constructor === String&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// typeof y === &amp;#39;string&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// y.toString() === &amp;#39;hello&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This is a topic for another post, but it demonstrates how you can check the types of a variable based on your definition of existence in the context of your specific function.&lt;/p&gt;
-</description>
-        <pubDate>Fri, 20 Mar 2015 17:39:00 -0500</pubDate>
-        <link>http://joshbeam.github.io/javascript/2015/03/20/how-do-i-check-if-a-parameter-was-passed-in-to-a-javascript-function.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/03/20/how-do-i-check-if-a-parameter-was-passed-in-to-a-javascript-function.html</guid>
         
         
         <category>javascript</category>
