@@ -1,21 +1,9 @@
 body,
 html {
   font-family: $font-family;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1.25rem;
   -webkit-font-smoothing: antialiased;
-}
-
-body {
-  //padding-top: 2rem;
-  //margin: 0 5rem 5rem 5rem;
-
-  //@include box-shadow(0, 0, 30px, $light-gray);
-
-  //@include media-query($medium) {
-    //margin: 0;
-    //@include box-shadow(0, 0, 0, transparent);
-  //}
 }
 
 body * {
@@ -42,9 +30,11 @@ blockquote {
 
 *:not(pre) > code {
   background: $extra-light-gray;
+  border-radius: 3px;
+  color: $medium-gray;
   font-size: .75em;
-  padding: .5em;
-  border: 1px solid $light-gray;
+  padding: .1em;
+  // border: 1px solid $light-gray;
 }
 
 dl {

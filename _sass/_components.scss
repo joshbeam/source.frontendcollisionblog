@@ -40,6 +40,7 @@ article {
 }
 
 footer {
+  background: $extra-light-gray;
   padding: 2rem;
   @extend .clearfix;
 
@@ -269,4 +270,37 @@ nav {
 .twitter-plug {
   background: $extra-light-gray;
   padding: 1rem;
+}
+
+.repl {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+
+  pre,
+  pre *,
+  .highlight {
+    background: none;
+    line-height: 14px;
+    margin: 0;
+    padding: 0;
+  }
+
+  > div {
+    padding: 5px;
+  }
+
+  > div:first-child {
+    background: $extra-light-gray;
+    border: 1px solid $light-gray;
+    border-right: none;
+  }
+
+  > div:nth-child(2) {
+    border: 1px solid $light-gray;
+  }
+
+  > * {
+    flex: 0 1 100%;
+  }
 }

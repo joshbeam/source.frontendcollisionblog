@@ -5,8 +5,8 @@
 
 body,
 html {
-  font-family: "Source Sans Pro", sans-serif;
-  font-size: 18px;
+  font-family: "Open Sans", "Source Sans Pro", sans-serif;
+  font-size: 14px;
   line-height: 1.25rem;
   -webkit-font-smoothing: antialiased; }
 
@@ -29,9 +29,10 @@ blockquote {
 
 *:not(pre) > code {
   background: #eee;
+  border-radius: 3px;
+  color: #888;
   font-size: .75em;
-  padding: .5em;
-  border: 1px solid #ccc; }
+  padding: .1em; }
 
 dl dd {
   padding: 0 0 1rem 0;
@@ -129,6 +130,7 @@ article {
   margin-top: 2rem; }
 
 footer {
+  background: #eee;
   padding: 2rem; }
   footer div {
     float: left; }
@@ -284,6 +286,28 @@ nav {
 .twitter-plug {
   background: #eee;
   padding: 1rem; }
+
+.repl {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%; }
+  .repl pre,
+  .repl pre *,
+  .repl .highlight {
+    background: none;
+    line-height: 14px;
+    margin: 0;
+    padding: 0; }
+  .repl > div {
+    padding: 5px; }
+  .repl > div:first-child {
+    background: #eee;
+    border: 1px solid #ccc;
+    border-right: none; }
+  .repl > div:nth-child(2) {
+    border: 1px solid #ccc; }
+  .repl > * {
+    flex: 0 1 100%; }
 
 /**
  * Syntax highlighting styles
