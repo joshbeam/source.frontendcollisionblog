@@ -14,7 +14,7 @@ Recently, some colleagues and I dreadfully <strike>spent</strike> wasted valuabl
 </div>
 
 <center>
-  <img src="{% include images/honorable-suicide %}" width="50%">
+  <img src="/images/honorable-suicide-meme.png" width="50%">
 </center>
 
 # Before we continue, here's the problem and our solution
@@ -32,7 +32,7 @@ That took quite a while to figure out. Pretty simple solution, though, no?
 # Lesson 1: Everyone is responsible for the environment
 
 <center>
-  <img src="{% include images/tree-hugger %}" width="50%">
+  <img src="/images/tree-hugger.png" width="50%">
 </center>
 
 No, not *that* environment (well, that environment too, but that's not what we're referring to, here). We're referring to the development environment.
@@ -55,7 +55,7 @@ This isn't anyone's fault, per se, but the **key takeaway is that when you run i
 # Lesson 2: Everything is a clue
 
 <center>
-  <img src="{% include images/aliens-meme %}" width="50%">
+  <img src="/images/aliens.png" width="50%">
 </center>
 
 In our situation, we had two apps: the first app was already working, login and all. The environment, plugins, etc., in our second app appeared to be *equivalent* to those of the first app. But there was a nagging clue that was ignored.
@@ -69,7 +69,7 @@ Because our second app environment was theoretically equivalent to the first app
 # Lesson 3: Question your assumptions... and then question them again
 
 <center>
-  <img src="{% include images/debugging-timeline %}" width="50%">
+  <img src="/images/debugging-timeline.png" width="50%">
 </center>
 
 Our initial assumption was that it *had* to be the specific OAuth library we were using that was causing the problem.
@@ -91,7 +91,7 @@ These assumptions led us to **this potentially devastating logic**:
 **Conclusion: therefore, we need to reimplement our login system**
 
 <center>
-  <img src="{% include images/i-dont-always-make-assumptions-meme %}" width="50%">
+  <img src="/images/i-dont-always-make-assumptions-meme.png" width="50%">
 </center>
 
 # So how did we stumble upon a solution to this mystical problem?
@@ -112,5 +112,5 @@ Only at that point did we go back to the ionic docs and see that, in fact, you h
 </pre>
 
 <center>
-  <img src="{% include images/y-u-no-include-cordova-webpack-meme %}" width="50%">
+  <img src="/images/y-u-no-include-cordova-webpack-meme.png" width="50%">
 </center>
