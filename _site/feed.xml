@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 23 Aug 2015 15:44:41 -0700</pubDate>
-    <lastBuildDate>Sun, 23 Aug 2015 15:44:41 -0700</lastBuildDate>
+    <pubDate>Sun, 23 Aug 2015 15:53:55 -0700</pubDate>
+    <lastBuildDate>Sun, 23 Aug 2015 15:53:55 -0700</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -138,7 +138,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
 &lt;/div&gt;
 
 &lt;center&gt;
-&lt;img src=&quot;https://i.imgflip.com/pm0to.jpg&quot; title=&quot;made at imgflip.com&quot; width=&quot;300&quot; /&gt;
+  &lt;img src=&quot;https://i.imgflip.com/pm0to.jpg&quot; title=&quot;made at imgflip.com&quot; width=&quot;50%&quot; /&gt;
 &lt;/center&gt;
 
 &lt;h1 id=&quot;you-should-be-filtering&quot;&gt;3) You should be filtering&lt;/h1&gt;
@@ -314,7 +314,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
 &lt;p&gt;In other words, it can take more “brain power” to understand what is happening in a &lt;code&gt;forEach&lt;/code&gt; loop whose sole purpose is to mutate outside data based on side effects, whereas &lt;code&gt;map&lt;/code&gt;, &lt;code&gt;reduce&lt;/code&gt;, and &lt;code&gt;filter&lt;/code&gt; all have &lt;strong&gt;immediate&lt;/strong&gt; and &lt;strong&gt;clear&lt;/strong&gt; semantic meanings to the programmer (that’s not to say, though, that you can’t use the power of those methods for evil).&lt;/p&gt;
 
 &lt;center&gt;
-&lt;img src=&quot;https://i.imgflip.com/pm0kr.jpg&quot; title=&quot;made at imgflip.com&quot; /&gt;
+  &lt;img src=&quot;https://i.imgflip.com/pm0kr.jpg&quot; title=&quot;made at imgflip.com&quot; width=&quot;50%&quot; /&gt;
 &lt;/center&gt;
 </description>
         <pubDate>Sat, 15 Aug 2015 12:04:00 -0700</pubDate>

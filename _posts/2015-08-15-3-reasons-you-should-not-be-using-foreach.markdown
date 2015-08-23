@@ -12,7 +12,7 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 </div>
 
 <center>
-<img src="https://i.imgflip.com/pm0to.jpg" title="made at imgflip.com" width="300">
+  <img src="https://i.imgflip.com/pm0to.jpg" title="made at imgflip.com" width="50%">
 </center>
 
 # 3) You should be filtering
@@ -188,5 +188,5 @@ Why am I referring to functional programming in the context of JavaScript, which
 In other words, it can take more "brain power" to understand what is happening in a `forEach` loop whose sole purpose is to mutate outside data based on side effects, whereas `map`, `reduce`, and `filter` all have **immediate** and **clear** semantic meanings to the programmer (that's not to say, though, that you can't use the power of those methods for evil).
 
 <center>
-<img src="https://i.imgflip.com/pm0kr.jpg" title="made at imgflip.com">
+  <img src="https://i.imgflip.com/pm0kr.jpg" title="made at imgflip.com" width="50%">
 </center>
