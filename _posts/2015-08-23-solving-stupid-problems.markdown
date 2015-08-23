@@ -96,7 +96,7 @@ These assumptions led us to **this potentially devastating logic**:
 
 # So how did we stumble upon a solution to this mystical problem?
 
-We drunkenly stumbled into our solution by attempting to implement a workaround to the `inAppBrowser` plugin. **What, wot?**
+We drunkenly stumbled into our solution by attempting to implement a workaround to the `inAppBrowser` plugin. **Wait, wot?**
 
 Well, one of our other underlying assumpetions was that `window.open` wasn't functioning properly (this is something the OAuth library was using interally). So we thought, why not try to use `cordova.inAppBrowser.open` instead, as suggested by some StackOverflow answers?
 
