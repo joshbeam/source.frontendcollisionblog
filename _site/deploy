@@ -1,5 +1,8 @@
 jekyll build
 git add -A; git commit -m 'updated blog'; git push origin master
+
+$('cd ../joshbeam.github.io; git pull origin master')
+
 cp -a ./_site/. ../joshbeam.github.io
 cd ../joshbeam.github.io
 git add -A; git commit -m 'update blog'; git push origin master
