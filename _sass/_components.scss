@@ -11,6 +11,11 @@ article {
   @include media-query($tablet) {
     width: 100%;
   }
+
+  img {
+    box-shadow: 0 0 50px #888;
+    margin: 2rem 0;
+  }
 }
 
 .black-out {
@@ -124,8 +129,18 @@ main {
     margin: 0 auto;
 
     header {
-      margin: 5rem 0;
-      background: $extra-light-gray;
+      margin: 5rem 0 3rem 0;
+
+      h1 {
+        color: red;
+        font-family: Abel;
+        font-size: 4rem;
+        line-height: 5rem;
+        text-transform: uppercase;
+      }
+      // background: $extra-light-gray;
+
+      
 
       @include media-query($tablet) {
         margin: 1rem 0;
@@ -182,7 +197,7 @@ nav {
     li {
       a {
         display: block;
-        font-weight: 100;
+        font-weight: 200;
         padding: 1rem;
         text-align: left;
         transition: 200ms;
@@ -205,6 +220,11 @@ nav {
   @include media-query($tablet) {
     width: 50%;
   }
+}
+
+.note {
+  font-style: italic;
+  margin-bottom: 4rem;
 }
 
 .posts {
@@ -268,8 +288,17 @@ nav {
 }
 
 .twitter-plug {
-  background: $extra-light-gray;
+  //background: $extra-light-gray;
+  color: red;
+  border: 5px solid red;
+  margin-top: 4rem;
   padding: 1rem;
+  text-align: center;
+
+  a {
+    color: red;
+    text-decoration: underline;
+  }
 }
 
 .repl {

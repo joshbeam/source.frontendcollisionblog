@@ -8,7 +8,7 @@ layout: default
     <p>
       {{ page.date | date: "%-d %B %Y" }}{% if page.author %} &mdash; {{ page.author }}{% endif %}{% if page.meta %} &mdash; {{ page.meta }}{% endif %} &mdash; {% if page.categories %}{% for tag in page.categories %}<em>{{tag}}</em> {% endfor %}{% endif %}
     </p>
-    <a href="/" class="view-all-link">View All</a>
+    <a href="/" class="view-all-link">All Posts</a>
   </header>
 
   <article>

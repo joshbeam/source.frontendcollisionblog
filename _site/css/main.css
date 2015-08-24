@@ -109,6 +109,9 @@ article {
   @media screen and (max-width: 768px) {
     article {
       width: 100%; } }
+  article img {
+    box-shadow: 0 0 50px #888;
+    margin: 2rem 0; }
 
 .black-out {
   position: fixed;
@@ -189,8 +192,13 @@ main section {
   width: 90%;
   margin: 0 auto; }
   main section header {
-    margin: 5rem 0;
-    background: #eee; }
+    margin: 5rem 0 3rem 0; }
+    main section header h1 {
+      color: red;
+      font-family: Abel;
+      font-size: 4rem;
+      line-height: 5rem;
+      text-transform: uppercase; }
     @media screen and (max-width: 768px) {
       main section header {
         margin: 1rem 0; } }
@@ -236,7 +244,7 @@ nav {
       */ }
     nav ul li a {
       display: block;
-      font-weight: 100;
+      font-weight: 200;
       padding: 1rem;
       text-align: left;
       transition: 200ms;
@@ -246,6 +254,10 @@ nav {
   @media screen and (max-width: 768px) {
     nav {
       width: 50%; } }
+
+.note {
+  font-style: italic;
+  margin-bottom: 4rem; }
 
 .posts li {
   border-bottom: 1px solid #eee;
@@ -284,8 +296,14 @@ nav {
   margin: .5rem 0; }
 
 .twitter-plug {
-  background: #eee;
-  padding: 1rem; }
+  color: red;
+  border: 5px solid red;
+  margin-top: 4rem;
+  padding: 1rem;
+  text-align: center; }
+  .twitter-plug a {
+    color: red;
+    text-decoration: underline; }
 
 .repl {
   display: flex;
