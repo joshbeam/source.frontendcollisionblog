@@ -196,8 +196,8 @@ main section {
     main section header h1 {
       color: red;
       font-family: Abel;
-      font-size: 4rem;
-      line-height: 5rem;
+      font-size: 6vmin;
+      line-height: 7vmin;
       text-transform: uppercase; }
     @media screen and (max-width: 768px) {
       main section header {

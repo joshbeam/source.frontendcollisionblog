@@ -9,7 +9,7 @@ comments: true
 
 <div class="note">
 <!--excerpt.start-->
-Recently, some colleagues and I dreadfully <strike>spent</strike> wasted valuable man hours attempting to solve a bug in a hybrid mobile app. The cause of the bug? A missing &lt;script&gt; tag. Several important lessons can be learned from the ways in which we decided to go about solving this simple headbanger (no, not like you'd do at a heavy metal concert; rather, where you actually consider banging your head on a solid object) of a problem.
+Recently, some colleagues and I dreadfully spent (read: wasted) valuable man hours attempting to solve a bug in a hybrid mobile app. The cause of the bug? A missing &lt;script&gt; tag. Several important lessons can be learned from the ways in which we decided to go about solving this simple headbanger (no, not like you'd do at a heavy metal concert; rather, where you actually consider banging your head on a solid object) of a problem.
 <!--excerpt.end-->
 </div>
 

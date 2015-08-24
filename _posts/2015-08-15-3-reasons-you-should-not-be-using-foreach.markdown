@@ -43,7 +43,9 @@ console.log(filteredArray);
   </div>
 </div>
 
-Here, we're simply getting rid of items we don't want. Luckily, `Array.prototype.filter` already has you covered there.
+This is a typical implementation. With `forEach`, you simply push each object to a *completely new* array. You'll notice that **this introduces extra state to maintain**. More state equals more brainpower needed to understand what is happening.
+
+Luckily, `Array.prototype.filter` already has you covered there. It simply *returns* a new array of the items we want.
 
 ## Good
 
@@ -99,7 +101,9 @@ names.forEach(function(name) {
   </div>
 </div>
 
-Here, we're gonna use `map` instead:
+Again, naked looping requires us to create additional state within our application.
+
+Here, we're gonna use `map` instead. Again, it simply returns a new array without requiring us to do it ourselves:
 
 ## Good
 
@@ -133,7 +137,7 @@ console.log(names);
 
 # 1) You should be reducing
 
-Here, we want to combine certain values in an array.
+Here, we want to *combine certain values* in an array.
 
 ## Bad
 
@@ -155,6 +159,8 @@ console.log(total);
 </pre>
   </div>
 </div>
+
+In other words, when you think "reduce", think about "collapsing" items into a new item. Another way to think of it is to imagine you have an array filled with the words of a sentence, and you want to concatenate them all into one string.
 
 ## Good
 
@@ -179,7 +185,7 @@ console.log(total);
 
 # Conclusion
 
-You'll notice one of the overarching concepts of all these three methods is that they all very easily take the "functional route" of returning a value. It is possible to introduce side effects within these methods, however, they don't **primarily rely on side effects to function**. In other words, you'll see that `Array.prototype.forEach` primarly relies on side effects. **It never returns a value other than `undefined` unless you explicity force it to**.
+You'll notice one of the overarching concepts of all these three methods is that they all take the "functional route", where they don't necessarily require the manual creation of additional state. It is possible to introduce side effects within these methods, however, they don't **primarily rely on side effects to function**. In other words, you'll see that `Array.prototype.forEach` primarly relies on side effects. **It never returns a value other than `undefined` unless you explicity force it to**.
 
 Why am I referring to functional programming in the context of JavaScript, which is clearly *not* a functional programming language? Well, to quote the <a href="https://en.wikipedia.org/wiki/Functional_programming">omniscient Wikipedia article on functional programming</a>:
 

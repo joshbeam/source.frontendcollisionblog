@@ -105,7 +105,9 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
   </div>
 </div>
 
-<p>Here, we’re simply getting rid of items we don’t want. Luckily, <code>Array.prototype.filter</code> already has you covered there.</p>
+<p>This is a typical implementation. With <code>forEach</code>, you simply push each object to a <em>completely new</em> array. You’ll notice that <strong>this introduces extra state to maintain</strong>. More state equals more brainpower needed to understand what is happening.</p>
+
+<p>Luckily, <code>Array.prototype.filter</code> already has you covered there. It simply <em>returns</em> a new array of the items we want.</p>
 
 <h2 id="good">Good</h2>
 
@@ -160,7 +162,9 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
   </div>
 </div>
 
-<p>Here, we’re gonna use <code>map</code> instead:</p>
+<p>Again, naked looping requires us to create additional state within our application.</p>
+
+<p>Here, we’re gonna use <code>map</code> instead. Again, it simply returns a new array without requiring us to do it ourselves:</p>
 
 <h2 id="good-1">Good</h2>
 
@@ -194,7 +198,7 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 
 <h1 id="you-should-be-reducing">1) You should be reducing</h1>
 
-<p>Here, we want to combine certain values in an array.</p>
+<p>Here, we want to <em>combine certain values</em> in an array.</p>
 
 <h2 id="bad-2">Bad</h2>
 
@@ -216,6 +220,8 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 </pre>
   </div>
 </div>
+
+<p>In other words, when you think “reduce”, think about “collapsing” items into a new item. Another way to think of it is to imagine you have an array filled with the words of a sentence, and you want to concatenate them all into one string.</p>
 
 <h2 id="good-2">Good</h2>
 
@@ -240,7 +246,7 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 
 <h1 id="conclusion">Conclusion</h1>
 
-<p>You’ll notice one of the overarching concepts of all these three methods is that they all very easily take the “functional route” of returning a value. It is possible to introduce side effects within these methods, however, they don’t <strong>primarily rely on side effects to function</strong>. In other words, you’ll see that <code>Array.prototype.forEach</code> primarly relies on side effects. <strong>It never returns a value other than <code>undefined</code> unless you explicity force it to</strong>.</p>
+<p>You’ll notice one of the overarching concepts of all these three methods is that they all take the “functional route”, where they don’t necessarily require the manual creation of additional state. It is possible to introduce side effects within these methods, however, they don’t <strong>primarily rely on side effects to function</strong>. In other words, you’ll see that <code>Array.prototype.forEach</code> primarly relies on side effects. <strong>It never returns a value other than <code>undefined</code> unless you explicity force it to</strong>.</p>
 
 <p>Why am I referring to functional programming in the context of JavaScript, which is clearly <em>not</em> a functional programming language? Well, to quote the <a href="https://en.wikipedia.org/wiki/Functional_programming">omniscient Wikipedia article on functional programming</a>:</p>
 

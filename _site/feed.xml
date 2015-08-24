@@ -6,15 +6,15 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 23 Aug 2015 17:27:14 -0700</pubDate>
-    <lastBuildDate>Sun, 23 Aug 2015 17:27:14 -0700</lastBuildDate>
+    <pubDate>Sun, 23 Aug 2015 17:52:20 -0700</pubDate>
+    <lastBuildDate>Sun, 23 Aug 2015 17:52:20 -0700</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>3 lessons in solving stupid engineering problems (without resorting to manslaughter)</title>
         <description>&lt;div class=&quot;note&quot;&gt;
 &lt;!--excerpt.start--&gt;
-Recently, some colleagues and I dreadfully &lt;strike&gt;spent&lt;/strike&gt; wasted valuable man hours attempting to solve a bug in a hybrid mobile app. The cause of the bug? A missing &amp;lt;script&amp;gt; tag. Several important lessons can be learned from the ways in which we decided to go about solving this simple headbanger (no, not like you&#39;d do at a heavy metal concert; rather, where you actually consider banging your head on a solid object) of a problem.
+Recently, some colleagues and I dreadfully spent (read: wasted) valuable man hours attempting to solve a bug in a hybrid mobile app. The cause of the bug? A missing &amp;lt;script&amp;gt; tag. Several important lessons can be learned from the ways in which we decided to go about solving this simple headbanger (no, not like you&#39;d do at a heavy metal concert; rather, where you actually consider banging your head on a solid object) of a problem.
 &lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 
@@ -168,7 +168,9 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Here, we’re simply getting rid of items we don’t want. Luckily, &lt;code&gt;Array.prototype.filter&lt;/code&gt; already has you covered there.&lt;/p&gt;
+&lt;p&gt;This is a typical implementation. With &lt;code&gt;forEach&lt;/code&gt;, you simply push each object to a &lt;em&gt;completely new&lt;/em&gt; array. You’ll notice that &lt;strong&gt;this introduces extra state to maintain&lt;/strong&gt;. More state equals more brainpower needed to understand what is happening.&lt;/p&gt;
+
+&lt;p&gt;Luckily, &lt;code&gt;Array.prototype.filter&lt;/code&gt; already has you covered there. It simply &lt;em&gt;returns&lt;/em&gt; a new array of the items we want.&lt;/p&gt;
 
 &lt;h2 id=&quot;good&quot;&gt;Good&lt;/h2&gt;
 
@@ -223,7 +225,9 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Here, we’re gonna use &lt;code&gt;map&lt;/code&gt; instead:&lt;/p&gt;
+&lt;p&gt;Again, naked looping requires us to create additional state within our application.&lt;/p&gt;
+
+&lt;p&gt;Here, we’re gonna use &lt;code&gt;map&lt;/code&gt; instead. Again, it simply returns a new array without requiring us to do it ourselves:&lt;/p&gt;
 
 &lt;h2 id=&quot;good-1&quot;&gt;Good&lt;/h2&gt;
 
@@ -257,7 +261,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
 
 &lt;h1 id=&quot;you-should-be-reducing&quot;&gt;1) You should be reducing&lt;/h1&gt;
 
-&lt;p&gt;Here, we want to combine certain values in an array.&lt;/p&gt;
+&lt;p&gt;Here, we want to &lt;em&gt;combine certain values&lt;/em&gt; in an array.&lt;/p&gt;
 
 &lt;h2 id=&quot;bad-2&quot;&gt;Bad&lt;/h2&gt;
 
@@ -279,6 +283,8 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
 &lt;/pre&gt;
   &lt;/div&gt;
 &lt;/div&gt;
+
+&lt;p&gt;In other words, when you think “reduce”, think about “collapsing” items into a new item. Another way to think of it is to imagine you have an array filled with the words of a sentence, and you want to concatenate them all into one string.&lt;/p&gt;
 
 &lt;h2 id=&quot;good-2&quot;&gt;Good&lt;/h2&gt;
 
@@ -303,7 +309,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
 
 &lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
 
-&lt;p&gt;You’ll notice one of the overarching concepts of all these three methods is that they all very easily take the “functional route” of returning a value. It is possible to introduce side effects within these methods, however, they don’t &lt;strong&gt;primarily rely on side effects to function&lt;/strong&gt;. In other words, you’ll see that &lt;code&gt;Array.prototype.forEach&lt;/code&gt; primarly relies on side effects. &lt;strong&gt;It never returns a value other than &lt;code&gt;undefined&lt;/code&gt; unless you explicity force it to&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;You’ll notice one of the overarching concepts of all these three methods is that they all take the “functional route”, where they don’t necessarily require the manual creation of additional state. It is possible to introduce side effects within these methods, however, they don’t &lt;strong&gt;primarily rely on side effects to function&lt;/strong&gt;. In other words, you’ll see that &lt;code&gt;Array.prototype.forEach&lt;/code&gt; primarly relies on side effects. &lt;strong&gt;It never returns a value other than &lt;code&gt;undefined&lt;/code&gt; unless you explicity force it to&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;Why am I referring to functional programming in the context of JavaScript, which is clearly &lt;em&gt;not&lt;/em&gt; a functional programming language? Well, to quote the &lt;a href=&quot;https://en.wikipedia.org/wiki/Functional_programming&quot;&gt;omniscient Wikipedia article on functional programming&lt;/a&gt;:&lt;/p&gt;
 
