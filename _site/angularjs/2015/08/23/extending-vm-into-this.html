@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Get rid of $scope, and extend into the view model</title>
+  <meta name="description" content="AngularJS's controllerAs syntax is a good first step into being able to have some sort of sense of hierarchy in applications. However, large controllers can ...">
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,300italic,600italic,700,700italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" href="/images/favicon.ico?v=1.1"> 
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html">
+  <link rel="alternate" type="application/rss+xml" title="Front End Collision" href="http://joshbeam.github.io/feed.xml" />
+  <script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-60978864-1', 'auto');
+	ga('send', 'pageview');
+</script>
+  <!--[if lt IE 9]>
+    <script src="/bower_components/html5shiv/dist/html5shiv.js"></script>
+<![endif]-->
+</head>
+
+
+  <body>
+
+    <header>
+  <a href="/">
+    <img src="http://gravatar.com/avatar/26d4fa31138c5c8ba1cb76392d9fc64d?s=200" width="100" height="103">
+    <hgroup>
+      <h1>Front End Collision</h1>
+      <h5>Blog of software engineer Josh Beam</h5>
+    </hgroup>
+  </a>
+</header>
+    <a class="menu-icon" href="#">
+</a>
+<div class="black-out"></div>
+<nav>
+  <ul>
+    <li>
+      <a href="/">Home</a>
+    </li>
+    <li>
+      <a href="/about">About</a>
+    </li>
+    <li>
+      <a href="/archive">Archive</a>
+    </li>
+  </ul>
+</nav>
+
+    <main>
+        <section>
+
+  <header>
+    <h1>Get rid of $scope, and extend into the view model</h1>
+    <p>
+      23 August 2015 &mdash; Josh Beam &mdash; <em>angularjs</em> 
+    </p>
+    <a href="/" class="view-all-link">All Posts</a>
+  </header>
+
+  <article>
+    <div class="note">
+<!--excerpt.start-->
+AngularJS's <code>controllerAs</code> syntax is a good first step into being able to have some sort of sense of hierarchy in applications. However, large controllers can still get unwieldy. We can move towards controlling our controllers with <code>angular.extend</code>.
+<!--excerpt.end-->
+</div>
+
+<h1 id="tldr">TL;DR</h1>
+
+<p>Put all your controller properties into an object literal, and extend that object into <code>this</code>:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">vm</span><span class="p">);</span></code></pre></div>
+
+<p>After that, always use <code>this</code> to refer to controller properties (don’t use <code>vm.whatever</code>).</p>
+
+<h1 id="a-brief-overview-of-controlleras">A brief overview of <code>controllerAs</code></h1>
+
+<p><a href="#skip">Skip to the next section</a> if you already know how to use this.</p>
+
+<p>Basically, if you have a parent controller and a child controller nested within, you have to explicitly refer to <code>$scope.$parent</code> to access the parent controller <em>from</em> the child controller.</p>
+
+<p>However, with <code>controllerAs</code> syntax, we get a <strong>namespace</strong>.</p>
+
+<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;ParentCtrl as parent&quot;</span><span class="nt">&gt;</span>
+  
+  {{parent.something}}
+  
+  <span class="nt">&lt;div</span> <span class="na">ng-controller=</span><span class="s">&quot;ChildCtrl as child&quot;</span><span class="nt">&gt;</span>
+    
+    {{child.something}}
+    {{parent.something}}
+    
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span></code></pre></div>
+
+<p>But then in your controller, you might have to deal with this:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// parent.controller.js</span>
+<span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+<span class="nx">vm</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s1">&#39;Bob&#39;</span><span class="p">;</span>
+<span class="nx">vm</span><span class="p">.</span><span class="nx">job</span> <span class="o">=</span> <span class="s1">&#39;Builder&#39;</span><span class="p">;</span>
+<span class="nx">vm</span><span class="p">.</span><span class="nx">motto</span> <span class="o">=</span> <span class="s1">&#39;Yes we can!&#39;</span><span class="p">;</span>
+<span class="nx">vm</span><span class="p">.</span><span class="nx">speak</span> <span class="o">=</span> <span class="nx">speak</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">speak</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">motto</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+<p>Also, wondering why we’re using <code>vm</code>? Check out <a href="https://github.com/johnpapa/angular-styleguide#controlleras-with-vm">John Papa’s AngularJS Style Guide</a>.</p>
+
+<p>Now image that, 1000x, when you have a controller full of lots and lots of stuff. Really, you could argue that you should consider leveraging directives and services for most of your business logic, but sometimes it’s difficult to do.</p>
+
+<p>By the way, <code>controllerAs</code> still knows about <code>$scope</code>. This fake “namespace” simply happens internally by attaching an object to <code>$scope</code>. So in the above example, our parent controller <code>$scope</code> would look like this:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="c1">// a bunch of $$ angular properties, and then...</span>
+  <span class="nx">parent</span><span class="o">:</span> <span class="p">{</span>
+    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
+    <span class="nx">job</span><span class="o">:</span> <span class="s1">&#39;Builder&#39;</span><span class="p">,</span>
+    <span class="nx">motto</span><span class="o">:</span> <span class="s1">&#39;Yes we can!&#39;</span><span class="p">,</span>
+    <span class="nx">speak</span><span class="o">:</span> <span class="kd">function</span> <span class="nx">speak</span><span class="p">(){...}</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>In fact, if you were to inject <code>$scope</code> into that controller and ask for <code>$scope.parent</code>, you’d see all those properties. There’s nothing fancy about it.</p>
+
+<p><span id="skip"></span></p>
+
+<h1 id="extending-the-view-model">Extending the view model</h1>
+
+<p>Ever heard of <a href="https://docs.angularjs.org/api/ng/function/angular.extend"><code>angular.extend</code></a>? It’s pretty nifty. It basically just puts properties from one object into another object, without overwriting any properties. AngularJS already attempts to protect us from this by delimiting internal properties with <code>$</code> or <code>$$</code>, so it’s not really a concern anyway, but it’s a nice added touch.</p>
+
+<p>So, we can just make our controller look like this:</p>
+
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// parent.controller.js</span>
+<span class="kd">var</span> <span class="nx">vm</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span>
+  <span class="nx">job</span><span class="o">:</span> <span class="s1">&#39;Builder&#39;</span><span class="p">,</span>
+  <span class="nx">motto</span><span class="o">:</span> <span class="s1">&#39;Yes we can!&#39;</span><span class="p">,</span>
+  <span class="nx">speak</span><span class="o">:</span> <span class="nx">speak</span> 
+<span class="p">};</span>
+
+<span class="nx">angular</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">vm</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">speak</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">motto</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+<p>However, you’ll notice that it’ll usually be better from then on to continue to refer to controller properties with <code>this</code> rather than <code>vm</code>, because any changes through data-binding will propogate only to <code>this</code> (our namespaced controller), and not to our <code>vm</code> object reference. You can leverage things like <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind"><code>Function.prototype.bind</code></a> if you get into hairy contexts (like <code>forEach</code> loops, etc.).</p>
+
+    <div class="twitter-plug">Like this post?
+<a href="https://twitter.com/intent/tweet?url=http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html&text=Get rid of $scope, and extend into the view model&via=joshbeam92" 
+target="_blank">
+Share it with your followers</a> 
+or 
+<a href="https://twitter.com/joshbeam92">
+follow me on Twitter</a>!</div>
+  </article>
+
+  
+  <div id="disqus_thread"></div>
+  
+
+</section>
+
+    </main>
+
+    <footer>
+  <div>
+    <p>
+      © 2015 Joshua Beam
+    </p>
+
+    <ul class="list-unstyled list-inline">
+      <li><a href="http://github.com/joshbeam">GitHub</a></li>
+      <li><a href="http://careers.stackoverflow.com/joshbeam">Careers 2.0</a></li>
+      <li><a href="http://twitter.com/joshbeam92">@joshbeam92</a></li>
+      <li><a href="mailto:frontendcollisionblog@gmail.com">frontendcollisionblog@gmail.com</a></li>
+    </ul>
+  </div>
+  
+  <form class="search">
+    <input type="text" class="search-box" id="search" /><input type="submit" class="search-button" value="Search" />
+  </form>
+
+</footer>
+
+
+    <script src="/js/dist/scripts.min.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+    //var disqus_developer = 1;
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'frontendcollision';
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+  </body>
+</html>

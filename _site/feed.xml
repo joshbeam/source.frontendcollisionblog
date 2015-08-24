@@ -6,9 +6,110 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 23 Aug 2015 17:52:20 -0700</pubDate>
-    <lastBuildDate>Sun, 23 Aug 2015 17:52:20 -0700</lastBuildDate>
+    <pubDate>Sun, 23 Aug 2015 18:51:20 -0700</pubDate>
+    <lastBuildDate>Sun, 23 Aug 2015 18:51:20 -0700</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Get rid of $scope, and extend into the view model</title>
+        <description>&lt;div class=&quot;note&quot;&gt;
+&lt;!--excerpt.start--&gt;
+AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first step into being able to have some sort of sense of hierarchy in applications. However, large controllers can still get unwieldy. We can move towards controlling our controllers with &lt;code&gt;angular.extend&lt;/code&gt;.
+&lt;!--excerpt.end--&gt;
+&lt;/div&gt;
+
+&lt;h1 id=&quot;tldr&quot;&gt;TL;DR&lt;/h1&gt;
+
+&lt;p&gt;Put all your controller properties into an object literal, and extend that object into &lt;code&gt;this&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;extend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;After that, always use &lt;code&gt;this&lt;/code&gt; to refer to controller properties (don’t use &lt;code&gt;vm.whatever&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h1 id=&quot;a-brief-overview-of-controlleras&quot;&gt;A brief overview of &lt;code&gt;controllerAs&lt;/code&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;#skip&quot;&gt;Skip to the next section&lt;/a&gt; if you already know how to use this.&lt;/p&gt;
+
+&lt;p&gt;Basically, if you have a parent controller and a child controller nested within, you have to explicitly refer to &lt;code&gt;$scope.$parent&lt;/code&gt; to access the parent controller &lt;em&gt;from&lt;/em&gt; the child controller.&lt;/p&gt;
+
+&lt;p&gt;However, with &lt;code&gt;controllerAs&lt;/code&gt; syntax, we get a &lt;strong&gt;namespace&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-controller=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;ParentCtrl as parent&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+  
+  {{parent.something}}
+  
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ng-controller=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;ChildCtrl as child&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    
+    {{child.something}}
+    {{parent.something}}
+    
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;But then in your controller, you might have to deal with this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// parent.controller.js&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Bob&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;job&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Builder&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Yes we can!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Also, wondering why we’re using &lt;code&gt;vm&lt;/code&gt;? Check out &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide#controlleras-with-vm&quot;&gt;John Papa’s AngularJS Style Guide&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now image that, 1000x, when you have a controller full of lots and lots of stuff. Really, you could argue that you should consider leveraging directives and services for most of your business logic, but sometimes it’s difficult to do.&lt;/p&gt;
+
+&lt;p&gt;By the way, &lt;code&gt;controllerAs&lt;/code&gt; still knows about &lt;code&gt;$scope&lt;/code&gt;. This fake “namespace” simply happens internally by attaching an object to &lt;code&gt;$scope&lt;/code&gt;. So in the above example, our parent controller &lt;code&gt;$scope&lt;/code&gt; would look like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// a bunch of $$ angular properties, and then...&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Bob&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;job&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Builder&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Yes we can!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){...}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In fact, if you were to inject &lt;code&gt;$scope&lt;/code&gt; into that controller and ask for &lt;code&gt;$scope.parent&lt;/code&gt;, you’d see all those properties. There’s nothing fancy about it.&lt;/p&gt;
+
+&lt;p&gt;&lt;span id=&quot;skip&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;extending-the-view-model&quot;&gt;Extending the view model&lt;/h1&gt;
+
+&lt;p&gt;Ever heard of &lt;a href=&quot;https://docs.angularjs.org/api/ng/function/angular.extend&quot;&gt;&lt;code&gt;angular.extend&lt;/code&gt;&lt;/a&gt;? It’s pretty nifty. It basically just puts properties from one object into another object, without overwriting any properties. AngularJS already attempts to protect us from this by delimiting internal properties with &lt;code&gt;$&lt;/code&gt; or &lt;code&gt;$$&lt;/code&gt;, so it’s not really a concern anyway, but it’s a nice added touch.&lt;/p&gt;
+
+&lt;p&gt;So, we can just make our controller look like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// parent.controller.js&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Bob&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;job&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Builder&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Yes we can!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;extend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;However, you’ll notice that it’ll usually be better from then on to continue to refer to controller properties with &lt;code&gt;this&lt;/code&gt; rather than &lt;code&gt;vm&lt;/code&gt;, because any changes through data-binding will propogate only to &lt;code&gt;this&lt;/code&gt; (our namespaced controller), and not to our &lt;code&gt;vm&lt;/code&gt; object reference. You can leverage things like &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind&quot;&gt;&lt;code&gt;Function.prototype.bind&lt;/code&gt;&lt;/a&gt; if you get into hairy contexts (like &lt;code&gt;forEach&lt;/code&gt; loops, etc.).&lt;/p&gt;
+</description>
+        <pubDate>Sun, 23 Aug 2015 11:30:00 -0700</pubDate>
+        <link>http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html</guid>
+        
+        
+        <category>angularjs</category>
+        
+      </item>
     
       <item>
         <title>3 lessons in solving stupid engineering problems (without resorting to manslaughter)</title>
@@ -1698,51 +1799,6 @@ I&#39;m sure you&#39;ve seen the common for loop written a thousand different wa
         
         
         <category>javascript</category>
-        
-      </item>
-    
-      <item>
-        <title>How to show a summary of your post with Jekyll</title>
-        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
-In this little snippet, we&#39;re going to explore an option to show a summary of your blog post or article, if you&#39;re using the awesome static-site generator called Jekyll.&lt;!--excerpt.end--&gt;
-&lt;/div&gt;
-
-&lt;p&gt;I am using the static-site generator &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; to compile my website into a bunch of static files (the main benefit being a generally more secure and potentially quicker website due to a lack of server round-trips to a database).&lt;/p&gt;
-
-&lt;p&gt;I ran across &lt;a href=&quot;http://stackoverflow.com/questions/15497207/how-to-display-post-summary-on-index-page-using-jekyll&quot;&gt;several solutions&lt;/a&gt; for displaying a summary or excerpt of the post in the main blog page (if you’re using the basic Jekyll theme that comes standard, it’ll probably be your &lt;code&gt;index.html&lt;/code&gt;).&lt;/p&gt;
-
-&lt;p&gt;Anyway, the solution I came up with is meant to allow me to control what part of the post I want to display as an excerpt. If I don’t choose a part of the post, that’s okay, it just displays a default excerpt.&lt;/p&gt;
-
-&lt;p&gt;If you didn’t know, Jekyll uses &lt;a href=&quot;http://liquidmarkup.org/&quot;&gt;Liquid&lt;/a&gt; for its templating.&lt;/p&gt;
-
-&lt;h1 id=&quot;example&quot;&gt;Example:&lt;/h1&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- index.html --&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;p&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;post-excerpt&amp;quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-
-{% if post.content contains &amp;#39;&lt;span class=&quot;c&quot;&gt;&amp;lt;!--excerpt.start--&amp;gt;&lt;/span&gt;&amp;#39; and post.content contains &amp;#39;&lt;span class=&quot;c&quot;&gt;&amp;lt;!--excerpt.end--&amp;gt;&lt;/span&gt;&amp;#39; %}
-	{{ ((post.content | split:&amp;#39;&lt;span class=&quot;c&quot;&gt;&amp;lt;!--excerpt.start--&amp;gt;&lt;/span&gt;&amp;#39; | last) | split: &amp;#39;&lt;span class=&quot;c&quot;&gt;&amp;lt;!--excerpt.end--&amp;gt;&lt;/span&gt;&amp;#39; | first) | strip_html | truncatewords: 20 }}
-{% else %}
-	{{ post.content | strip_html | truncatewords: 20 }}
-{% endif %}
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- _posts/some-random-post.html --&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
-Here&amp;#39;s all my content, and &lt;span class=&quot;c&quot;&gt;&amp;lt;!--excerpt.start--&amp;gt;&lt;/span&gt;here&amp;#39;s where I want my summary to begin, and this is where I want it to end&lt;span class=&quot;c&quot;&gt;&amp;lt;!--excerpt.end--&amp;gt;&lt;/span&gt;.
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;If I don’t add the comments in the post, the template with simply extract the content of the post, strip the HTML tags, and truncate it 20 words, followed by an ellipsis &lt;code&gt;...&lt;/code&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Mon, 23 Mar 2015 02:50:00 -0700</pubDate>
-        <link>http://joshbeam.github.io/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html</guid>
-        
-        
-        <category>jekyll</category>
-        
-        <category>snippet</category>
         
       </item>
     

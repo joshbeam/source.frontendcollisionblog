@@ -31,10 +31,14 @@ blockquote {
 *:not(pre) > code {
   background: $extra-light-gray;
   border-radius: 3px;
-  color: $medium-gray;
-  font-size: .75em;
+  color: #555;
+  font-size: .9em;
   padding: .1em;
   // border: 1px solid $light-gray;
+}
+
+a code {
+  color: darken($brand, 30%);
 }
 
 dl {

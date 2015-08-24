@@ -30,9 +30,12 @@ blockquote {
 *:not(pre) > code {
   background: #eee;
   border-radius: 3px;
-  color: #888;
-  font-size: .75em;
+  color: #555;
+  font-size: .9em;
   padding: .1em; }
+
+a code {
+  color: #117642; }
 
 dl dd {
   padding: 0 0 1rem 0;
