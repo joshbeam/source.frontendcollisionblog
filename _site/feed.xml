@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 23 Aug 2015 18:51:20 -0700</pubDate>
-    <lastBuildDate>Sun, 23 Aug 2015 18:51:20 -0700</lastBuildDate>
+    <pubDate>Sun, 23 Aug 2015 19:00:02 -0700</pubDate>
+    <lastBuildDate>Sun, 23 Aug 2015 19:00:02 -0700</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -62,7 +62,7 @@ AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first ste
 
 &lt;p&gt;Also, wondering why we’re using &lt;code&gt;vm&lt;/code&gt;? Check out &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide#controlleras-with-vm&quot;&gt;John Papa’s AngularJS Style Guide&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;Now image that, 1000x, when you have a controller full of lots and lots of stuff. Really, you could argue that you should consider leveraging directives and services for most of your business logic, but sometimes it’s difficult to do.&lt;/p&gt;
+&lt;p&gt;Now imagine that, 1000x, when you have a controller full of lots and lots of stuff. Really, you could argue that you should consider leveraging directives and services for most of your business logic, but sometimes it’s difficult to do.&lt;/p&gt;
 
 &lt;p&gt;By the way, &lt;code&gt;controllerAs&lt;/code&gt; still knows about &lt;code&gt;$scope&lt;/code&gt;. This fake “namespace” simply happens internally by attaching an object to &lt;code&gt;$scope&lt;/code&gt;. So in the above example, our parent controller &lt;code&gt;$scope&lt;/code&gt; would look like this:&lt;/p&gt;
 

@@ -63,7 +63,7 @@ function speak() {
 
 Also, wondering why we're using `vm`? Check out <a href="https://github.com/johnpapa/angular-styleguide#controlleras-with-vm">John Papa's AngularJS Style Guide</a>.
 
-Now image that, 1000x, when you have a controller full of lots and lots of stuff. Really, you could argue that you should consider leveraging directives and services for most of your business logic, but sometimes it's difficult to do.
+Now imagine that, 1000x, when you have a controller full of lots and lots of stuff. Really, you could argue that you should consider leveraging directives and services for most of your business logic, but sometimes it's difficult to do.
 
 By the way, `controllerAs` still knows about `$scope`. This fake "namespace" simply happens internally by attaching an object to `$scope`. So in the above example, our parent controller `$scope` would look like this:
 
