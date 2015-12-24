@@ -78,33 +78,33 @@
 
 <p>A callback is a function that happens after we call another function, but the catch is, they’re coupled. However, being coupled in this way doesn’t mean we can’t reuse the callback function.</p>
 
-<p>We often use anonymous functions in JavaScript as callbacks. Here’s an example using <code>Array.prototype.forEach</code>:</p>
+<p>We often use anonymous functions in JavaScript as callbacks. Here’s an example using <code class="highlighter-rouge">Array.prototype.forEach</code>:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Sue&#39;</span><span class="p">,</span> <span class="s1">&#39;Aron&#39;</span><span class="p">,</span> <span class="s1">&#39;Joseph&#39;</span><span class="p">];</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'Sue'</span><span class="p">,</span> <span class="s1">'Aron'</span><span class="p">,</span> <span class="s1">'Joseph'</span><span class="p">];</span>
 
 <span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Hello '</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
 <span class="p">});</span>
 
-<span class="c1">// =&gt; &quot;Hello Bob&quot;</span>
-<span class="c1">// =&gt; &quot;Hello Sue&quot;</span>
-<span class="c1">// =&gt; &quot;Hello Aron&quot;</span>
-<span class="c1">// =&gt; &quot;Hello Joseph&quot;</span></code></pre></div>
+<span class="c1">// =&gt; "Hello Bob"</span>
+<span class="c1">// =&gt; "Hello Sue"</span>
+<span class="c1">// =&gt; "Hello Aron"</span>
+<span class="c1">// =&gt; "Hello Joseph"</span></code></pre></figure>
 
-<p>We can actually sort of “scoop out” the function that we passed into <code>Array.prototype.forEach</code> in order to make it <strong>reusable</strong>:</p>
+<p>We can actually sort of “scoop out” the function that we passed into <code class="highlighter-rouge">Array.prototype.forEach</code> in order to make it <strong>reusable</strong>:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Sue&#39;</span><span class="p">,</span> <span class="s1">&#39;Aron&#39;</span><span class="p">,</span> <span class="s1">&#39;Joseph&#39;</span><span class="p">];</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Bob'</span><span class="p">,</span> <span class="s1">'Sue'</span><span class="p">,</span> <span class="s1">'Aron'</span><span class="p">,</span> <span class="s1">'Joseph'</span><span class="p">];</span>
 
 <span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">sayHello</span><span class="p">);</span>
 
 <span class="kd">function</span> <span class="nx">sayHello</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Hello '</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="c1">// =&gt; &quot;Hello Bob&quot;</span>
-<span class="c1">// =&gt; &quot;Hello Sue&quot;</span>
-<span class="c1">// =&gt; &quot;Hello Aron&quot;</span>
-<span class="c1">// =&gt; &quot;Hello Joseph&quot;</span></code></pre></div>
+<span class="c1">// =&gt; "Hello Bob"</span>
+<span class="c1">// =&gt; "Hello Sue"</span>
+<span class="c1">// =&gt; "Hello Aron"</span>
+<span class="c1">// =&gt; "Hello Joseph"</span></code></pre></figure>
 
 <h1 id="how-do-we-do-this-in-ruby-and-what-does-idiomatic-mean">How do we do this in Ruby? And what does “idiomatic” mean?</h1>
 
@@ -130,52 +130,52 @@
 
 <script src="//repl.it/embed/jkQ.js"></script>
 
-<p>If you run the above, you’ll see <code>Hello &lt;name&gt;</code> printed for each name, and at the end it’ll actually return the entire array for you to use.</p>
+<p>If you run the above, you’ll see <code class="highlighter-rouge">Hello &lt;name&gt;</code> printed for each name, and at the end it’ll actually return the entire array for you to use.</p>
 
 <p><strong>Let’s compare the two. Essentially, this JavaScript…:</strong></p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
-<span class="p">});</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Hello '</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
 
 <p><strong>…is the same as this Ruby:</strong></p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
-    <span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span> 
-<span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+    <span class="nb">puts</span> <span class="s2">"Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span> 
+<span class="k">end</span></code></pre></figure>
 
 <p><strong>We can also write the above Ruby in another, shorter way:</strong></p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">"Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span></code></pre></figure>
 
 <p>So here’s a few things we’ve learned from the above.</p>
 
 <h2 id="st-thing-we-learned-string-interpolation">1st thing we learned (string interpolation)</h2>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Notice the necessary double-quotes. Interpolation doesn&#39;t work without them.</span>
-<span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span> 
-<span class="c1"># That&#39;s &quot;string interpolation&quot;. It&#39;s the same as this:</span>
-<span class="nb">puts</span> <span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nb">name</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Notice the necessary double-quotes. Interpolation doesn't work without them.</span>
+<span class="nb">puts</span> <span class="s2">"Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span> 
+<span class="c1"># That's "string interpolation". It's the same as this:</span>
+<span class="nb">puts</span> <span class="s1">'Hello '</span> <span class="o">+</span> <span class="nb">name</span></code></pre></figure>
 
 <p>Both ways are correct, but the string interpolation notation is more idiomatic.</p>
 
 <p>In JavaScript, we call it “string concatenation”:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Hello '</span> <span class="o">+</span> <span class="nx">name</span><span class="p">);</span></code></pre></figure>
 
 <h2 id="nd-thing-we-learned-block-syntax">2nd thing we learned (block syntax)</h2>
 
 <p>We also learned two styles, or syntaxes, for writing blocks:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
   <span class="c1"># stuff here</span>
 <span class="k">end</span>
 
 <span class="c1"># do ... end is one type of block notation. The other type is:</span>
 
-<span class="n">names</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="p">}</span>
+<span class="n">names</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span> <span class="p">}</span>
 
-<span class="c1"># The curly braces replace the &quot;do&quot; and &quot;end&quot;.</span></code></pre></div>
+<span class="c1"># The curly braces replace the "do" and "end".</span></code></pre></figure>
 
 <div class="protip">
   <h1>Pro Tip</h1>
@@ -185,13 +185,13 @@
   </p>
 </div>
 
-<h2 id="rd-thing-we-learned-enumerableeach--arrayprototypeforeach">3rd thing we learned (<code>Enumerable#each == Array.prototype.forEach</code>)</h2>
+<h2 id="rd-thing-we-learned-enumerableeach--arrayprototypeforeach">3rd thing we learned (<code class="highlighter-rouge">Enumerable#each == Array.prototype.forEach</code>)</h2>
 
-<p><strong>Continuing, we learned that Ruby’s <code>Enumerable#each</code> is equivalent to JavaScript’s <code>Array.prototype.forEach</code> (more or less).</strong> I have found only one online blog post so far that has made Ruby’s <code>#each</code> make sense to me. It is by <a href="http://www.eriktrautman.com/posts/ruby-explained-map-select-and-other-enumerable-methods">Erik Trautman</a>.</p>
+<p><strong>Continuing, we learned that Ruby’s <code class="highlighter-rouge">Enumerable#each</code> is equivalent to JavaScript’s <code class="highlighter-rouge">Array.prototype.forEach</code> (more or less).</strong> I have found only one online blog post so far that has made Ruby’s <code class="highlighter-rouge">#each</code> make sense to me. It is by <a href="http://www.eriktrautman.com/posts/ruby-explained-map-select-and-other-enumerable-methods">Erik Trautman</a>.</p>
 
 <h1 id="scooping-out-the-block-like-a-reusable-callback">“Scooping out” the block like a reusable callback</h1>
 
-<p>There are two common ways to make a reusable “callback” in Ruby. They are the <strong><code>lambda</code> and the <code>Proc</code></strong>. There are <strong>very subtle differences between the two ways</strong>.</p>
+<p>There are two common ways to make a reusable “callback” in Ruby. They are the <strong><code class="highlighter-rouge">lambda</code> and the <code class="highlighter-rouge">Proc</code></strong>. There are <strong>very subtle differences between the two ways</strong>.</p>
 
 <h2 id="lambda">Lambda</h2>
 
@@ -199,9 +199,9 @@
 
 <p>By the way, that’s the <strong>new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you’re curious)</strong>. If you want to do a <strong>multi-line lambda</strong>, you do:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sayHello</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
-            <span class="nb">puts</span> <span class="s2">&quot;Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
-           <span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sayHello</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
+            <span class="nb">puts</span> <span class="s2">"Hello </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span>
+           <span class="k">end</span></code></pre></figure>
 
 <p>Now that’s some weird-ass looking syntax, huh? Let’s make it look even weirder:</p>
 
@@ -216,74 +216,74 @@
 <ul>
   <li><strong>Lambda</strong>:
     <ul>
-      <li><strong>You don’t have to pass in all the arguments if you don’t want to</strong>. If your “callback” needs, say, 3 arguments, and you only pass in 2 when you use it, <strong>there will be no error</strong>. This is just like a JavaScript callback… but in JavaScript, the undefined arguments will be <code>undefined</code>, and in Ruby, the undefined arguments will be <code>nil</code>.</li>
-      <li><strong>If you call <code>return &lt;whatever&gt;</code>, the lambda stops, but any method that the lambda is in <em>does not</em> stop</strong>. You can use the lambda’s returned value in the rest of the containing method.</li>
+      <li><strong>You don’t have to pass in all the arguments if you don’t want to</strong>. If your “callback” needs, say, 3 arguments, and you only pass in 2 when you use it, <strong>there will be no error</strong>. This is just like a JavaScript callback… but in JavaScript, the undefined arguments will be <code class="highlighter-rouge">undefined</code>, and in Ruby, the undefined arguments will be <code class="highlighter-rouge">nil</code>.</li>
+      <li><strong>If you call <code class="highlighter-rouge">return &lt;whatever&gt;</code>, the lambda stops, but any method that the lambda is in <em>does not</em> stop</strong>. You can use the lambda’s returned value in the rest of the containing method.</li>
     </ul>
   </li>
   <li><strong>Proc</strong>:
     <ul>
       <li><strong>You must pass in all the arguments</strong>, or you’ll get an error.</li>
-      <li><strong>If you call <code>return &lt;whatever&gt;</code>, the Proc <em>and</em> any method that it is in <em>will stop</em></strong>. The Proc will return its value to the containing method, and the containing method will also return that same value.</li>
+      <li><strong>If you call <code class="highlighter-rouge">return &lt;whatever&gt;</code>, the Proc <em>and</em> any method that it is in <em>will stop</em></strong>. The Proc will return its value to the containing method, and the containing method will also return that same value.</li>
     </ul>
   </li>
 </ul>
 
-<p><strong><code>lambda</code> in JavaScript:</strong></p>
+<p><strong><code class="highlighter-rouge">lambda</code> in JavaScript:</strong></p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This is a JavaScript lambda</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This is a JavaScript lambda</span>
 <span class="kd">function</span> <span class="nx">world</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="s1">&#39;world!&#39;</span><span class="p">;</span>
+  <span class="k">return</span> <span class="s1">'world!'</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="c1">// This is the &quot;containing method&quot; that uses the lambda</span>
+<span class="c1">// This is the "containing method" that uses the lambda</span>
 <span class="kd">function</span> <span class="nx">hello</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// world() returns, but it just gives up its value, and the function continues</span>
   <span class="kd">var</span> <span class="nx">who</span> <span class="o">=</span> <span class="nx">world</span><span class="p">();</span>
 
-  <span class="k">return</span> <span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">who</span><span class="p">;</span>
+  <span class="k">return</span> <span class="s1">'Hello '</span> <span class="o">+</span> <span class="nx">who</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="c1">// =&gt; &quot;Hello world&quot;</span></code></pre></div>
+<span class="c1">// =&gt; "Hello world"</span></code></pre></figure>
 
-<p><strong><code>Proc</code> in JavaScript:</strong></p>
+<p><strong><code class="highlighter-rouge">Proc</code> in JavaScript:</strong></p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This is a JavaScript Proc</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This is a JavaScript Proc</span>
 <span class="kd">function</span> <span class="nx">world</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="s1">&#39;world!&#39;</span><span class="p">;</span>
+  <span class="k">return</span> <span class="s1">'world!'</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="c1">// This is the &quot;containing method&quot; that uses the Proc</span>
+<span class="c1">// This is the "containing method" that uses the Proc</span>
 <span class="kd">function</span> <span class="nx">hello</span><span class="p">()</span> <span class="p">{</span>
   <span class="c1">// The containing function returns the return value of the Proc</span>
-  <span class="k">return</span> <span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">world</span><span class="p">();</span>
+  <span class="k">return</span> <span class="s1">'Hello '</span> <span class="o">+</span> <span class="nx">world</span><span class="p">();</span>
 
-  <span class="c1">// Any code below here obviously won&#39;t run:</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;nothing will log here&#39;</span><span class="p">);</span>
+  <span class="c1">// Any code below here obviously won't run:</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'nothing will log here'</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="c1">// =&gt; &quot;Hello world&quot;</span></code></pre></div>
+<span class="c1">// =&gt; "Hello world"</span></code></pre></figure>
 
-<p>In Ruby, though, as a side note, we rarely use an explicit <code>return</code> statement. You can just type a value.</p>
+<p>In Ruby, though, as a side note, we rarely use an explicit <code class="highlighter-rouge">return</code> statement. You can just type a value.</p>
 
 <p><strong>This JavaScript…:</strong></p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">hello</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="s1">&#39;Hello&#39;</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">hello</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s1">'Hello'</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><strong>…is equivalent to this Ruby:</strong></p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span>
-  <span class="s1">&#39;Hello&#39;</span>
-<span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">hello</span>
+  <span class="s1">'Hello'</span>
+<span class="k">end</span></code></pre></figure>
 
-<h2 id="the-ampersand-">The ampersand (<code>&amp;</code>)</h2>
+<h2 id="the-ampersand-">The ampersand (<code class="highlighter-rouge">&amp;</code>)</h2>
 
 <p>This confusing thing basically just makes sure the thing you’re passing into the method is a Proc, sort of. You can read about that in detail on <a href="http://ablogaboutcode.com/2012/01/04/the-ampersand-operator-in-ruby/">a.blog.about.code</a>.</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">sayHello</span><span class="p">)</span> <span class="c1"># =&gt; error: wrong number of arguments (1 for 0)</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">names</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="n">sayHello</span><span class="p">)</span> <span class="c1"># =&gt; error: wrong number of arguments (1 for 0)</span></code></pre></figure>
 
-<p>The above error is basically saying, “why did you pass me an argument? I expected 0 arguments for <code>#each</code>”. <code>&amp;sayHello</code> is <strong>not</strong> an argument! It is a <code>Proc</code>, <strong>and Ruby does not count <code>Proc</code>s as arguments!</strong></p>
+<p>The above error is basically saying, “why did you pass me an argument? I expected 0 arguments for <code class="highlighter-rouge">#each</code>”. <code class="highlighter-rouge">&amp;sayHello</code> is <strong>not</strong> an argument! It is a <code class="highlighter-rouge">Proc</code>, <strong>and Ruby does not count <code class="highlighter-rouge">Proc</code>s as arguments!</strong></p>
 
 <p>It’s weird, huh? That’s because <strong>you can pass in a block at the end of pretty much any method in Ruby, and it won’t see it as an argument, in the typical sense</strong>.</p>
 
@@ -291,40 +291,40 @@
 
 <script src="//repl.it/embed/jld/3.js"></script>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What&#39;s up</span>
-<span class="c1"># =&gt; What&#39;s up</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What's up</span>
+<span class="c1"># =&gt; What's up</span></code></pre></figure>
 
-<p>We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say <code>yield</code>:</p>
+<p>We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say <code class="highlighter-rouge">yield</code>:</p>
 
 <script src="//repl.it/embed/jld/2.js"></script>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What&#39;s up</span>
-<span class="c1"># =&gt; What&#39;s up</span>
-<span class="c1"># =&gt;  you</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># =&gt; What's up</span>
+<span class="c1"># =&gt; What's up</span>
+<span class="c1"># =&gt;  you</span></code></pre></figure>
 
-<p><code>#block_given?</code> is a native method that returns a boolean (<code>true</code> or <code>false</code>) that checks if a block was passed in to the method. We have to use it in the above example, because if we just say <code>yield</code> instead of <code>yield if block_given?</code>, then we’ll get an error that says <code>no block given (yield)</code>.</p>
+<p><code class="highlighter-rouge">#block_given?</code> is a native method that returns a boolean (<code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code>) that checks if a block was passed in to the method. We have to use it in the above example, because if we just say <code class="highlighter-rouge">yield</code> instead of <code class="highlighter-rouge">yield if block_given?</code>, then we’ll get an error that says <code class="highlighter-rouge">no block given (yield)</code>.</p>
 
-<p>Also, the question mark <code>?</code> is Ruby’s way of meaningfully letting the user know that the method is supposed to return a boolean. There’s nothing really special about it.</p>
+<p>Also, the question mark <code class="highlighter-rouge">?</code> is Ruby’s way of meaningfully letting the user know that the method is supposed to return a boolean. There’s nothing really special about it.</p>
 
-<p><strong>Now, going back to the original error (<code>error: wrong number of arguments (1 for 0)</code>):</strong></p>
+<p><strong>Now, going back to the original error (<code class="highlighter-rouge">error: wrong number of arguments (1 for 0)</code>):</strong></p>
 
 <p>I’ll try my best to sort of construe a similar error in JavaScript:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="nx">sayHello</span><span class="p">);</span> <span class="c1">// TypeError: [object Array] is not a function</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">names</span><span class="p">,</span> <span class="nx">sayHello</span><span class="p">);</span> <span class="c1">// TypeError: [object Array] is not a function</span>
 
-<span class="c1">// It&#39;s saying &quot;names&quot; is not a function, which is true...</span>
+<span class="c1">// It's saying "names" is not a function, which is true...</span>
 <span class="c1">// forEach expects one argument (a function)</span>
 
-<span class="c1">// we expected: names.forEach(sayHello);</span></code></pre></div>
+<span class="c1">// we expected: names.forEach(sayHello);</span></code></pre></figure>
 
-<p>If the above code were Ruby, you’d get an error something like <code>wrong number of arguments (2 for 1)</code>. Once again, I want to emphasize this is because Ruby doesn’t see the <code>Proc</code> as an argument.</p>
+<p>If the above code were Ruby, you’d get an error something like <code class="highlighter-rouge">wrong number of arguments (2 for 1)</code>. Once again, I want to emphasize this is because Ruby doesn’t see the <code class="highlighter-rouge">Proc</code> as an argument.</p>
 
 <h1 id="conclusion">Conclusion</h1>
 
 <ul>
   <li><strong>Use blocks as if they were callbacks.</strong></li>
-  <li><strong>Use a <code>lambda</code> or a  <code>Proc</code>.</strong> Remember the two subtle differences between them (number of arguments, and return values).</li>
-  <li><strong>Put a <code>&amp;</code> before the block that you pass into the method,</strong> if you pass it in to a native Ruby method that will run a block, like <code>Enumberable#each</code>.</li>
+  <li><strong>Use a <code class="highlighter-rouge">lambda</code> or a  <code class="highlighter-rouge">Proc</code>.</strong> Remember the two subtle differences between them (number of arguments, and return values).</li>
+  <li><strong>Put a <code class="highlighter-rouge">&amp;</code> before the block that you pass into the method,</strong> if you pass it in to a native Ruby method that will run a block, like <code class="highlighter-rouge">Enumberable#each</code>.</li>
 </ul>
 
 <h1 id="further-reading">Further reading</h1>

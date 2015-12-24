@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Initial thoughts on event sourcing</title>
+  <meta name="description" content=""The state of any object can be derived from the events that affect it." In a nutshell, this is the thesis of "event sourcing", which, when implemented in an...">
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,300italic,600italic,700,700italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" href="/images/favicon.ico?v=1.1"> 
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://joshbeam.github.io/javascript/2015/12/24/initial-thoughts-on-event-sourcing.html">
+  <link rel="alternate" type="application/rss+xml" title="Front End Collision" href="http://joshbeam.github.io/feed.xml" />
+  <script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-60978864-1', 'auto');
+	ga('send', 'pageview');
+</script>
+  <!--[if lt IE 9]>
+    <script src="/bower_components/html5shiv/dist/html5shiv.js"></script>
+<![endif]-->
+</head>
+
+
+  <body>
+
+    <header>
+  <a href="/">
+    <img src="http://gravatar.com/avatar/26d4fa31138c5c8ba1cb76392d9fc64d?s=200" width="100" height="103">
+    <hgroup>
+      <h1>Front End Collision</h1>
+      <h5>Blog of software engineer Josh Beam</h5>
+    </hgroup>
+  </a>
+</header>
+    <a class="menu-icon" href="#">
+</a>
+<div class="black-out"></div>
+<nav>
+  <ul>
+    <li>
+      <a href="/">Home</a>
+    </li>
+    <li>
+      <a href="/about">About</a>
+    </li>
+    <li>
+      <a href="/archive">Archive</a>
+    </li>
+  </ul>
+</nav>
+
+    <main>
+        <section>
+
+  <header>
+    <h1>Initial thoughts on event sourcing</h1>
+    <p>
+      24 December 2015 &mdash; Josh Beam &mdash; <em>javascript</em> 
+    </p>
+    <a href="/" class="view-all-link">All Posts</a>
+  </header>
+
+  <article>
+    <div class="note">
+<!--excerpt.start-->
+"The state of any object can be derived from the events that affect it." In a nutshell, this is the thesis of "event sourcing", which, when implemented in an application, becomes an "event driven architecture". In this post I'll discuss some of the practical applications, benefits, and drawbacks that the team and I have noticed after migrating our current, stateful database to a more event-driven approach.
+<!--excerpt.end-->
+</div>
+
+<h1 id="tldr">TL;DR</h1>
+
+<p>Store events in your database, and construct the current state of your database from those events. Keep side-effects separate (like emails being sent to users). Endpoints become open-ended and asynchronous, and you can track the state of your database throughout time (almost like Git).</p>
+
+<h1 id="intro">Intro</h1>
+
+<p>My team and I are several months into a move from a traditional RESTful implementation (which is referred to as <strong>“active record”</strong> and is arguably the most widespread concept taught in web development) of our server to a more event-driven approach. If you haven’t read much about event-driven architecture (EDA) or <strong>event sourcing</strong>, I would recommend taking a look at <a href="https://ookami86.github.io/event-sourcing-in-practice/#title.md">this easy-to-follow slide deck</a> (it should take about <strong>10 minutes or so</strong> to get a basic idea of what’s going on). If you prefer not to read that…</p>
+
+<h1 id="heres-a-quick-rundown-of-some-of-the-basic-concepts">Here’s a quick rundown of some of the basic concepts</h1>
+
+<ol>
+  <li>“Entities” (records in your database) are modeled <em>as</em> events (for example, <code class="highlighter-rouge">UserCreated</code> would be an entity).</li>
+  <li>Your stateful objects (something that would traditionally be a <code class="highlighter-rouge">User</code> object or whatever) are <em>derived from</em> your events.</li>
+  <li>In theory, <strong>if you only kept a backup of your event entities, you should be able to reconstruct the most up-to-date state of your entire database</strong>.</li>
+</ol>
+
+<center><img src="/images/event-sourcing-diagram.png" width="50%" /></center>
+
+<p>Instead of mutating an object over and over and losing any notion of what led the object to that point, you can instead keep a timeline of the object and <em>derive</em> its current state. It’s like <strong>having a history of every object in your database</strong>. Kind of reminds me of Git.</p>
+
+<p>For performance reasons, every time some requests, say, <code class="highlighter-rouge">user/1234</code>, you don’t want to recompute that user object based on the events that led up to that point (<code class="highlighter-rouge">UserCreated</code>, <code class="highlighter-rouge">UserUpdatedEmailAddress</code>, <code class="highlighter-rouge">UserLoggedIn</code>, etc.), but instead, every time an update/delete occurs, you can just store the current state of whatever that object is in a separate table and query for <em>that</em> on any <code class="highlighter-rouge">GET</code> request.</p>
+
+<p>In other words, <strong>new events trigger updates, and <code class="highlighter-rouge">GET</code> requests query for the stateful object itself</strong>. This is almost like a cache.</p>
+
+<p>In other words, this is a very close model of real life. Things happen over time, and the current state of anything is just the sum of the things that happened to it.</p>
+
+<h1 id="what-can-the-endpoints-look-like">What can the endpoints look like?</h1>
+
+<p>Something like <code class="highlighter-rouge">/api/1.0/userCreated</code>.</p>
+
+<p>One approach is to model your endpoints as events themselves. In other words, the endpoints have a semantic meaning for their corresponding entity, just like any other traditional RESTful endpoint. However, this approach lends itself to being a bit <strong>more open-ended and a bit less procedural</strong>. Additionally, all endpoints become basically either a <code class="highlighter-rouge">GET</code> or a <code class="highlighter-rouge">POST</code> (similar to “REST without <code class="highlighter-rouge">PUT</code>”), and side-effects are processed asynchronously on the backend.</p>
+
+<p>That last point about side-effects is important, because if you were to reconstruct your database from your events, you would want to do so without, say, triggering emails being sent to users, etc. The side-effects should be encapsulated in a set of logic seperate from the event creation itself (and endpoints are a great mechanism for this).</p>
+
+<h1 id="some-benefits-ive-encountered">Some benefits I’ve encountered</h1>
+
+<h3 id="loosely-coupled-open-ended-endpoints">Loosely coupled, open-ended endpoints</h3>
+
+<p>This has been absolutely <em>fantastic</em>. For most operations, our client application just sends a <code class="highlighter-rouge">GET</code> for a current stateful object, or a <code class="highlighter-rouge">POST</code> to create an event. That’s it. If you’ve ever deployed an iOS application to the App Store, you’ll know it takes about a week (sometimes shorter, sometimes longer) to get approved. This means that if you have a bug in your client application, the fix takes the sum of the time it takes you to:</p>
+
+<ul>
+  <li>Receive a complaint from a customer</li>
+  <li>Find out why the bug is happening (“well, it was working on my machine?!”)</li>
+  <li>Fix the bug</li>
+  <li>Code review</li>
+  <li>Do some QA</li>
+  <li>And then, get App Store approval</li>
+</ul>
+
+<p>This means you need to <strong>remove flow of control from your client application as much as possible, and move that control to your server</strong>. This is pretty trivial in most cases with open ended endpoints that simply respond to events.</p>
+
+<p>We have continuous integration set up through <a href="https://circleci.com/">CircleCI</a>, which means that once we merge in Github from <code class="highlighter-rouge">develop</code> to <code class="highlighter-rouge">staging</code>, or <code class="highlighter-rouge">staging</code> to <code class="highlighter-rouge">master</code>, our server <strong>automatically deploys</strong>. This means that if we can keep as much logic as possible on our server, we can just deploy our server as often as we want to fix bugs that we encounter (this is obviously useless, however, if it’s a client UI bug).</p>
+
+<h3 id="backend-becomes-asynchronous">Backend becomes asynchronous</h3>
+
+<p>This is huge. This means that essentially all side effects happen inside workers. So the only response that gets sent back to the client is either something like a <code class="highlighter-rouge">401: Unauthorized</code>, <code class="highlighter-rouge">500: Internal error</code>, or <code class="highlighter-rouge">200: Success</code>. These responses are only those of <strong>the event creation itself</strong>. Things that might take a shit ton of time (like making a third-party service send an email to user who just signed up) can take place in the background.</p>
+
+<p>An asynchronous backend can be implemented without an event-driven architecture (for example, by making traditional, RESTful, active record endpoints kick off async workers), but these approaches mesh very well together.</p>
+
+<h1 id="some-drawbacks-ive-encountered">Some drawbacks I’ve encountered</h1>
+
+<h3 id="lots-of-entities">Lots of entities</h3>
+
+<p>Events are entities, and, well… entities are entities too. In other words, if you store both events <em>and</em> the current state of your database, then you have a big database.</p>
+
+<h3 id="backend-becomes-asynchronous-1">Backend becomes asynchronous</h3>
+
+<p>You’ll notice the second point was mentioned as both a benefit and a drawback. If your endpoints operate asynchronously, this means that you can only rely on sending an HTTP response <em>for the creation of the event itself</em>. That’s it. No client logic can depend on any subsequent operations or side-effects that take place on the server, <strong>unless you implement some sort of two-way communication via polling, web sockets, etc.</strong>.</p>
+
+<p>For example, say we want to prevent users from posting an ad for their used motorcycle on our app unless they’ve verified they’re email address. In a traditional, synchronous, active-record approach, we might do this:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">POST /advertisement BODY: { type: 'motorcycle', make: 'Harley Davidson' }</code></li>
+  <li>Server checks <code class="highlighter-rouge">user.emailVerified === true</code>?</li>
+  <li>If not, respond with, say, <code class="highlighter-rouge">401: Unauthorized</code></li>
+  <li>This response triggers logic on the client to show a prompt asking for the user to enter their email address in order to be sent an email with a link to verify it</li>
+</ul>
+
+<p>This works great, if the backend is synchronous. What’s left to be discovered is the best approach for processing complex logic such as this with an asynchronous backend, which requires a different frame of thinking (something we’re still working on figuring out).</p>
+
+<h1 id="some-final-thoughtsquestions">Some final thoughts/questions</h1>
+
+<h2 id="deletions">Deletions</h2>
+
+<p>Do you want “soft deletes” or “hard deletes”? In other words, do you want to actually remove a stateful record from your database, or simply mark it (via a flag) as “removed” or “deleted”, or whatever?</p>
+
+<h2 id="diffs">Diffs</h2>
+
+<p>Since this approach is already closely related to Git, one of the only major things missing is the ability to “diff” objects. These diffs could be stored inside the event itself:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// UserUpdated event</span>
+
+<span class="nx">UserUpdated</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">user_id</span><span class="p">:</span> <span class="s1">'auth0|123456'</span><span class="p">,</span>
+  <span class="na">email</span><span class="p">:</span> <span class="s1">'new_email@gmail.com'</span><span class="p">,</span>
+  <span class="na">updated</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="na">type</span><span class="p">:</span> <span class="s1">'MailingList'</span><span class="p">,</span> <span class="na">_id</span><span class="p">:</span> <span class="s1">'aXd45'</span><span class="p">,</span> <span class="na">email</span><span class="p">:</span> <span class="s1">'new_email@gmail.com'</span><span class="p">},</span>
+    <span class="p">{</span><span class="na">type</span><span class="p">:</span> <span class="s1">'User'</span><span class="p">,</span> <span class="na">_id</span><span class="p">:</span> <span class="s1">'bgg7x'</span><span class="p">,</span> <span class="na">email</span><span class="p">:</span> <span class="s1">'new_email@gmail.com'</span><span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>There are still many questions to be answered, and lots of cool things that can be implemented here. It is a shift in the commonly-taught paradigm (the “active record” approach). I am excited to learn more from others who have experience with this! Thanks for reading, and feel free to chime in in the comments below.</p>
+
+    <div class="twitter-plug">Like this post?
+<a href="https://twitter.com/intent/tweet?url=http://joshbeam.github.io/javascript/2015/12/24/initial-thoughts-on-event-sourcing.html&text=Initial thoughts on event sourcing&via=joshbeam92" 
+target="_blank">
+Share it with your followers</a> 
+or 
+<a href="https://twitter.com/joshbeam92">
+follow me on Twitter</a>!</div>
+  </article>
+
+  
+  <div id="disqus_thread"></div>
+  
+
+</section>
+
+    </main>
+
+    <footer>
+  <div>
+    <p>
+      © 2015 Joshua Beam
+    </p>
+
+    <ul class="list-unstyled list-inline">
+      <li><a href="http://www.joshbe.am">www.joshbe.am</a></li>
+      <li><a href="http://github.com/joshbeam">GitHub</a></li>
+      <li><a href="http://careers.stackoverflow.com/joshbeam">Resume</a></li>
+      <li><a href="http://twitter.com/joshbeam92">@joshbeam92</a></li>
+      <li><a href="mailto:josh@frontendcollisionblog.com">josh@frontendcollisionblog.com</a></li>
+    </ul>
+  </div>
+  
+  <form class="search">
+    <input type="text" class="search-box" id="search" /><input type="submit" class="search-button" value="Search" />
+  </form>
+
+</footer>
+
+
+    <script src="/js/dist/scripts.min.js"></script>
+
+
+
+
+
+
+<script type="text/javascript">
+    //var disqus_developer = 1;
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'frontendcollision';
+    
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+  </body>
+</html>

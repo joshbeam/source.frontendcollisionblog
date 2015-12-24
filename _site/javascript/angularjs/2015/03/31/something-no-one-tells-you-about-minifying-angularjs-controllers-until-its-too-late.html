@@ -78,13 +78,13 @@ This post is going to talk briefly about the common ways people are shown to wri
 
 <p>In many online AngularJS tutorials, you’re taught (for simplicity’s sake) to write a controller as such:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myModule&#39;</span><span class="p">);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'myModule'</span><span class="p">);</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;MyController&#39;</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'MyController'</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">$scope</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">$scope</span><span class="p">.</span><span class="nx">doSomething</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 		<span class="c1">// some code here</span>
 	<span class="p">}</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span></code></pre></figure>
 
 <p>The above code has several advantages. First, it’s simple to read. Second, it’s simple to write. However, it is generally recommended to minify your JavaScript code before deploying it live, since this reduces the size of the file that the server has to send (in other words, this can dramatically increase the user’s perception of how fast your application loads).</p>
 
@@ -94,7 +94,7 @@ This post is going to talk briefly about the common ways people are shown to wri
 
 <p><strong>Continuing on…</strong> if you minify our above example and open your app, you’ll see that nothing happens. And you’ll get this error in your console:</p>
 
-<p><code>Error: [$injector:unpr]</code></p>
+<p><code class="highlighter-rouge">Error: [$injector:unpr]</code></p>
 
 <p>So what is this error? If we click on the error in our console, it will take us to the AngularJS website, which will say something like this:</p>
 
@@ -102,7 +102,7 @@ This post is going to talk briefly about the common ways people are shown to wri
   <p>This error results from the $injector being unable to resolve a required dependency. To fix this, make sure the dependency is defined and spelled correctly.</p>
 </blockquote>
 
-<p>In other words, because of the way AngularJS uses dependency injection (it actually parses the arguments of your functions), when the code is minified, <code>$scope</code> is no longer <code>$scope</code>, <code>$route</code> is no longer <code>$route</code>, etc. Instead, they’re just minified variables, like <code>e</code> or <code>a</code>, which don’t make any sense to AngularJS (if you want to understand a little bit more about dependency injection and how it works in JavaScript, check out these two posts: one by <a href="http://anandmanisankar.com/posts/angularjs-dependency-injection-demystified/">Anand</a> and one by <a href="http://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html">Alex</a>. For now, just know that minfiying breaks dependency injection.)</p>
+<p>In other words, because of the way AngularJS uses dependency injection (it actually parses the arguments of your functions), when the code is minified, <code class="highlighter-rouge">$scope</code> is no longer <code class="highlighter-rouge">$scope</code>, <code class="highlighter-rouge">$route</code> is no longer <code class="highlighter-rouge">$route</code>, etc. Instead, they’re just minified variables, like <code class="highlighter-rouge">e</code> or <code class="highlighter-rouge">a</code>, which don’t make any sense to AngularJS (if you want to understand a little bit more about dependency injection and how it works in JavaScript, check out these two posts: one by <a href="http://anandmanisankar.com/posts/angularjs-dependency-injection-demystified/">Anand</a> and one by <a href="http://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html">Alex</a>. For now, just know that minfiying breaks dependency injection.)</p>
 
 <p>In fact, I’ve written two JSBin examples for you to see what exactly is going on.</p>
 
@@ -120,10 +120,10 @@ This post is going to talk briefly about the common ways people are shown to wri
 
 <p>When you click on your error message in the console, which leads to the AngularJS website, they actually provide you with a solution to this error:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myApp&#39;</span><span class="p">,</span> <span class="p">[])</span>
-<span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;MyController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;myService&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">myService</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'myApp'</span><span class="p">,</span> <span class="p">[])</span>
+<span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'MyController'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'myService'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">myService</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// Do something with myService</span>
-<span class="p">}]);</span></code></pre></div>
+<span class="p">}]);</span></code></pre></figure>
 
 <p>This way works completely fine. If you minify, AngularJS instead looks at each item in the array (which is the second argument passed to the controller in the above example), and resolves any minified dependency to match its correct string name.</p>
 
@@ -131,10 +131,10 @@ This post is going to talk briefly about the common ways people are shown to wri
 
 <p>Just imagine if we have something like this:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myApp&#39;</span><span class="p">,</span> <span class="p">[])</span>
-<span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;MyController&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="s1">&#39;$route&#39;</span><span class="p">,</span> <span class="s1">&#39;Item&#39;</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">,</span> <span class="s1">&#39;utils&#39;</span><span class="p">,</span> <span class="s1">&#39;shade&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">,</span><span class="nx">$route</span><span class="p">,</span><span class="nx">Item</span><span class="p">,</span><span class="nx">items</span><span class="p">,</span><span class="nx">utils</span><span class="p">,</span><span class="nx">shade</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'myApp'</span><span class="p">,</span> <span class="p">[])</span>
+<span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'MyController'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'$scope'</span><span class="p">,</span> <span class="s1">'$route'</span><span class="p">,</span> <span class="s1">'Item'</span><span class="p">,</span> <span class="s1">'items'</span><span class="p">,</span> <span class="s1">'utils'</span><span class="p">,</span> <span class="s1">'shade'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">$scope</span><span class="p">,</span><span class="nx">$route</span><span class="p">,</span><span class="nx">Item</span><span class="p">,</span><span class="nx">items</span><span class="p">,</span><span class="nx">utils</span><span class="p">,</span><span class="nx">shade</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// Do something</span>
-<span class="p">}]);</span></code></pre></div>
+<span class="p">}]);</span></code></pre></figure>
 
 <p>Okay, okay, it’s not <strong>terrible</strong>. But I think there’s a better way to write it. As John Papa says:</p>
 
@@ -142,28 +142,28 @@ This post is going to talk briefly about the common ways people are shown to wri
   <p>Why?: Avoid creating in-line dependencies as long lists can be difficult to read in the array. Also it can be confusing that the array is a series of strings while the last item is the component’s function.</p>
 </blockquote>
 
-<p><strong>Use <code>$inject</code>:</strong></p>
+<p><strong>Use <code class="highlighter-rouge">$inject</code>:</strong></p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myApp&#39;</span><span class="p">,</span> <span class="p">[]);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'myApp'</span><span class="p">,</span> <span class="p">[]);</span>
 
-<span class="nx">MyController</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;$scope&#39;</span><span class="p">,</span> <span class="s1">&#39;$route&#39;</span><span class="p">,</span> <span class="s1">&#39;Item&#39;</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">,</span> <span class="s1">&#39;utils&#39;</span><span class="p">,</span> <span class="s1">&#39;shade&#39;</span><span class="p">];</span>
+<span class="nx">MyController</span><span class="p">.</span><span class="nx">$inject</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'$scope'</span><span class="p">,</span> <span class="s1">'$route'</span><span class="p">,</span> <span class="s1">'Item'</span><span class="p">,</span> <span class="s1">'items'</span><span class="p">,</span> <span class="s1">'utils'</span><span class="p">,</span> <span class="s1">'shade'</span><span class="p">];</span>
 
-<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;myApp&#39;</span><span class="p">)</span>
-	<span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">&#39;MyController&#39;</span><span class="p">,</span> <span class="nx">MyController</span><span class="p">);</span>
+<span class="nx">angular</span><span class="p">.</span><span class="nx">module</span><span class="p">(</span><span class="s1">'myApp'</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">controller</span><span class="p">(</span><span class="s1">'MyController'</span><span class="p">,</span> <span class="nx">MyController</span><span class="p">);</span>
 
 <span class="kd">function</span> <span class="nx">MyController</span><span class="p">(</span><span class="nx">$scope</span><span class="p">,</span><span class="nx">$route</span><span class="p">,</span><span class="nx">Item</span><span class="p">,</span><span class="nx">items</span><span class="p">,</span><span class="nx">utils</span><span class="p">,</span><span class="nx">shade</span><span class="p">)</span> <span class="p">{</span>
 	<span class="c1">// do something</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>The above makes me breathe a sigh of relief, due to the now ease of readability. And, <strong>we’ve solved our issue of minification. We are now minification-safe!</strong> Anyone looking at the code can now understand exactly what is happening. <em>“Oh, okay, so we have <strong>injected</strong> several services into this controller…</em>”</p>
 
-<p>You’ll notice too that I separated the declarations of the module (I didn’t chain <code>.controller</code> to <code>angular.module('myApp',[])</code>). Once again, I recommend reading John Papa’s style guide for quick clarification on that.</p>
+<p>You’ll notice too that I separated the declarations of the module (I didn’t chain <code class="highlighter-rouge">.controller</code> to <code class="highlighter-rouge">angular.module('myApp',[])</code>). Once again, I recommend reading John Papa’s style guide for quick clarification on that.</p>
 
 <h1 id="conclusion">Conclusion</h1>
 
 <p>This doesn’t just go for controllers. It goes for anything where you inject anything. Directives, configs, runs, factories, etc. I am of the opinion that following the above implementation of dependency injection, at least in the current version of AngularJS at the time of writing this (end of March 2015), is probably one of the best solutions to solving the minification and readibility issues caused by other solutions.</p>
 
-<p>So to recap what we learned… Minifying code that uses string-dependent dependency injection can break your application, unless you explicitly define the strings to use for the dependencies, which <code>$inject</code> is perfect for.</p>
+<p>So to recap what we learned… Minifying code that uses string-dependent dependency injection can break your application, unless you explicitly define the strings to use for the dependencies, which <code class="highlighter-rouge">$inject</code> is perfect for.</p>
 
     <div class="twitter-plug">Like this post?
 <a href="https://twitter.com/intent/tweet?url=http://joshbeam.github.io/javascript/angularjs/2015/03/31/something-no-one-tells-you-about-minifying-angularjs-controllers-until-its-too-late.html&text=Something no one tells you about minifying AngularJS controllers (until it's too late)&via=joshbeam92" 

@@ -109,14 +109,14 @@
     <tr>
       <td>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">world</span> <span class="o">=</span> <span class="s1">&#39;world!&#39;</span><span class="p">,</span>
-    <span class="nx">helloWorld</span> <span class="o">=</span> <span class="s1">&#39;hello &#39;</span> <span class="o">+</span> <span class="nx">world</span><span class="p">;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">world</span> <span class="o">=</span> <span class="s1">'world!'</span><span class="p">,</span>
+    <span class="nx">helloWorld</span> <span class="o">=</span> <span class="s1">'hello '</span> <span class="o">+</span> <span class="nx">world</span><span class="p">;</span></code></pre></figure>
 
       </td>
       <td>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">world</span> <span class="o">=</span> <span class="s1">&#39;world&#39;</span>
-<span class="n">hello_world</span> <span class="o">=</span> <span class="s2">&quot;hello </span><span class="si">#{</span><span class="n">world</span><span class="si">}</span><span class="s2">&quot;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">world</span> <span class="o">=</span> <span class="s1">'world'</span>
+<span class="n">hello_world</span> <span class="o">=</span> <span class="s2">"hello </span><span class="si">#{</span><span class="n">world</span><span class="si">}</span><span class="s2">"</span></code></pre></figure>
 
       </td>
     </tr>
@@ -137,16 +137,16 @@
     <tr>
       <td>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
-    <span class="c1">// &#39;hard tab&#39;, 4 spaces</span>
-<span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 'hard tab', 4 spaces</span>
+<span class="p">}</span></code></pre></figure>
 
       </td>
       <td>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">foo</span>
-  <span class="c1"># &#39;soft tab&#39;, 2 spaces</span>
-<span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">foo</span>
+  <span class="c1"># 'soft tab', 2 spaces</span>
+<span class="k">end</span></code></pre></figure>
 
       </td>
     </tr>
@@ -156,23 +156,23 @@
     <tr>
       <td>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">someFunction</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">someFunction</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
 
-  <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">cb</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">cb</span> <span class="o">!==</span> <span class="s1">'undefined'</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">cb</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">hello</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="nx">someFunction</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">h</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">h</span><span class="p">;</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span></code></pre></figure>
 
       </td>
       <td>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">someMethod</span>
-  <span class="n">hello</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">someMethod</span>
+  <span class="n">hello</span> <span class="o">=</span> <span class="s1">'hello'</span>
   <span class="k">yield</span><span class="p">(</span><span class="n">hello</span><span class="p">)</span> <span class="k">if</span> <span class="nb">block_given?</span>
 <span class="k">end</span>
 
@@ -182,7 +182,7 @@
 
 <span class="c1"># or</span>
 
-<span class="n">someMethod</span> <span class="p">{</span> <span class="o">|</span><span class="n">h</span><span class="o">|</span> <span class="n">h</span> <span class="p">}</span></code></pre></div>
+<span class="n">someMethod</span> <span class="p">{</span> <span class="o">|</span><span class="n">h</span><span class="o">|</span> <span class="n">h</span> <span class="p">}</span></code></pre></figure>
 
       </td>
     </tr>
@@ -200,17 +200,17 @@
       <td>
         <code>// single-line comment</code>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*</span>
-<span class="cm">  multi-line</span>
-<span class="cm">  comment</span>
-<span class="cm">*/</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*
+  multi-line
+  comment
+*/</span></code></pre></figure>
 
       </td>
       <td>
         <code># single-line comment</code>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># multi-line</span>
-<span class="c1"># comment</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># multi-line</span>
+<span class="c1"># comment</span></code></pre></figure>
 
       </td>
     </tr>    

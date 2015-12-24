@@ -78,13 +78,13 @@ This post is going to discuss the reasoning behind a strange-looking syntax styl
 
 <p>Minification can cause modules to use each other as their arguments (unintentionally), if the developer isn’t careful.</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 	<span class="c1">// code</span>
 <span class="p">})()</span>
 
 <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
 	<span class="c1">// code	</span>
-<span class="p">})();</span></code></pre></div>
+<span class="p">})();</span></code></pre></figure>
 
 <p>If you look closely enough at the above, you’ll see the first <a href="http://benalman.com/news/2010/11/immediately-invoked-function-expression/">IIFE</a> is <strong>missing a semicolon at the end</strong>.</p>
 
@@ -92,29 +92,29 @@ This post is going to discuss the reasoning behind a strange-looking syntax styl
 
 <h1 id="the-broken-code">The broken code:</h1>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})()(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})();</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})()(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})();</span>
 
-<span class="c1">// (a)()(b)()</span></code></pre></div>
+<span class="c1">// (a)()(b)()</span></code></pre></figure>
 
-<p>The problem is that now function <code>a</code> is being called with function <code>b</code> passed in as an argument. Interesting.</p>
+<p>The problem is that now function <code class="highlighter-rouge">a</code> is being called with function <code class="highlighter-rouge">b</code> passed in as an argument. Interesting.</p>
 
-<p>So, we just add a <code>;</code> to the <em>beginning</em> of the module, and to the <em>end</em>. This acts as a safeguard to ensure we don’t run into that problem when we minify.</p>
+<p>So, we just add a <code class="highlighter-rouge">;</code> to the <em>beginning</em> of the module, and to the <em>end</em>. This acts as a safeguard to ensure we don’t run into that problem when we minify.</p>
 
 <p>So, when we try doing the above example with semicolons <strong>at the beginning <em>and</em> at the end</strong>, and you minify the code, you get this instead:</p>
 
 <h1 id="the-working-code">The working code:</h1>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">;(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})();;(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})();</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">;(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})();;(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{})();</span></code></pre></figure>
 
 <p>The cool thing is, <strong>the above doesn’t throw any errors. In fact, <a href="http://jshint.com/">JSHint</a> won’t yell at you either.</strong></p>
 
-<p>Why is this? Check out the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/Empty">MDN article on <code>empty</code></a>:</p>
+<p>Why is this? Check out the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/Empty">MDN article on <code class="highlighter-rouge">empty</code></a>:</p>
 
 <blockquote>
   <p>An <strong>empty</strong> statement is used to provide no statement, although the JavaScript syntax would expect one.</p>
 </blockquote>
 
-<p>So those extra semicolons are <em>not</em> a syntax error, because a random semicolon anywhere in the code can be interpreted as an <code>empty</code> statement. Cool, huh?</p>
+<p>So those extra semicolons are <em>not</em> a syntax error, because a random semicolon anywhere in the code can be interpreted as an <code class="highlighter-rouge">empty</code> statement. Cool, huh?</p>
 
 
     <div class="twitter-plug">Like this post?

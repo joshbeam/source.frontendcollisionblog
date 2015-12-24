@@ -76,7 +76,7 @@ In this little snippet, we're going to explore an option to show a summary of yo
 
 <p>I am using the static-site generator <a href="http://jekyllrb.com/">Jekyll</a> to compile my website into a bunch of static files (the main benefit being a generally more secure and potentially quicker website due to a lack of server round-trips to a database).</p>
 
-<p>I ran across <a href="http://stackoverflow.com/questions/15497207/how-to-display-post-summary-on-index-page-using-jekyll">several solutions</a> for displaying a summary or excerpt of the post in the main blog page (if you’re using the basic Jekyll theme that comes standard, it’ll probably be your <code>index.html</code>).</p>
+<p>I ran across <a href="http://stackoverflow.com/questions/15497207/how-to-display-post-summary-on-index-page-using-jekyll">several solutions</a> for displaying a summary or excerpt of the post in the main blog page (if you’re using the basic Jekyll theme that comes standard, it’ll probably be your <code class="highlighter-rouge">index.html</code>).</p>
 
 <p>Anyway, the solution I came up with is meant to allow me to control what part of the post I want to display as an excerpt. If I don’t choose a part of the post, that’s okay, it just displays a default excerpt.</p>
 
@@ -84,11 +84,11 @@ In this little snippet, we're going to explore an option to show a summary of yo
 
 <h1 id="example">Example:</h1>
 
-<div class="highlight"><pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- index.html --&gt;</span>
-<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;post-excerpt&quot;</span><span class="nt">&gt;</span>
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- index.html --&gt;</span>
+<span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"post-excerpt"</span><span class="nt">&gt;</span>
 
-{% if post.content contains &#39;<span class="c">&lt;!--excerpt.start--&gt;</span>&#39; and post.content contains &#39;<span class="c">&lt;!--excerpt.end--&gt;</span>&#39; %}
-	{{ ((post.content | split:&#39;<span class="c">&lt;!--excerpt.start--&gt;</span>&#39; | last) | split: &#39;<span class="c">&lt;!--excerpt.end--&gt;</span>&#39; | first) | strip_html | truncatewords: 20 }}
+{% if post.content contains '<span class="c">&lt;!--excerpt.start--&gt;</span>' and post.content contains '<span class="c">&lt;!--excerpt.end--&gt;</span>' %}
+	{{ ((post.content | split:'<span class="c">&lt;!--excerpt.start--&gt;</span>' | last) | split: '<span class="c">&lt;!--excerpt.end--&gt;</span>' | first) | strip_html | truncatewords: 20 }}
 {% else %}
 	{{ post.content | strip_html | truncatewords: 20 }}
 {% endif %}
@@ -97,10 +97,10 @@ In this little snippet, we're going to explore an option to show a summary of yo
 
 <span class="c">&lt;!-- _posts/some-random-post.html --&gt;</span>
 <span class="nt">&lt;p&gt;</span>
-Here&#39;s all my content, and <span class="c">&lt;!--excerpt.start--&gt;</span>here&#39;s where I want my summary to begin, and this is where I want it to end<span class="c">&lt;!--excerpt.end--&gt;</span>.
-<span class="nt">&lt;/p&gt;</span></code></pre></div>
+Here's all my content, and <span class="c">&lt;!--excerpt.start--&gt;</span>here's where I want my summary to begin, and this is where I want it to end<span class="c">&lt;!--excerpt.end--&gt;</span>.
+<span class="nt">&lt;/p&gt;</span></code></pre></figure>
 
-<p>If I don’t add the comments in the post, the template with simply extract the content of the post, strip the HTML tags, and truncate it 20 words, followed by an ellipsis <code>...</code>.</p>
+<p>If I don’t add the comments in the post, the template with simply extract the content of the post, strip the HTML tags, and truncate it 20 words, followed by an ellipsis <code class="highlighter-rouge">...</code>.</p>
 
     <div class="twitter-plug">Like this post?
 <a href="https://twitter.com/intent/tweet?url=http://joshbeam.github.io/jekyll/snippet/2015/03/23/how-to-show-a-summary-of-your-post-with-jekyll.html&text=How to show a summary of your post with Jekyll&via=joshbeam92" 

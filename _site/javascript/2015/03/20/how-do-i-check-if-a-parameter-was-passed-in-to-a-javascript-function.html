@@ -78,151 +78,157 @@ This post is going to talk about checking for the "existence" of a parameter, if
 
 <p>A parameter can also be called an argument. It’s the thing passed into a function that you do something with:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	
+<span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nx">test</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// ==&gt; returns 2</span>
 
-<span class="kd">var</span> <span class="nx">two</span> <span class="o">=</span> <span class="nx">test</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// this variable is now set to 2</span></code></pre></div>
+<span class="kd">var</span> <span class="nx">two</span> <span class="o">=</span> <span class="nx">test</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// this variable is now set to 2</span></code></pre></figure>
 
 <p>But what if a function can do something <em>without</em> a parameter, or what if the functionality changes based on whether or not a parameter was passed in?</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	
+<span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">if</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
 		<span class="c1">// do something</span>
 	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 		<span class="c1">// do something else</span>
 	<span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<p>In the above example, we expect that if <code>x</code> “exists”, then we’ll do something; if not, we’ll do something else. But checking for existence is a little more difficult than that. It has to do with truthiness.</p>
+<p>In the above example, we expect that if <code class="highlighter-rouge">x</code> “exists”, then we’ll do something; if not, we’ll do something else. But checking for existence is a little more difficult than that. It has to do with truthiness.</p>
 
 <h1 id="the-truth-about-truthiness">The truth about truthiness</h1>
 
-<p>In <code>if</code> statements, JavaScript evaluates the statement to a boolean <code>true</code> or <code>false</code>, and acts accordingly. But when certain values are encountered, JavaScript “coerces” them to a boolean value. For example, these statements are all correct:</p>
+<p>In <code class="highlighter-rouge">if</code> statements, JavaScript evaluates the statement to a boolean <code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code>, and acts accordingly. But when certain values are encountered, JavaScript “coerces” them to a boolean value. For example, these statements are all correct:</p>
 
 <h2 id="these-are-all-true">These are all true:</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*</span>
-<span class="cm">	1 == true</span>
-<span class="cm">	0 == false</span>
-<span class="cm">	&#39; &#39; == true</span>
-<span class="cm">	&#39;&#39; == false</span>
-<span class="cm">	null == false</span>
-<span class="cm">	undefined == false</span>
-<span class="cm">*/</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	
+<span class="cm">/*
+	1 == true
+	0 == false
+	' ' == true
+	'' == false
+	null == false
+	undefined == false
+*/</span></code></pre></figure>
 
-<p>There are plenty of other examples. However, you’ll notice above that we’re using the <code>==</code> operator. This is called the equality operator. It checks if two values are “equal”, but to do this, JavaScript coerces the types.</p>
+<p>There are plenty of other examples. However, you’ll notice above that we’re using the <code class="highlighter-rouge">==</code> operator. This is called the equality operator. It checks if two values are “equal”, but to do this, JavaScript coerces the types.</p>
 
 <h2 id="these-are-all-incorrect-they-will-evaluate-to-false">These are all incorrect (they will evaluate to false):</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*</span>
-<span class="cm">	1 === true</span>
-<span class="cm">	0 === false</span>
-<span class="cm">	&#39; &#39; === true</span>
-<span class="cm">	&#39;&#39; === false</span>
-<span class="cm">	null === false</span>
-<span class="cm">	undefined === false</span>
-<span class="cm">*/</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	
+<span class="cm">/*
+	1 === true
+	0 === false
+	' ' === true
+	'' === false
+	null === false
+	undefined === false
+*/</span></code></pre></figure>
 
-<p>You’ll notice a very subtle, but important, difference here: we’re using the <code>===</code> operator: also called the identity operator. <code>1</code> does not have the identity of <code>true</code>, <em>however</em>, it is equal to true. This is confusing at first, but this is the principle of truthiness.</p>
+<p>You’ll notice a very subtle, but important, difference here: we’re using the <code class="highlighter-rouge">===</code> operator: also called the identity operator. <code class="highlighter-rouge">1</code> does not have the identity of <code class="highlighter-rouge">true</code>, <em>however</em>, it is equal to true. This is confusing at first, but this is the principle of truthiness.</p>
 
-<p>This brings us to a very important logical operator, the exlamation point <code>!</code> (also called the “not” operator). It gives you the opposite of whatever boolean value you give.</p>
+<p>This brings us to a very important logical operator, the exlamation point <code class="highlighter-rouge">!</code> (also called the “not” operator). It gives you the opposite of whatever boolean value you give.</p>
 
 <h2 id="the-not-operator-in-action-the-following-statements-are-all-true">The “not” operator in action (the following statements are all true)</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*</span>
-<span class="cm">	!1 === false</span>
-<span class="cm">	!0 === true</span>
-<span class="cm">	!&#39; &#39; === false</span>
-<span class="cm">	!&#39;&#39; === true</span>
-<span class="cm">	!null === true</span>
-<span class="cm">	!undefined === true</span>
-<span class="cm">*/</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	
+<span class="cm">/*
+	!1 === false
+	!0 === true
+	!' ' === false
+	!'' === true
+	!null === true
+	!undefined === true
+*/</span></code></pre></figure>
 
-<p>You’ll notice above that we are using the strict identity operator <code>===</code>. This is okay, because the <code>!</code> operator coerces the values on the left side of the equation to a boolean value. So really when we say <code>!1 === false</code>, we’re actually saying <code>false === false</code>. In other words, <code>false</code> <em>does</em> have the identity of <code>false</code>.</p>
+<p>You’ll notice above that we are using the strict identity operator <code class="highlighter-rouge">===</code>. This is okay, because the <code class="highlighter-rouge">!</code> operator coerces the values on the left side of the equation to a boolean value. So really when we say <code class="highlighter-rouge">!1 === false</code>, we’re actually saying <code class="highlighter-rouge">false === false</code>. In other words, <code class="highlighter-rouge">false</code> <em>does</em> have the identity of <code class="highlighter-rouge">false</code>.</p>
 
 <h2 id="the-double-not-or-just-two-not-operators-mdash-these-are-also-all-true">The “double not” (or just two “not” operators — these are also all true)</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*</span>
-<span class="cm">	!!1 === true</span>
-<span class="cm">	!!0 === false</span>
-<span class="cm">	!!&#39; &#39; === true</span>
-<span class="cm">	!!&#39;&#39; === false</span>
-<span class="cm">	!!null === false</span>
-<span class="cm">	!!undefined === false</span>
-<span class="cm">*/</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	
+<span class="cm">/*
+	!!1 === true
+	!!0 === false
+	!!' ' === true
+	!!'' === false
+	!!null === false
+	!!undefined === false
+*/</span></code></pre></figure>
 
-<p>The double not basically coerces each value into its equal boolean form. That’s a weird way to say it. Think of it like this: <code>0 == false</code> is the same as <code>!!0 === false</code>.</p>
+<p>The double not basically coerces each value into its equal boolean form. That’s a weird way to say it. Think of it like this: <code class="highlighter-rouge">0 == false</code> is the same as <code class="highlighter-rouge">!!0 === false</code>.</p>
 
 <h1 id="so-how-do-we-check-for-existence">So how do we check for existence?</h1>
 
-<p>Well, it depends on how we want to define existence. Do we want to say that the parameter doesn’t exist, if it is <code>null</code>,<code>undefined</code>,<code>0</code>,<code>false</code>, or some other non-truthy value? What if we want to pass in an empty string (<code>''</code>) as a value?</p>
+<p>Well, it depends on how we want to define existence. Do we want to say that the parameter doesn’t exist, if it is <code class="highlighter-rouge">null</code>,<code class="highlighter-rouge">undefined</code>,<code class="highlighter-rouge">0</code>,<code class="highlighter-rouge">false</code>, or some other non-truthy value? What if we want to pass in an empty string (<code class="highlighter-rouge">''</code>) as a value?</p>
 
 <h2 id="bad-example">Bad example:</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">if</span><span class="p">(</span><span class="o">!!</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;we passed the &quot;if&quot; test&#39;</span><span class="p">);</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;empty strings are okay too&#39;</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'we passed the "if" test'</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'empty strings are okay too'</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
 <span class="nx">test</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span> <span class="c1">// logs nothing</span>
-<span class="nx">test</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// ==&gt; &#39;we passed the &quot;if&quot; test&#39;; &#39;empty strings are okay too&#39;</span>
-<span class="nx">test</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span> <span class="c1">// logs nothing... uh oh</span>
+<span class="nx">test</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// ==&gt; 'we passed the "if" test'; 'empty strings are okay too'</span>
+<span class="nx">test</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span> <span class="c1">// logs nothing... uh oh</span>
 
-<span class="c1">// By the way, if(!!x) is basically shorthand for if(x == true)</span></code></pre></div>
+<span class="c1">// By the way, if(!!x) is basically shorthand for if(x == true)</span></code></pre></figure>
 
 <p>So we can combine instead combine logical statements to check for our idea of existence:</p>
 
 <h2 id="better-example">Better example:</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
-	<span class="k">if</span><span class="p">(</span><span class="o">!!</span><span class="nx">x</span> <span class="o">||</span> <span class="nx">x</span> <span class="o">===</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;we passed the &quot;if&quot; test&#39;</span><span class="p">);</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;empty strings are okay too&#39;</span><span class="p">);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span><span class="o">!!</span><span class="nx">x</span> <span class="o">||</span> <span class="nx">x</span> <span class="o">===</span> <span class="s1">''</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'we passed the "if" test'</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'empty strings are okay too'</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
 <span class="nx">test</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span> <span class="c1">// logs nothing</span>
-<span class="nx">test</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// ==&gt; &#39;we passed the &quot;if&quot; test&#39;; &#39;empty strings are okay too&#39;</span>
-<span class="nx">test</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span> <span class="c1">// ==&gt; &#39;we passed the &quot;if&quot; test&#39;; &#39;empty strings are okay too&#39;</span>
+<span class="nx">test</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// ==&gt; 'we passed the "if" test'; 'empty strings are okay too'</span>
+<span class="nx">test</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span> <span class="c1">// ==&gt; 'we passed the "if" test'; 'empty strings are okay too'</span>
 
-<span class="c1">// We could even use &#39;typeof&#39;</span>
+<span class="c1">// We could even use 'typeof'</span>
 <span class="kd">function</span> <span class="nx">test</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
-	<span class="k">if</span><span class="p">(</span><span class="o">!!</span><span class="nx">x</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">x</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;we passed the &quot;if&quot; test&#39;</span><span class="p">);</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;empty strings are okay too&#39;</span><span class="p">);</span>
+	<span class="k">if</span><span class="p">(</span><span class="o">!!</span><span class="nx">x</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">x</span> <span class="o">===</span> <span class="s1">'string'</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'we passed the "if" test'</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'empty strings are okay too'</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
-<span class="c1">// the above function will output the same thing</span></code></pre></div>
+<span class="c1">// the above function will output the same thing</span></code></pre></figure>
 
 <h2 id="checking-strictly-for-undefined-values">Checking strictly for undefined values:</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
 	<span class="k">if</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;a exists!&#39;</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'a exists!'</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
 <span class="c1">// The above function will throw a ReferenceError: a is not defined</span>
 
 <span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
-	<span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">a</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span><span class="p">)</span>  <span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;a exists!&#39;</span><span class="p">);</span>
+	<span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">a</span> <span class="o">!==</span> <span class="s1">'undefined'</span><span class="p">)</span>  <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'a exists!'</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
-<span class="c1">// This second function won&#39;t log anything, but it also won&#39;t throw an error!</span></code></pre></div>
+<span class="c1">// This second function won't log anything, but it also won't throw an error!</span></code></pre></figure>
 
-<p>In the above example, <code>a</code> <strong>was never declared</strong>. If a variable is never declared and you try to check for its existence, you’ll get an error. But the <code>typeof</code> operator is the only operator (to my knowledge) that gets around this. If you check the type of a variable that was never declared, <strong>you won’t get an error, and your program can continue</strong>.</p>
+<p>In the above example, <code class="highlighter-rouge">a</code> <strong>was never declared</strong>. If a variable is never declared and you try to check for its existence, you’ll get an error. But the <code class="highlighter-rouge">typeof</code> operator is the only operator (to my knowledge) that gets around this. If you check the type of a variable that was never declared, <strong>you won’t get an error, and your program can continue</strong>.</p>
 
 <h2 id="declared-vs-defined">Declared vs. defined</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span><span class="p">;</span> <span class="c1">// this is a declared variable that exists; its value is undefined</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span><span class="p">;</span> <span class="c1">// this is a declared variable that exists; its value is undefined</span>
 
 <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> <span class="c1">// this is now a defined variable; its value is NO LONGER undefined</span>
 
@@ -233,25 +239,25 @@ This post is going to talk about checking for the "existence" of a parameter, if
 
 <span class="kd">var</span> <span class="nx">c</span><span class="p">;</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">c</span><span class="p">);</span> <span class="c1">// ==&gt; undefined</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="o">!!</span><span class="nx">c</span><span class="p">);</span> <span class="c1">// ==&gt; ReferenceError! Your program is dead.</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="o">!!</span><span class="nx">c</span><span class="p">);</span> <span class="c1">// ==&gt; ReferenceError! Your program is dead.</span></code></pre></figure>
 
 <h1 id="best-practice">Best Practice</h1>
 
-<p>I think in this circumstance, <strong>the best practice depends on however you define “existence” in the context of your specific function</strong>. This means that you have to take into consideration the concepts of truthiness, the use of the <code>typeof</code> operator, the principle of declared vs. defined, etc.</p>
+<p>I think in this circumstance, <strong>the best practice depends on however you define “existence” in the context of your specific function</strong>. This means that you have to take into consideration the concepts of truthiness, the use of the <code class="highlighter-rouge">typeof</code> operator, the principle of declared vs. defined, etc.</p>
 
 <p>Keep in mind, too, that there are many ways to check the types of of variables you encounter. For example:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">[];</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">[];</span>
 
 <span class="c1">// x.constructor === Array</span>
-<span class="c1">// typeof x === &#39;object&#39;</span>
-<span class="c1">// x.toString() === &#39;&#39;</span>
+<span class="c1">// typeof x === 'object'</span>
+<span class="c1">// x.toString() === ''</span>
 
-<span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
 
 <span class="c1">// y.constructor === String</span>
-<span class="c1">// typeof y === &#39;string&#39;</span>
-<span class="c1">// y.toString() === &#39;hello&#39;</span></code></pre></div>
+<span class="c1">// typeof y === 'string'</span>
+<span class="c1">// y.toString() === 'hello'</span></code></pre></figure>
 
 <p>This is a topic for another post, but it demonstrates how you can check the types of a variable based on your definition of existence in the context of your specific function.</p>
 

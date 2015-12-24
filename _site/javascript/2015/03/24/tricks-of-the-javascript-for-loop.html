@@ -74,30 +74,30 @@
 I'm sure you've seen the common for loop written a thousand different ways. Well, in this post, you'll learn one readable way that is good for pretty much most instances where you'll use a for loop (some exceptions are noted, too). Oh, and scroll all the way down for a bonus snippet (we'll create something pretty cool, I think).<!--excerpt.end-->
 </div>
 
-<p>We use the <code>for</code> loop generally to cycle through, say, an array of items. We can do something with each item. For example:</p>
+<p>We use the <code class="highlighter-rouge">for</code> loop generally to cycle through, say, an array of items. We can do something with each item. For example:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
 
 <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<p>The code above obviously just increases <code>i</code>, starting at 0 and ending at the length of <code>arr</code>, which gives us the ability to access each of the items of <code>arr</code> by its index.</p>
+<p>The code above obviously just increases <code class="highlighter-rouge">i</code>, starting at 0 and ending at the length of <code class="highlighter-rouge">arr</code>, which gives us the ability to access each of the items of <code class="highlighter-rouge">arr</code> by its index.</p>
 
 <h1 id="how-do-you-declare-the-loop">How do you declare the loop?</h1>
 
-<p>There’s frequently discussion on how to best write a <code>for</code> loop. There are some performance issues depending on how you write it (see this <a href="http://stackoverflow.com/a/6974417/2714730">StackOverflow question</a>), and I think a lot of it comes down to two things at the end: readability and personal style.</p>
+<p>There’s frequently discussion on how to best write a <code class="highlighter-rouge">for</code> loop. There are some performance issues depending on how you write it (see this <a href="http://stackoverflow.com/a/6974417/2714730">StackOverflow question</a>), and I think a lot of it comes down to two things at the end: readability and personal style.</p>
 
 <h2 id="several-ways">Several ways:</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*</span>
-<span class="cm">	These will all ouput:</span>
-<span class="cm">		1</span>
-<span class="cm">		2</span>
-<span class="cm">		3</span>
-<span class="cm">		4</span>
-<span class="cm">		5</span>
-<span class="cm">*/</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*
+	These will all ouput:
+		1
+		2
+		3
+		4
+		5
+*/</span>
 
 <span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
 
@@ -119,7 +119,7 @@ I'm sure you've seen the common for loop written a thousand different ways. Well
 
 <span class="k">for</span><span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>There are many other ways to write the loops, but those are some of the more common ones.</p>
 
@@ -127,98 +127,98 @@ I'm sure you've seen the common for loop written a thousand different ways. Well
 
 <p>#1 — The problem with this one is that it <a href="http://stackoverflow.com/a/6974417/2714730">might take some browsers longer</a> because we’re <strong>“resetting” some variables each time (i.e., each iteration, the loop checks the section where we define the limit, which is oftentimes the length of an array)</strong>. In fact, <strong>we can prove this</strong>:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// #1</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// #1</span>
 <span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
 
 <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="nx">i</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
 <span class="p">}</span>
 
-<span class="cm">/*</span>
-<span class="cm">	==&gt; 1</span>
-<span class="cm">	==&gt; 2</span>
-<span class="cm">	==&gt; 3</span>
-<span class="cm">*/</span></code></pre></div>
+<span class="cm">/*
+	==&gt; 1
+	==&gt; 2
+	==&gt; 3
+*/</span></code></pre></figure>
 
 <p>The engine appears to check each statement for every iteration of the loop. We can cache the variables, so in comes:</p>
 
-<p>#2 — This one caches the length, which could give you <strong>a little micro-optimized performance boost in some browsers</strong>. The first <code>i</code> definition doesn’t get “re-evaluated” at the end of each iteration. We can prove this too:</p>
+<p>#2 — This one caches the length, which could give you <strong>a little micro-optimized performance boost in some browsers</strong>. The first <code class="highlighter-rouge">i</code> definition doesn’t get “re-evaluated” at the end of each iteration. We can prove this too:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// #2</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// #2</span>
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
 
 <span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="o">+=</span><span class="nx">i</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
 <span class="p">}</span>
 
-<span class="cm">/*</span>
-<span class="cm">	==&gt; 1</span>
-<span class="cm">	==&gt; 2</span>
-<span class="cm">	==&gt; 3</span>
-<span class="cm">	==&gt; 4</span>
-<span class="cm">	==&gt; 5</span>
-<span class="cm">*/</span></code></pre></div>
+<span class="cm">/*
+	==&gt; 1
+	==&gt; 2
+	==&gt; 3
+	==&gt; 4
+	==&gt; 5
+*/</span></code></pre></figure>
 
-<p>As you can see above, <code>i</code> is only defined once. If it wasn’t, it would increase by itself each iteration, and we wouldn’t see every number of <code>arr</code> in the output. So it seems we’ve got to a nice, optimized way of writing the loop. But in comes the “personal style” element:</p>
+<p>As you can see above, <code class="highlighter-rouge">i</code> is only defined once. If it wasn’t, it would increase by itself each iteration, and we wouldn’t see every number of <code class="highlighter-rouge">arr</code> in the output. So it seems we’ve got to a nice, optimized way of writing the loop. But in comes the “personal style” element:</p>
 
 <p>#3 — I like the last one, because it <strong>defines everything at the top of the function</strong>, much like how I described as a best practice in <a href="http://joshbeam.github.io/javascript/2015/03/20/what-is-hoisting-in-javascript.html">my post about hoisting</a>. You can see everything easier, and predict what is going to be used, and where. However, <strong>this is not the best style to use, if you need to re-define the length, or limit, every iteration (for instance, if you’re removing or adding items to an array)</strong>. I think it also is very minimalistic and clean.</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// #3</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// #3</span>
 
 <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
 
 <span class="k">for</span><span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <h2 id="why-does-3-not-throw-an-error">Why does #3 not throw an error?</h2>
 
-<p>The third one is strange, because we start it off with a <code>;</code> all by its lonesome. Well, I think this can be explained if we accept that the second part of the loop, the <code>i &lt; // whatever</code> part, looks to define itself by <code>i</code>, wherever <code>i</code> might be. The first part, the part where we normally declare and define <code>i</code>, it just that: a part where we can initialize variables. In fact, we could initialize any variables we wanted. We could even initialize the limit, or length variable, and the array itself! Check it out:</p>
+<p>The third one is strange, because we start it off with a <code class="highlighter-rouge">;</code> all by its lonesome. Well, I think this can be explained if we accept that the second part of the loop, the <code class="highlighter-rouge">i &lt; // whatever</code> part, looks to define itself by <code class="highlighter-rouge">i</code>, wherever <code class="highlighter-rouge">i</code> might be. The first part, the part where we normally declare and define <code class="highlighter-rouge">i</code>, it just that: a part where we can initialize variables. In fact, we could initialize any variables we wanted. We could even initialize the limit, or length variable, and the array itself! Check it out:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<p>Pretty cool, right? The initialization section of the loop provides us a space to intialize whatever we want; the syntactical benefit is that when a user looks at it, they know that <code>i</code> and <code>len</code> are <strong>directly tied to that loop</strong>. The downside I think, though, is that a beginner might be fooled into thinking that <code>i</code> only exists in the scope of the <code>for</code> loop, when in fact, <strong>even though <code>i</code> was initialized as part of the <code>for</code> loop, it still exists to whatever function scope that it’s inside</strong>. We can prove this:</p>
+<p>Pretty cool, right? The initialization section of the loop provides us a space to intialize whatever we want; the syntactical benefit is that when a user looks at it, they know that <code class="highlighter-rouge">i</code> and <code class="highlighter-rouge">len</code> are <strong>directly tied to that loop</strong>. The downside I think, though, is that a beginner might be fooled into thinking that <code class="highlighter-rouge">i</code> only exists in the scope of the <code class="highlighter-rouge">for</code> loop, when in fact, <strong>even though <code class="highlighter-rouge">i</code> was initialized as part of the <code class="highlighter-rouge">for</code> loop, it still exists to whatever function scope that it’s inside</strong>. We can prove this:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
 <span class="p">}</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span> <span class="c1">// [1,2,3,4,5]</span>
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span> <span class="c1">// ==&gt; 5</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">len</span><span class="p">);</span> <span class="c1">// ==&gt; 5</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">len</span><span class="p">);</span> <span class="c1">// ==&gt; 5</span></code></pre></figure>
 
-<p>Each of these sections (the first part where we initialize <code>i</code>, the second part, and the third part) all have names, by the way. They are called:</p>
+<p>Each of these sections (the first part where we initialize <code class="highlighter-rouge">i</code>, the second part, and the third part) all have names, by the way. They are called:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">for</span><span class="p">(</span><span class="cm">/*initialization*/</span><span class="p">;</span><span class="cm">/*condition*/</span><span class="p">;</span><span class="cm">/*final-expression*/</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">for</span><span class="p">(</span><span class="cm">/*initialization*/</span><span class="p">;</span><span class="cm">/*condition*/</span><span class="p">;</span><span class="cm">/*final-expression*/</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <h1 id="so-what-have-we-learned">So what have we learned?</h1>
 
-<p>Well, we learned its easier when you call things by their names: <code>initialization</code>, <code>condition</code>, and <code>final-expression</code>.</p>
+<p>Well, we learned its easier when you call things by their names: <code class="highlighter-rouge">initialization</code>, <code class="highlighter-rouge">condition</code>, and <code class="highlighter-rouge">final-expression</code>.</p>
 
 <h2 id="initialization-lessons">Initialization lessons</h2>
 
 <p>We can use this to declare anything we want, but we don’t have to use it to declare anything</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="k">for</span><span class="p">(;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">len</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<p>Additionally, although it may be a personal style issue, I think it’s best to declare everything at the top of the function where the <code>for</code> loop resides, unless you need to redefine something in the <code>condition</code> section, such as the length of an array.</p>
+<p>Additionally, although it may be a personal style issue, I think it’s best to declare everything at the top of the function where the <code class="highlighter-rouge">for</code> loop resides, unless you need to redefine something in the <code class="highlighter-rouge">condition</code> section, such as the length of an array.</p>
 
 <h2 id="condition-lessons">Condition lessons</h2>
-<p>When it comes to arrays, we’re probably better off <strong>caching the length of the array either in the <code>initialization</code> expression or at the top of the function in which the <code>for</code> loop resides</strong>. This can give some performance benefits. However, we want to keep in mind that in a function where we add or remove things from an array, we might need to redefine the <code>condition</code> expression of the <code>for</code> loop every iteration.</p>
+<p>When it comes to arrays, we’re probably better off <strong>caching the length of the array either in the <code class="highlighter-rouge">initialization</code> expression or at the top of the function in which the <code class="highlighter-rouge">for</code> loop resides</strong>. This can give some performance benefits. However, we want to keep in mind that in a function where we add or remove things from an array, we might need to redefine the <code class="highlighter-rouge">condition</code> expression of the <code class="highlighter-rouge">for</code> loop every iteration.</p>
 
 <h1 id="bonus">Bonus!</h1>
 
-<p><strong>Let’s create a function that does a <code>for</code> loop for us.</strong> It eliminates the scoping issues of variables like <code>i</code> and <code>len</code>, and it feels a whole lot cleaner. In fact, this function is a simplified version of something that the <a href="http://underscorejs.org/">Underscore.js</a> and <a href="http://jquery.com/">jQuery</a> libraries do (jQuery has <a href="https://api.jquery.com/jquery.each/">$.each</a>). You can even see a very complicated polyfill for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Polyfill">Array.prototype.forEach on MDN’s page</a>. Here’s out simplified function:</p>
+<p><strong>Let’s create a function that does a <code class="highlighter-rouge">for</code> loop for us.</strong> It eliminates the scoping issues of variables like <code class="highlighter-rouge">i</code> and <code class="highlighter-rouge">len</code>, and it feels a whole lot cleaner. In fact, this function is a simplified version of something that the <a href="http://underscorejs.org/">Underscore.js</a> and <a href="http://jquery.com/">jQuery</a> libraries do (jQuery has <a href="https://api.jquery.com/jquery.each/">$.each</a>). You can even see a very complicated polyfill for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Polyfill">Array.prototype.forEach on MDN’s page</a>. Here’s out simplified function:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">forEach</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">forEach</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
 	<span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
 
 	<span class="k">if</span><span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">===</span> <span class="nb">Array</span> <span class="o">&amp;&amp;</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">===</span> <span class="nb">Function</span><span class="p">)</span> <span class="p">{</span>
@@ -238,35 +238,35 @@ I'm sure you've seen the common for loop written a thousand different ways. Well
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">array</span><span class="p">);</span>
 <span class="p">});</span>
 
-<span class="cm">/*</span>
-<span class="cm">	==&gt; 1</span>
-<span class="cm">	==&gt; 0</span>
-<span class="cm">	==&gt; [1,2,3,4,5]</span>
+<span class="cm">/*
+	==&gt; 1
+	==&gt; 0
+	==&gt; [1,2,3,4,5]
 
-<span class="cm">	==&gt; 2</span>
-<span class="cm">	==&gt; 1</span>
-<span class="cm">	==&gt; [1,2,3,4,5]</span>
+	==&gt; 2
+	==&gt; 1
+	==&gt; [1,2,3,4,5]
 
-<span class="cm">	==&gt; 3</span>
-<span class="cm">	==&gt; 2</span>
-<span class="cm">	==&gt; [1,2,3,4,5]</span>
+	==&gt; 3
+	==&gt; 2
+	==&gt; [1,2,3,4,5]
 
-<span class="cm">	==&gt; 4</span>
-<span class="cm">	==&gt; 3</span>
-<span class="cm">	==&gt; [1,2,3,4,5]</span>
+	==&gt; 4
+	==&gt; 3
+	==&gt; [1,2,3,4,5]
 
-<span class="cm">	==&gt; 5</span>
-<span class="cm">	==&gt; 4</span>
-<span class="cm">	==&gt; [1,2,3,4,5]</span>
-<span class="cm">*/</span></code></pre></div>
+	==&gt; 5
+	==&gt; 4
+	==&gt; [1,2,3,4,5]
+*/</span></code></pre></figure>
 
 <p>If you want to play around with that function, or just see if it works, open up your Developer Tools (cmd+opt+j on Mac in Chrome), copy and paste, hit enter, and voila.</p>
 
 <p>We could even put it in a module:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">;(</span><span class="kd">function</span><span class="p">(</span><span class="nx">win</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">;(</span><span class="kd">function</span><span class="p">(</span><span class="nx">win</span><span class="p">)</span> <span class="p">{</span>
 	<span class="kd">var</span> <span class="nx">utils</span> <span class="o">=</span> <span class="p">{</span>
-		<span class="nx">forEach</span><span class="o">:</span> <span class="nx">forEach</span>
+		<span class="na">forEach</span><span class="p">:</span> <span class="nx">forEach</span>
 	<span class="p">};</span>
 
 	<span class="kd">function</span> <span class="nx">forEach</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span>
@@ -297,7 +297,7 @@ I'm sure you've seen the common for loop written a thousand different ways. Well
 		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">index</span><span class="p">);</span>
 		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">array</span><span class="p">);</span>	
 	<span class="p">}</span>
-<span class="p">})(</span><span class="nx">utils</span><span class="p">);</span></code></pre></div>
+<span class="p">})(</span><span class="nx">utils</span><span class="p">);</span></code></pre></figure>
 
 <p>Boom! <strong>Why all the strange semicolons? Why the weird function notation?</strong> Check out my post on <a href="http://joshbeam.github.io/javascript/snippet/2015/03/22/why-do-people-add-semicolons-before-modules.html">weird semicolons</a> and on <a href="http://joshbeam.github.io/javascript/2015/03/22/lightweight-dependency-modularization.html">a simple way to modularize dependencies</a> for some answers to these question. Also, check out <a href="https://github.com/johnpapa/angular-styleguide">John Papa’s AngularJS style guide</a>. It applies specifically to <a href="https://angularjs.org/">AngularJS</a>, but a lot of the principles translate well into vanilla JavaScript principles.</p>
 

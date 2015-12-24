@@ -82,67 +82,67 @@ What is this strange word "hoisting"? As of the current version of JavaScript (E
 
 <h1 id="function-scope-example">Function scope example</h1>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This area out here is our &quot;global scope&quot;</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// This area out here is our "global scope"</span>
 
 <span class="kd">var</span> <span class="nx">globalVariable</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
 
 <span class="kd">function</span> <span class="nx">testFunction</span><span class="p">()</span> <span class="p">{</span>
 
-	<span class="c1">//This area in here is our &quot;function scope&quot;</span>
+	<span class="c1">//This area in here is our "function scope"</span>
 
 	<span class="c1">// We can access variables from the global scope</span>
 	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">globalVariable</span><span class="p">)</span> <span class="c1">// ==&gt; [0,1,2,3]</span>
 	
-	<span class="c1">// &quot;var&quot; makes this variable only exists inside the function</span>
-	<span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span><span class="p">;</span>
+	<span class="c1">// "var" makes this variable only exists inside the function</span>
+	<span class="kd">var</span> <span class="nx">hello</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
 
-	<span class="c1">// since there&#39;s no &quot;var&quot; keyword,</span>
+	<span class="c1">// since there's no "var" keyword,</span>
 	<span class="c1">// we might as well have put this variable in the global scope</span>
-	<span class="nx">anotherVariable</span> <span class="o">=</span> <span class="s1">&#39;anotherVariable&#39;</span><span class="p">;</span> 
+	<span class="nx">anotherVariable</span> <span class="o">=</span> <span class="s1">'anotherVariable'</span><span class="p">;</span> 
 
 <span class="p">}</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">hello</span><span class="p">)</span> <span class="c1">// ==&gt; undefined</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">anotherVariable</span><span class="p">)</span> <span class="c1">// ==&gt; &#39;anotherVariable&#39;</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">anotherVariable</span><span class="p">)</span> <span class="c1">// ==&gt; 'anotherVariable'</span></code></pre></figure>
 
 <p>… Easy.</p>
 
-<p>But how do we define block scope? In some other languages, it might be whatever is inside an <code>if</code> statement or a <code>for</code> loop. But that doesn’t exist in JavaScript (well, with a caveat, which we’ll go over in a later section):</p>
+<p>But how do we define block scope? In some other languages, it might be whatever is inside an <code class="highlighter-rouge">if</code> statement or a <code class="highlighter-rouge">for</code> loop. But that doesn’t exist in JavaScript (well, with a caveat, which we’ll go over in a later section):</p>
 
 <h1 id="if-statement-example">If-statement example</h1>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">testFunction</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">testFunction</span><span class="p">(</span><span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">if</span><span class="p">(</span><span class="nx">num</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;less than five&#39;</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'less than five'</span><span class="p">);</span>
 	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;greater than or equal to five&#39;</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'greater than or equal to five'</span><span class="p">);</span>
 	<span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nx">testFunction</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="c1">// ==&gt; &#39;less than five&#39;</span></code></pre></div>
+<span class="nx">testFunction</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="c1">// ==&gt; 'less than five'</span></code></pre></figure>
 
 <p>The above example is super easy to understand. But let’s try and do something else with it.</p>
 
 <h2 id="trying-to-use-block-scope-in-javascript">Trying to use block scope in JavaScript</h2>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
 	
 	<span class="k">if</span><span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
-		<span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s1">&#39;bar&#39;</span><span class="p">;</span>
-		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span> <span class="c1">// ==&gt; &#39;bar&#39;</span>
+		<span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="s1">'bar'</span><span class="p">;</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span> <span class="c1">// ==&gt; 'bar'</span>
 	<span class="p">}</span>
 
-	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">);</span> <span class="c1">// ==&gt; &#39;bar&#39;</span>
-<span class="p">}</span></code></pre></div>
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span> <span class="c1">// ==&gt; 'bar'</span>
+<span class="p">}</span></code></pre></figure>
 
-<p>In the above example, if you didn’t know any better and you thought JavaScript had block scope, you might assume that the variable <code>foo</code> only exists inside the <code>if</code> block. But it doesn’t. In fact, even if the condition in the <code>if</code> statement evaluated to false, the variable <code>foo</code> would still exist to the <em>entire function</em>, but it just would not be set to <code>'bar'</code> (it would actually just remain <code>undefined</code>).</p>
+<p>In the above example, if you didn’t know any better and you thought JavaScript had block scope, you might assume that the variable <code class="highlighter-rouge">foo</code> only exists inside the <code class="highlighter-rouge">if</code> block. But it doesn’t. In fact, even if the condition in the <code class="highlighter-rouge">if</code> statement evaluated to false, the variable <code class="highlighter-rouge">foo</code> would still exist to the <em>entire function</em>, but it just would not be set to <code class="highlighter-rouge">'bar'</code> (it would actually just remain <code class="highlighter-rouge">undefined</code>).</p>
 
 <h1 id="so-whats-hoisting-then">So what’s hoisting then?</h1>
 
 <p>Anything defined inside of a block is actually “hoisted” up to the function scope of whatever function you’re in.</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
 	
 	<span class="k">if</span><span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
 		<span class="kd">var</span> <span class="nx">foo</span><span class="p">;</span>
@@ -157,7 +157,7 @@ What is this strange word "hoisting"? As of the current version of JavaScript (E
 	<span class="k">if</span><span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
 		<span class="c1">// do something</span>
 	<span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>Anything you declare inside of a block (whether it’s a function, a string, an array, or whatever), it is available to the entire scope. Blocks simply evaluate those variable to whatever you say, when a certain condition is met.</p>
 
@@ -170,7 +170,7 @@ What is this strange word "hoisting"? As of the current version of JavaScript (E
 
 <p>I humbly assert this opinion because I think it helps immensely with code readability, especially with large, wordy functions, and understanding ahead of time what is going to happen and what certain variable might get new definitions.</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">someFunction</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">someFunction</span><span class="p">()</span> <span class="p">{</span>
 	<span class="kd">var</span> <span class="nx">test</span><span class="p">,</span> <span class="nx">test1</span><span class="p">,</span> <span class="nx">test2</span><span class="p">,</span> <span class="nx">test3</span><span class="p">;</span>
 
 	<span class="k">if</span><span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
@@ -182,13 +182,13 @@ What is this strange word "hoisting"? As of the current version of JavaScript (E
 	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">test3</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 	<span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<p>In the above example, you know all the variables ahead of time, even though only one of them might actually be set to something else other than <code>undefined</code> (in this case, only one of those variables might be set to <code>0</code>).</p>
+<p>In the above example, you know all the variables ahead of time, even though only one of them might actually be set to something else other than <code class="highlighter-rouge">undefined</code> (in this case, only one of those variables might be set to <code class="highlighter-rouge">0</code>).</p>
 
 <p>To me, this looks like it could get <strong>confusing</strong>:</p>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">someFunction</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">someFunction</span><span class="p">()</span> <span class="p">{</span>
 	<span class="k">if</span><span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
 		<span class="kd">var</span> <span class="nx">test</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
@@ -198,13 +198,13 @@ What is this strange word "hoisting"? As of the current version of JavaScript (E
 	<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="cm">/* something */</span><span class="p">)</span> <span class="p">{</span>
 		<span class="kd">var</span> <span class="nx">test3</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 	<span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
-<p>While this is a small, manufactured function that probably doesn’t make sense and probably does a whole lot of nothing, in a lengthier function, someone else who reads the code might see a new variable definition, and have trouble understanding the context or the use. Additionally, all those variable declarations <strong>will get hoisted to the top of the function anyway</strong>. You’ll still have three variables that are <code>undefined</code>, and only one that is set to <code>0</code>, but the code just happens to be more confusing.</p>
+<p>While this is a small, manufactured function that probably doesn’t make sense and probably does a whole lot of nothing, in a lengthier function, someone else who reads the code might see a new variable definition, and have trouble understanding the context or the use. Additionally, all those variable declarations <strong>will get hoisted to the top of the function anyway</strong>. You’ll still have three variables that are <code class="highlighter-rouge">undefined</code>, and only one that is set to <code class="highlighter-rouge">0</code>, but the code just happens to be more confusing.</p>
 
-<h1 id="small-caveat-regarding-let">Small caveat regarding <code>let</code></h1>
+<h1 id="small-caveat-regarding-let">Small caveat regarding <code class="highlighter-rouge">let</code></h1>
 
-<p>If you use the keyword <code>let</code> in place of <code>var</code>, everything I just wrote in this blog post is null and void. <code>let</code> allows you to declare and/or define a block-scoped variable (see the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let">MDN page</a>, which says <em>“The let statement declares a block scope local variable, optionally initializing it to a value.”</em>)</p>
+<p>If you use the keyword <code class="highlighter-rouge">let</code> in place of <code class="highlighter-rouge">var</code>, everything I just wrote in this blog post is null and void. <code class="highlighter-rouge">let</code> allows you to declare and/or define a block-scoped variable (see the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let">MDN page</a>, which says <em>“The let statement declares a block scope local variable, optionally initializing it to a value.”</em>)</p>
 
 <p>Note this warning on the MDN page as well:</p>
 

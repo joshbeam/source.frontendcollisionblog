@@ -80,14 +80,14 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 
 <h1 id="you-should-be-filtering">3) You should be filtering</h1>
 
-<p>In this example, we have an array, and we want to eliminate items from an array that don’t meet a specific criteria. Here’s how you’ll see it done with <code>forEach</code>:</p>
+<p>In this example, we have an array, and we want to eliminate items from an array that don’t meet a specific criteria. Here’s how you’ll see it done with <code class="highlighter-rouge">forEach</code>:</p>
 
 <h2 id="bad">Bad</h2>
 
 <div class="repl">
   <div>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">filteredArray</span> <span class="o">=</span> <span class="p">[];</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">filteredArray</span> <span class="o">=</span> <span class="p">[];</span>
 
 <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span><span class="p">(</span><span class="nx">number</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
@@ -95,7 +95,7 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
   <span class="p">}</span>
 <span class="p">});</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">filteredArray</span><span class="p">);</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">filteredArray</span><span class="p">);</span></code></pre></figure>
 
   </div>
   <div>
@@ -105,22 +105,22 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
   </div>
 </div>
 
-<p>This is a typical implementation. With <code>forEach</code>, you simply push each object to a <em>completely new</em> array. You’ll notice that <strong>this introduces extra state to maintain</strong>. More state equals more brainpower needed to understand what is happening.</p>
+<p>This is a typical implementation. With <code class="highlighter-rouge">forEach</code>, you simply push each object to a <em>completely new</em> array. You’ll notice that <strong>this introduces extra state to maintain</strong>. More state equals more brainpower needed to understand what is happening.</p>
 
-<p>Luckily, <code>Array.prototype.filter</code> already has you covered there. It simply <em>returns</em> a new array of the items we want.</p>
+<p>Luckily, <code class="highlighter-rouge">Array.prototype.filter</code> already has you covered there. It simply <em>returns</em> a new array of the items we want.</p>
 
 <h2 id="good">Good</h2>
 
 <div class="repl">
   <div>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">filter</span><span class="p">(</span><span class="nx">isBig</span><span class="p">);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">filter</span><span class="p">(</span><span class="nx">isBig</span><span class="p">);</span>
 
 <span class="kd">function</span> <span class="nx">isBig</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">number</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">filtered</span><span class="p">);</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">filtered</span><span class="p">);</span></code></pre></figure>
 
   </div>
   <div>
@@ -132,27 +132,27 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 
 <h1 id="you-should-be-mapping">2) You should be mapping</h1>
 
-<p>In this example, we want to “change” each value in an array to something else. Here’s how we’d do it with <code>forEach</code>:</p>
+<p>In this example, we want to “change” each value in an array to something else. Here’s how we’d do it with <code class="highlighter-rouge">forEach</code>:</p>
 
 <h2 id="bad-1">Bad</h2>
 
 <div class="repl">
   <div>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">stringNames</span> <span class="o">=</span> <span class="p">[];</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">stringNames</span> <span class="o">=</span> <span class="p">[];</span>
 
 <span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[{</span>
-  <span class="nx">first</span><span class="o">:</span> <span class="s1">&#39;Josh&#39;</span><span class="p">,</span>
-  <span class="nx">last</span><span class="o">:</span> <span class="s1">&#39;Beam&#39;</span>
+  <span class="na">first</span><span class="p">:</span> <span class="s1">'Josh'</span><span class="p">,</span>
+  <span class="na">last</span><span class="p">:</span> <span class="s1">'Beam'</span>
 <span class="p">},</span>
 <span class="p">{</span>
-  <span class="nx">first</span><span class="o">:</span> <span class="s1">&#39;Ozzy&#39;</span><span class="p">,</span>
-  <span class="nx">last</span><span class="o">:</span> <span class="s1">&#39;Osbourne&#39;</span>
+  <span class="na">first</span><span class="p">:</span> <span class="s1">'Ozzy'</span><span class="p">,</span>
+  <span class="na">last</span><span class="p">:</span> <span class="s1">'Osbourne'</span>
 <span class="p">}]</span>
 
 <span class="nx">names</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">stringNames</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">first</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">.</span><span class="nx">last</span><span class="p">);</span>
-<span class="p">});</span></code></pre></div>
+  <span class="nx">stringNames</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">first</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="nx">name</span><span class="p">.</span><span class="nx">last</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
 
   </div>
   <div>
@@ -164,29 +164,29 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 
 <p>Again, naked looping requires us to create additional state within our application.</p>
 
-<p>Here, we’re gonna use <code>map</code> instead. Again, it simply returns a new array without requiring us to do it ourselves:</p>
+<p>Here, we’re gonna use <code class="highlighter-rouge">map</code> instead. Again, it simply returns a new array without requiring us to do it ourselves:</p>
 
 <h2 id="good-1">Good</h2>
 
 <div class="repl">
   <div>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[{</span>
-  <span class="nx">first</span><span class="o">:</span> <span class="s1">&#39;Josh&#39;</span><span class="p">,</span>
-  <span class="nx">last</span><span class="o">:</span> <span class="s1">&#39;Beam&#39;</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">names</span> <span class="o">=</span> <span class="p">[{</span>
+  <span class="na">first</span><span class="p">:</span> <span class="s1">'Josh'</span><span class="p">,</span>
+  <span class="na">last</span><span class="p">:</span> <span class="s1">'Beam'</span>
 <span class="p">},</span>
 <span class="p">{</span>
-  <span class="nx">first</span><span class="o">:</span> <span class="s1">&#39;Ozzy&#39;</span><span class="p">,</span>
-  <span class="nx">last</span><span class="o">:</span> <span class="s1">&#39;Osbourne&#39;</span>
+  <span class="na">first</span><span class="p">:</span> <span class="s1">'Ozzy'</span><span class="p">,</span>
+  <span class="na">last</span><span class="p">:</span> <span class="s1">'Osbourne'</span>
 <span class="p">}]</span>
 
 <span class="nx">names</span> <span class="o">=</span> <span class="nx">names</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">fullName</span><span class="p">);</span>
 
 <span class="kd">function</span> <span class="nx">fullName</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="nx">name</span><span class="p">.</span><span class="nx">first</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">name</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">name</span><span class="p">.</span><span class="nx">first</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="nx">name</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">names</span><span class="p">);</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">names</span><span class="p">);</span></code></pre></figure>
 
   </div>
   <div>
@@ -205,13 +205,13 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 <div class="repl">
   <div>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
 <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
   <span class="nx">total</span> <span class="o">+=</span> <span class="nx">number</span><span class="p">;</span>
 <span class="p">});</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span></code></pre></figure>
 
   </div>
   <div>
@@ -228,13 +228,13 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 <div class="repl">
   <div>
 
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">total</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">addAll</span><span class="p">);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">total</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">].</span><span class="nx">reduce</span><span class="p">(</span><span class="nx">addAll</span><span class="p">);</span>
 
 <span class="kd">function</span> <span class="nx">addAll</span><span class="p">(</span><span class="nx">total</span><span class="p">,</span> <span class="nx">current</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">total</span> <span class="o">+</span> <span class="nx">current</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span></code></pre></div>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span></code></pre></figure>
 
   </div>
   <div>
@@ -246,7 +246,7 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
 
 <h1 id="conclusion">Conclusion</h1>
 
-<p>You’ll notice one of the overarching concepts of all these three methods is that they all take the “functional route”, where they don’t necessarily require the manual creation of additional state. It is possible to introduce side effects within these methods, however, they don’t <strong>primarily rely on side effects to function</strong>. In other words, you’ll see that <code>Array.prototype.forEach</code> primarly relies on side effects. <strong>It never returns a value other than <code>undefined</code> unless you explicity force it to</strong>.</p>
+<p>You’ll notice one of the overarching concepts of all these three methods is that they all take the “functional route”, where they don’t necessarily require the manual creation of additional state. It is possible to introduce side effects within these methods, however, they don’t <strong>primarily rely on side effects to function</strong>. In other words, you’ll see that <code class="highlighter-rouge">Array.prototype.forEach</code> primarly relies on side effects. <strong>It never returns a value other than <code class="highlighter-rouge">undefined</code> unless you explicity force it to</strong>.</p>
 
 <p>Why am I referring to functional programming in the context of JavaScript, which is clearly <em>not</em> a functional programming language? Well, to quote the <a href="https://en.wikipedia.org/wiki/Functional_programming">omniscient Wikipedia article on functional programming</a>:</p>
 
@@ -254,7 +254,7 @@ One of the main problems with <code>forEach</code> is that it primarily relies o
   <p>Eliminating side effects, i.e. changes in state that do not depend on the function inputs, can make it much easier to understand and predict the behavior of a program</p>
 </blockquote>
 
-<p>In other words, it can take more “brain power” to understand what is happening in a <code>forEach</code> loop whose sole purpose is to mutate outside data based on side effects, whereas <code>map</code>, <code>reduce</code>, and <code>filter</code> all have <strong>immediate</strong> and <strong>clear</strong> semantic meanings to the programmer (that’s not to say, though, that you can’t use the power of those methods for evil).</p>
+<p>In other words, it can take more “brain power” to understand what is happening in a <code class="highlighter-rouge">forEach</code> loop whose sole purpose is to mutate outside data based on side effects, whereas <code class="highlighter-rouge">map</code>, <code class="highlighter-rouge">reduce</code>, and <code class="highlighter-rouge">filter</code> all have <strong>immediate</strong> and <strong>clear</strong> semantic meanings to the programmer (that’s not to say, though, that you can’t use the power of those methods for evil).</p>
 
 <center>
   <img src="https://i.imgflip.com/pm0kr.jpg" title="made at imgflip.com" width="50%" />
