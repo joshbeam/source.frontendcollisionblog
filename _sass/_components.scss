@@ -140,7 +140,7 @@ main {
       }
       // background: $extra-light-gray;
 
-      
+
 
       @include media-query($tablet) {
         margin: 1rem 0;
@@ -163,7 +163,7 @@ main {
   width: 20px;
   height: 2px;
   background: black;
-  box-shadow: 
+  box-shadow:
     0 6px 0 0 black,
     0 12px 0 0 black;
   position: absolute;
