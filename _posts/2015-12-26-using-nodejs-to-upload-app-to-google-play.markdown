@@ -9,6 +9,7 @@ comments: true
 
 <div class="note">
 <!--excerpt.start-->
+If you're developing a hybrid mobile app, you may want to stick with node.js to upload your app to the Google Play Store. However, Google's node.js client is still in "alpha", and documentation is very limited. This post gives information about basic setup to get started using the googleapis client.
 <!--excerpt.end-->
 </div>
 

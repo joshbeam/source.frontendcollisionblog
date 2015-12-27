@@ -6,14 +6,15 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 26 Dec 2015 16:59:00 -0800</pubDate>
-    <lastBuildDate>Sat, 26 Dec 2015 16:59:00 -0800</lastBuildDate>
+    <pubDate>Sat, 26 Dec 2015 17:00:57 -0800</pubDate>
+    <lastBuildDate>Sat, 26 Dec 2015 17:00:57 -0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
         <title>Using node.js to upload your app to Google Play</title>
         <description>&lt;div class=&quot;note&quot;&gt;
 &lt;!--excerpt.start--&gt;
+If you&#39;re developing a hybrid mobile app, you may want to stick with node.js to upload your app to the Google Play Store. However, Google&#39;s node.js client is still in &quot;alpha&quot;, and documentation is very limited. This post gives information about basic setup to get started using the googleapis client.
 &lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 
