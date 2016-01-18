@@ -1,14 +1,14 @@
 body,
 html {
   font-family: $font-family;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.25rem;
   -webkit-font-smoothing: antialiased;
 }
 
 body * {
   @include box-sizing(border-box);
-  color: $dark-gray;
+  color: $medium-gray;
 }
 
 a {
@@ -22,10 +22,10 @@ a {
 
 blockquote {
   font-style: italic;
-
-  padding-left: 1rem;
-
-  border-left: 5px solid $extra-light-gray;
+  padding: 1rem;
+  margin-left: 0;
+  background: $extra-light-gray;
+  border-left: 5px solid $light-gray;
 }
 
 *:not(pre) > code {
@@ -73,7 +73,7 @@ input {
 
 pre {
   overflow: scroll;
-  font-size: .75rem;
+  font-size: 1rem;
 
   background: $extra-light-gray;
 

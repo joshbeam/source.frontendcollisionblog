@@ -8,6 +8,10 @@ function populateGitHub(res) {
     }
   });
 
+  popular = popular.sort(function(a,b) {
+    return b.stargazers_count - a.stargazers_count;
+  })
+
   $('.github-title').prepend([
     'Showing '+popular.length+' of '+repos.length+' public repos '
   ].join(''));

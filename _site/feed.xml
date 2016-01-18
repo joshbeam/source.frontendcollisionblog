@@ -6,9 +6,364 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 26 Dec 2015 17:00:57 -0800</pubDate>
-    <lastBuildDate>Sat, 26 Dec 2015 17:00:57 -0800</lastBuildDate>
+    <pubDate>Sun, 17 Jan 2016 17:19:33 -0800</pubDate>
+    <lastBuildDate>Sun, 17 Jan 2016 17:19:33 -0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>Brutal Rainbows: intro to password hashing</title>
+        <description>&lt;!--excerpt.start--&gt;
+&lt;p&gt;We never store plaintext passwords in a database. This is because I could steal a database admin’s password, and then login to the database and steal all the users’ passwords. So how do we store passwords, if we can’t store passwords?
+&lt;!--excerpt.end--&gt;&lt;/p&gt;
+
+&lt;p&gt;We use “one way hashing”. I usually need to use Google for math, so if you would like to hear from a really smart person, I would recommend watching &lt;a href=&quot;https://www.youtube.com/watch?v=jzY3m5Kv7Y8&quot;&gt;Everything you need to know about cryptography in 1 hour by Colin Percival on YouTube&lt;/a&gt; (the video is actually almost 2 hours). If you don’t have 2 hours to spare, I will say one of the important points he makes is that right now, you should only use at least SHA-256 for hashing (it’s 2016 at the time of writing this, so if you are reading this from the future, I would suggest using whichever algorithm crypto experts recommend in your current decade).&lt;/p&gt;
+
+&lt;p&gt;Here’s an example of a SHA-256 hash:&lt;/p&gt;
+
+&lt;pre&gt;
+password =&amp;gt; 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
+&lt;/pre&gt;
+
+&lt;p&gt;I happened to just use this sketchy website to generate this hash online: &lt;a href=&quot;http://www.lorem-ipsum.co.uk/hasher.php&quot;&gt;hash generator with optional salt&lt;/a&gt; (I’ll go over salts in a little bit).&lt;/p&gt;
+
+&lt;p&gt;So if one of your users’ password is &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt;, the hash above will be stored in your database. Any time they login, you convert the password they input to your login form (sent over &lt;a href=&quot;&quot;&gt;HTTPS&lt;/a&gt;, of course) to a SHA-256 hash, and your server will just check if the hash they sent matches the hash in the database.&lt;/p&gt;
+
+&lt;h1 id=&quot;why-use-a-hash-at-all-though&quot;&gt;Why use a hash at all, though?&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;We use hashes because it’s very unlikely to find two different things that will result in the same hash.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;At this point, you might be asking, why is hash any more safe than just storing the password? Most people will give you this answer (from &lt;a href=&quot;http://stackoverflow.com/a/4014407/2714730&quot;&gt;Is it safe to ignore the possibility of SHA collisions in practice? on StackOverflow&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The usual answer goes thus: what is the probability that a rogue asteroid crashes on Earth within the next second, obliterating civilization-as-we-know-it, and killing off a few billion people?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In other words, given the current power of computers today, people say that the possibility of finding two different words, sentences, messages, or whatever, that end up as the same SHA-256 hash is less than the probability of a rogue asteroid crashing onto earth in the next second, etc.&lt;/p&gt;
+
+&lt;p&gt;This is speculative at best without knowing how the actual algorithm works. However, I can link you to &lt;a href=&quot;http://csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf&quot;&gt;the specification from the National Institute of Standards and Technology&lt;/a&gt;, and warn you that reading that is about as dry as… whatever something really dry is. This algorithm (Secure Hash Algorithm) was design by the NSA (see the &lt;a href=&quot;https://en.wikipedia.org/wiki/SHA-2&quot;&gt;page on Wikipedia&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Schneier on Security has an interesting article called &lt;a href=&quot;https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html&quot;&gt;“When Will We See Collisions for SHA-1?”&lt;/a&gt;. This is for SHA-1, remember, but the examples are still relevant.&lt;/p&gt;
+
+&lt;p&gt;He quotes something interesting (about SHA-1, mind you):&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A collision attack is therefore well within the range of what an organized crime syndicate can practically budget by 2018, and a university research project by 2021.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;guessing-passwords&quot;&gt;Guessing passwords&lt;/h1&gt;
+
+&lt;p&gt;You have to keep in mind, too, how long it takes to “brute force” a password. This means that an attacker can tell his computer to go through every possible password that there could be, and try all of those passwords until he finds the correct one. Just as an interesting mental exercise, there’s an online &lt;a href=&quot;https://www.grc.com/haystack.htm&quot;&gt;brute force calculator&lt;/a&gt; that tries to tell you how many “computing years” it would take to brute force a certain password. Now, I link to this in caution, because there are many variables involved, but nonetheless, it’s interesting to look at:&lt;/p&gt;
+
+&lt;pre&gt;
+password =&amp;gt; 2.17 seconds (doing 100 billion guesses per second)
+&lt;/pre&gt;
+
+&lt;p&gt;Now, what happens if we put the hash in the calculator instead?&lt;/p&gt;
+
+&lt;pre&gt;
+5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8 =&amp;gt; 13.12 million trillion trillion trillion trillion trillion trillion centuries (doing 100 billion guesses per second)
+&lt;/pre&gt;
+
+&lt;p&gt;Woah. However, there are other considerations. What if the first guess is correct? Good question, and you’re right. The above calculator only gives times for how long to search the entire character space would take. If we get the answer on the first guess, then it’s irrelevant.&lt;/p&gt;
+
+&lt;p&gt;Also, keep in mind, lots of web services and applications try to secure passwords from being brute forced by locking you out of your account after you get your password wrong several times in a row.&lt;/p&gt;
+
+&lt;p&gt;But wait a second, what if someone has a list of thousands and thousands of words, and their corresponding hashes? I’m glad you asked. This is a real thing: it’s called a “rainbow table”.&lt;/p&gt;
+
+&lt;h1 id=&quot;rainbow-tables&quot;&gt;Rainbow tables&lt;/h1&gt;
+
+&lt;p&gt;From &lt;a href=&quot;https://en.wikipedia.org/wiki/Rainbow_table&quot;&gt;Rainbow table on Wikipedia&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A rainbow table is a precomputed table for reversing cryptographic hash functions, usually for cracking password hashes.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;There’s an interesting website called &lt;a href=&quot;https://crackstation.net/&quot;&gt;CrackStation&lt;/a&gt; that we can use for another practical exercise. It gives you a box where you can input a SHA-256 hash, and it will try and guess the corresponding password. But wait, I thought that it takes 13.12 million trillion trillion trillion trillion trillion trillion centuries to guess? That would be true, if we didn’t already have a table of thousands of words and their corresponding hashes, as mentioned above:&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;/images/hash-cracker.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;Interesting. So, how do we get around this?&lt;/p&gt;
+
+&lt;h1 id=&quot;getting-salty&quot;&gt;Getting salty&lt;/h1&gt;
+
+&lt;p&gt;From &lt;a href=&quot;https://en.wikipedia.org/wiki/Salt_(cryptography)&quot;&gt;Salt (cryptography) on Wikipedia&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The primary function of salts is to defend against dictionary attacks versus a list of password hashes and against pre-computed rainbow table attacks.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The first thing you want to keep in mind is that you want your password to be something that is unlikely to exist in a rainbow table. I won’t make any specific suggestions on this, as there is a wide range of advice, but I will link you to &lt;a href=&quot;https://www.schneier.com/blog/archives/2014/03/choosing_secure_1.html&quot;&gt;Choosing Secure Passwords from Schneier on Security&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Aside from that, you might notice that every person who has the password “password” will have the same hash in the database.&lt;/p&gt;
+
+&lt;p&gt;This is bad too. If the attacker sees that &lt;code class=&quot;highlighter-rouge&quot;&gt;user.hash&lt;/code&gt; for 15 people is &lt;code class=&quot;highlighter-rouge&quot;&gt;5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8&lt;/code&gt;, and he uses a rainbow table to figure out that the corresponding password is &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt;, then he didn’t even have to lookup those 15 peoples’ hashes separately. They all have the same password.&lt;/p&gt;
+
+&lt;p&gt;A common thing is to use a “salt”, which is just some random information attached to the beginning or end of the password, which is different for each user. This should be “cryptographically random” according to most general knowledge (for example, by using &lt;code class=&quot;highlighter-rouge&quot;&gt;crypto.randomBytes(16)&lt;/code&gt; in Node.js) (see &lt;a href=&quot;https://coolaj86.com/articles/symmetric-cryptography-aes-with-webcrypto-and-node-js/&quot;&gt;Symmetric Cryptography (AES) with WebCrypto and Node.js from CoolAJ86&lt;/a&gt; for some other examples).&lt;/p&gt;
+
+&lt;p&gt;From &lt;a href=&quot;https://en.wikipedia.org/wiki/Salt_(cryptography)&quot;&gt;Salt (cryptography) on Wikipedia&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A new salt is randomly generated for each password. In a typical setting, the salt and the password are concatenated and processed with a cryptographic hash function&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;How do we salt a password?&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;/images/salty.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;This means our password will actually be this:&lt;/p&gt;
+
+&lt;pre&gt;
+passwordsalty =&amp;gt; 29d6afd14bbcdf0b43d1f2c4fd8ecbe8bdedd5ee255e5fa530a3fb968cbbfa1a
+&lt;/pre&gt;
+
+&lt;p&gt;Now if we have 3 users with the same password and we salt them randomly, we would have:&lt;/p&gt;
+
+&lt;pre&gt;
+passwordsalty =&amp;gt; 29d6afd14bbcdf0b43d1f2c4fd8ecbe8bdedd5ee255e5fa530a3fb968cbbfa1a
+
+passwordverysalty =&amp;gt; af88afca3aaa435827396518fa2e2429ce42130904b118fee0f714894da0f546
+
+passwordkindofsalty =&amp;gt; c18b77bedee11a6f1d55d54fedb7a9c4578faece96165734c0d5a5bc53bacda6
+&lt;/pre&gt;
+
+&lt;p&gt;In other words, even though 15 users might have the same password, we’re forcing each password to be different (however, the user doesn’t need to remember the salt, which is cool). We’re enforcing password uniqueness without forcing the user to do anything different.&lt;/p&gt;
+
+&lt;p&gt;Remember, though, what I just mentioned?&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The first thing you want to keep in mind is that you want your password to be something that is unlikely to exist in a rainbow table.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;What if the salted password exists in the rainbow table too? Another great question, and you’re right:&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;/images/password-salty.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
+
+&lt;h1 id=&quot;to-conclude&quot;&gt;To conclude&lt;/h1&gt;
+
+&lt;p&gt;Again, I’ll leave recommendations for specifically how to choose a password and how to salt them to the crypto experts, but it’s useful to outline considerations as shown above, which may help readers to understand why we’ve come up with certain ways to try to store passwords in databases securely.&lt;/p&gt;
+
+&lt;p&gt;By the way, if this helps you sleep better at night, I was able to find a salted SHA-256 password hash that doesn’t exist in that online rainbow table:&lt;/p&gt;
+
+&lt;center&gt;&lt;img src=&quot;/images/not-in-rainbow-table.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
+</description>
+        <pubDate>Sun, 17 Jan 2016 05:49:00 -0800</pubDate>
+        <link>http://joshbeam.github.io/encryption/2016/01/17/intro-to-password-hashing.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/encryption/2016/01/17/intro-to-password-hashing.html</guid>
+        
+        
+        <category>encryption</category>
+        
+      </item>
+    
+      <item>
+        <title>Breaking down HTTPS</title>
+        <description>&lt;!--excerpt.start--&gt;
+
+&lt;!--excerpt.end--&gt;
+
+&lt;p&gt;I recently read a great &lt;a href=&quot;http://robertheaton.com/2014/03/27/how-does-https-actually-work/&quot;&gt;article by Robert Heaton (an engineer at Stripe), “How does HTTPS actually work?”&lt;/a&gt;. I would definitely recommend giving it a read.&lt;/p&gt;
+
+&lt;p&gt;I wanted to extend off of some of the concepts a bit, and give some examples of how authenticity and encryption work on a very basic level within the context of communicating over the internet. &lt;strong&gt;I’ll do this by giving a simplified example of the HTTPS flow using actual asymmetric and symmetric encryption algorithms&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;For starters, I want to breakdown some terminology. Stay with me, we’ll clarify the whole HTTPS process again later:&lt;/p&gt;
+
+&lt;h1 id=&quot;tls&quot;&gt;TLS&lt;/h1&gt;
+
+&lt;p&gt;&lt;em&gt;Related: &lt;a href=&quot;http://security.stackexchange.com/a/5127/45897&quot;&gt;What’s the difference between SSL, TLS, and HTTPS? on StackExchange&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;TLS (used to be called SSL) is the entire process used for secure communications over the internet. As you know, HTTP is the protocol used for clients and servers to exchange information (any type of information: sending HTML to the client, sending requests for, say, JSON to the server).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;When HTTP implements TLS, we call it HTTPS&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;TLS uses RSA for &lt;strong&gt;asymmetric cryptography&lt;/strong&gt; (one part of what makes TLS secure). RSA in this case is &lt;em&gt;only&lt;/em&gt; used for the initial connection to verify &lt;em&gt;authenticity&lt;/em&gt; (the “handshake”, we call it). This is important! TLS also uses &lt;strong&gt;symmetric cryptography&lt;/strong&gt;. This second form of cryptography is how messages are actually encrypted and sent back and forth after the initial authenticity verification happens.&lt;/p&gt;
+
+&lt;p&gt;Wait, wait, wait. &lt;strong&gt;Why don’t we just keep using RSA (our asymmetric cryptography) to send all of our messages back and forth? I’ll answer that soon. Keep reading.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;rsa&quot;&gt;RSA&lt;/h1&gt;
+
+&lt;p&gt;&lt;em&gt;Related: &lt;a href=&quot;https://en.wikipedia.org/wiki/RSA_(cryptosystem)&quot;&gt;RSA (cryptosystem) on Wikipedia&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;what-it-is&quot;&gt;What it is&lt;/h2&gt;
+
+&lt;p&gt;It’s an algorithm. Specifically, it is the algorithm we choose to use for private and public keys. These two keys are different, and anything you encrypt with a public key can only be decrypted with the corresponding private key and vice-versa. We call this &lt;strong&gt;asymmetric cryptography&lt;/strong&gt;. There are &lt;a href=&quot;http://security.stackexchange.com/a/54188/45897&quot;&gt;other algorithms&lt;/a&gt; besides RSA, but RSA is the most popular.&lt;/p&gt;
+
+&lt;p&gt;It is important to note that calling a key “public” or “private” really only has to do with its availability to one person or multiple people.&lt;/p&gt;
+
+&lt;p&gt;Another important thing to note is that when we “encrypt” with a private key, we always call this &lt;strong&gt;signing&lt;/strong&gt;, because thousands of people may have the corresponding public key (which is the whole point). When this is the case, we can’t expect to actually “encrypt” a message with the private key, since anyone with the public key could “decrypt” that message: all we’re doing by signing is proving that it came from the person who has the private key (only one person has the private key). This is only &lt;strong&gt;verifying authenticity&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, when we encrypt something with the &lt;em&gt;public key&lt;/em&gt;, we in fact do call this “encryption”. This is because only one person can decrypt the message: the person who has the private key.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;When we encrypt something with a private key, we always call it “signing”. When we encrypt something with a public key, we always call it “encrypting”.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;There is a comment I read to an answer on &lt;a href=&quot;http://stackoverflow.com/a/28084950/2714730&quot;&gt;SHA1 VS RSA: what’s the difference between them?&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;You shouldn’t talk about encryption with a private key when you mean signatures.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Again, to really &lt;a href=&quot;http://stackoverflow.com/a/408466/2714730&quot;&gt;drive this point home&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Quick point of terminology: the public key isn’t used to decrypt a message encrypted with the private key: it’s used to verify (the signature of) a message that has been signed with the private key. Decrypting is done with the private key, following encryption with the private key. (It doesn’t make sense to encrypt something with the private key, so that anyone can decrypt it with the public key.)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;what-it-isnt&quot;&gt;What it isn’t&lt;/h2&gt;
+
+&lt;p&gt;It is not a hashing algorithm. Again, refer to the above &lt;a href=&quot;http://stackoverflow.com/questions/733692/sha1-vs-rsa-whats-the-difference-between-them&quot;&gt;SHA1 VS RSA: what’s the difference between them? on StackOverflow&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The same applies for SHA2 (sha256), etc. For some reason, RSA and hashing algorithms get mixed up easily.&lt;/p&gt;
+
+&lt;p&gt;RSA is the algorithm for creating public and private key-pairs. SHA2, for example, might be used to hash a password to store it in a database. If you are unfamiliar with this, please read &lt;a href=&quot;/encryption/2016/01/17/intro-to-password-hashing.html&quot;&gt;this article of mine&lt;/a&gt; (it should take about 10 minutes), and then come back here. It’s important to understand what RSA isn’t.&lt;/p&gt;
+
+&lt;p&gt;Here’s a fake example of asymmetric cryptography:&lt;/p&gt;
+
+&lt;pre&gt;
+Private key:                abc
+Public key:                 xyz
+Message:                    hello world
+
+Signed by private key:      asdfghj
+Verified by public key:     hello world
+(OK cool, since we could verify it, it came from the owner of the private key)
+
+Encrypted by public key:    zxcvbnm
+Decrypted by private key:   hello world
+&lt;/pre&gt;
+
+&lt;p&gt;However, as you might notice above, we have to have some sort of expectation of what the message &lt;em&gt;should&lt;/em&gt; look like.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://coolaj86.com/articles/asymmetric-public--private-key-encryption-in-node-js/&quot;&gt;Asymmetric Public / Private Key Encryption (RSA) in Node.js&lt;/a&gt; puts it very well:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Public keys Encrypt &amp;amp; Verify&lt;/p&gt;
+
+  &lt;p&gt;Private keys Sign &amp;amp; Decrypt&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;symmetric-cryptography&quot;&gt;Symmetric cryptography&lt;/h1&gt;
+
+&lt;p&gt;&lt;em&gt;Related: &lt;a href=&quot;https://en.wikipedia.org/wiki/Caesar_cipher&quot;&gt;Caesar cipher (Wikipedia)&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;example&quot;&gt;Example&lt;/h2&gt;
+
+&lt;p&gt;On a high level, symmetric cryptography is something like this:&lt;/p&gt;
+
+&lt;pre&gt;
+Plain:    ABCDEFGHIJKLMNOPQRSTUVWXYZ
+Cipher:   XYZABCDEFGHIJKLMNOPQRSTUVW
+&lt;/pre&gt;
+
+&lt;pre&gt;
+HELLO WORLD =&amp;gt; EBIIL TLOIA
+&lt;/pre&gt;
+
+&lt;p&gt;If we both know the cypher, we can encrypt and decrypt messages.&lt;/p&gt;
+
+&lt;p&gt;The client and server will decide which symmetric algorithm they want to use (thankfully, the Caesar Cipher is not one of the available options). A popular one is &lt;a href=&quot;https://en.wikipedia.org/wiki/Advanced_Encryption_Standard&quot;&gt;AES&lt;/a&gt;, and the one used before that was &lt;a href=&quot;https://en.wikipedia.org/wiki/Data_Encryption_Standard&quot;&gt;DES&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;To give an AES example in code (adapted from &lt;a href=&quot;http://lollyrock.com/articles/nodejs-encryption/&quot;&gt;Encrypt and decrypt content with Nodejs&lt;/a&gt;):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;crypto&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;algorithm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;aes-256-ctr&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;randomBytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createCipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;algorithm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;utf8&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hex&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hex&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+ 
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createDecipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;algorithm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hex&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;utf8&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;utf8&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In other words, we’re created a key: a bunch of &lt;a href=&quot;http://stackoverflow.com/a/2450098/2714730&quot;&gt;cryptographically random bytes&lt;/a&gt; –&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A cryptographically secure number random generator, as you might use for generating encryption keys, works by gathering entropy - that is, unpredictable input - from a source which other people can’t observe.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then we used AES-256 to use that key to encrypt our message. If we share that key, we can also decrypt that message.&lt;/p&gt;
+
+&lt;pre&gt;
+Message:           hello world
+Password:          2d00cd9bd332cef43a41d80ef31b9ebb
+Encrypted message: 940f1f7e63f7bc229169fa 
+&lt;/pre&gt;
+
+&lt;h1 id=&quot;revisiting-the-https-flow&quot;&gt;Revisiting the HTTPS flow&lt;/h1&gt;
+
+&lt;p&gt;Keeping it basic, here is essentially what happens when you visit a site that &lt;code class=&quot;highlighter-rouge&quot;&gt;https://&lt;/code&gt; in the URL (I’m shortening this into 2 broad steps, but know that there is more going on at a lower level):&lt;/p&gt;
+
+&lt;h2 id=&quot;step-1-of-2-server-proves-its-authenticity-by-sending-a-signed-certificate&quot;&gt;Step 1 of 2: Server proves its authenticity by sending a signed certificate&lt;/h2&gt;
+
+&lt;p&gt;Remember, your browser comes pre-installed with “root certificates” that you automatically trust. So, if the server bought its certificate from GoDaddy, the certificate can be signed with, say, GoDaddy’s private key as well as the server’s private key, and you use those two corresponding public keys to check the certificate (in other words, you’re checking that the certificate came from the server since only the server should have its private key, and you also check that the server bought their certificate from someone you trust already, like GoDaddy – we call them the “Certificate Authority”). In other word, we can have any number of people sign the certificate. This is the &lt;a href=&quot;https://en.wikipedia.org/wiki/Chain_of_trust&quot;&gt;Chain of trust (Wikipedia)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;TODO: actual example&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;From &lt;a href=&quot;http://robertheaton.com/2014/03/27/how-does-https-actually-work/&quot;&gt;Heaton’s article&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Note that the server is also allowed to require a certificate to prove the client’s identity, but this typically only happens in very sensitive applications.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;step-2-of-2-the-server-and-client-start-using-symmetric-encryption&quot;&gt;Step 2 of 2: The server and client start using symmetric encryption&lt;/h2&gt;
+
+&lt;p&gt;The client encrypts a “password” (the session key that will be used from now on to decrypt each others’ messages) and sends it to the server. Remember, the server can only decrypt this message containing the session key if the server actually has the corresponding private key, which is another cool security measure.&lt;/p&gt;
+
+&lt;p&gt;So to answer a question from earlier, &lt;strong&gt;why don’t we just keep using RSA (our asymmetric cryptography) to send all of our messages back and forth?&lt;/strong&gt; Essentially, asymmetric encryption is less efficient than symmetric encryption. Some of these reasons include:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://crypto.stackexchange.com/a/5790&quot;&gt;Why is asymmetric cryptography bad for huge data? on Crypto StackExchange&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Size of cryptogram: symmetric encryption does not increase the size of the cryptogram (asymptotically), but asymmetric encryption does […] it is safe to say that a symmetric scheme is orders of magnitude faster and less power hungry than an asymmetric one, at least for decryption (some asymmetric schemes, including RSA with low public exponent, are considerably faster on the encryption side than they are on the decryption side, and can approach the throughput of some symmetric cryptography).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Someone mentioned succinctly from &lt;a href=&quot;http://stackoverflow.com/a/4469258/2714730&quot;&gt;How does SSL use symmetric and asymmetric encryption? on StackOverflow&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Asymmetric encryption is necessary to verify the others identity and then symmetric encryption gets used because it’s faster.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Remember too initially that a server can’t encrypt messages with the private key since anyone with the public key could read them. This would mean that the server would need to have the client’s public key as well so that the server could actually encrypt messages.&lt;/p&gt;
+
+&lt;p&gt;From now on, since the client and server both have a shared password (the “session key”), they can both encrypt and decrypt messages with it.&lt;/p&gt;
+
+&lt;p&gt;In our example from the “symmetric encryption”:&lt;/p&gt;
+
+&lt;pre&gt;
+Message:                      hello world
+Session secret (password):    2d00cd9bd332cef43a41d80ef31b9ebb
+Encrypted message:            940f1f7e63f7bc229169fa 
+&lt;/pre&gt;
+
+&lt;p&gt;Remember, since the client sent the server the session secret (by encrypting it asymmetrically first by using the server’s public key), &lt;strong&gt;the server and client both now used this shared session secret from now on&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;a-note-on-trust&quot;&gt;A note on trust&lt;/h1&gt;
+
+&lt;p&gt;Part of the Chain of Trust depends on us having pre-installed root certificates that we implicitly trust. That means I could make a certificate and install it on someone’s computer, and then pretend to be the server they are requesting something from. This is a classic “man in the middle” attack.&lt;/p&gt;
+
+&lt;p&gt;You can use &lt;a href=&quot;https://www.charlesproxy.com/&quot;&gt;Charles Proxy&lt;/a&gt; to test your native app API. Essentially, your’re performing a MITM attack against your own app. To understand this, check out &lt;a href=&quot;http://nickfishman.com/post/50557873036/reverse-engineering-native-apps-by-intercepting-network&quot;&gt;Reverse Engineering Native Apps by Intercepting Network Traffic&lt;/a&gt; (this was also linked at the end of Heaton’s article above, but I’d like to link to it as well since it is very relevant). You can also use Charles Proxy to perform a MITM attack on one of your co-workers. Remember there are &lt;a href=&quot;https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act&quot;&gt;laws against this&lt;/a&gt; (also see &lt;a href=&quot;http://www.hackerlaw.org/?page_id=55&quot;&gt;Hacker Law&lt;/a&gt;). Or your boss could monitor all of your internet traffic (there is probably a clause in your employment agreement allowing your IT department to perform MITM attacks on you). There’s even an article called &lt;a href=&quot;http://www.entrepreneur.com/article/223686&quot;&gt;3 Tips for Legally and Ethically Monitoring Employees Online&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Actual openssl examples
+Why use symmetric encryption alongside assymetric encryption
+Authenticity versus identity
+Buying a certificate&lt;/p&gt;
+</description>
+        <pubDate>Sun, 17 Jan 2016 05:49:00 -0800</pubDate>
+        <link>http://joshbeam.github.io/encryption/2016/01/17/https-in-plain-english.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/encryption/2016/01/17/https-in-plain-english.html</guid>
+        
+        
+        <category>encryption</category>
+        
+      </item>
     
       <item>
         <title>Using node.js to upload your app to Google Play</title>
@@ -1233,391 +1588,6 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
         <category>javascript</category>
         
         <category>ruby</category>
-        
-      </item>
-    
-      <item>
-        <title>From JavaScript to Ruby: Using Blocks Like Callbacks</title>
-        <description>&lt;!--excerpt.start--&gt;
-&lt;p&gt;This post is the first in the series of &lt;strong&gt;&lt;em&gt;“From JavaScript to Ruby”&lt;/em&gt;&lt;/strong&gt;, which is aimed at helping JavaScript developers transition their thinking from JavaScript to Ruby. This post will answer this fundamental question: how do I do “callbacks” in Ruby? The answer is: the “idiomatic” way (we’ll talk about what “idiomatic” means) to use so-called callbacks in Ruby is to use &lt;strong&gt;blocks&lt;/strong&gt;. We’ll discuss blocks, and their similarities to JavaScript callbacks.
-&lt;!--excerpt.end--&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;defining-callback-through-practical-examples&quot;&gt;Defining “callback” through practical examples&lt;/h1&gt;
-
-&lt;p&gt;A callback is a function that happens after we call another function, but the catch is, they’re coupled. However, being coupled in this way doesn’t mean we can’t reuse the callback function.&lt;/p&gt;
-
-&lt;p&gt;We often use anonymous functions in JavaScript as callbacks. Here’s an example using &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt;:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Sue&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Aron&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Joseph&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Bob&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Sue&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Aron&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Joseph&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We can actually sort of “scoop out” the function that we passed into &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt; in order to make it &lt;strong&gt;reusable&lt;/strong&gt;:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Sue&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Aron&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Joseph&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Bob&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Sue&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Aron&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Joseph&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1 id=&quot;how-do-we-do-this-in-ruby-and-what-does-idiomatic-mean&quot;&gt;How do we do this in Ruby? And what does “idiomatic” mean?&lt;/h1&gt;
-
-&lt;p&gt;You’ll hear a lot of Rubyists use the word “idiomatic”. Read:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The idiomatic way to pass arguments to a method in Ruby is such and such…&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The idiomatic way to use a “callback” in Ruby is to such and such…&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;In normal-people speak, you’d say:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The common way to go about doing this is such and such…&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Make sense? In other words, &lt;strong&gt;there are certain patterns and best practices (solutions) for common problems in Ruby: we call these solutions “idioms”.&lt;/strong&gt; So, the idiomatic way to use callbacks in Ruby is &lt;strong&gt;not to use callbacks at all. Instead, we use blocks.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Here’s how we can do the &lt;strong&gt;same exact thing in Ruby, instead of JavaScript&lt;/strong&gt;:&lt;/p&gt;
-
-&lt;script src=&quot;//repl.it/embed/jkQ.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;If you run the above, you’ll see &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello &amp;lt;name&amp;gt;&lt;/code&gt; printed for each name, and at the end it’ll actually return the entire array for you to use.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Let’s compare the two. Essentially, this JavaScript…:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;…is the same as this Ruby:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;We can also write the above Ruby in another, shorter way:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;So here’s a few things we’ve learned from the above.&lt;/p&gt;
-
-&lt;h2 id=&quot;st-thing-we-learned-string-interpolation&quot;&gt;1st thing we learned (string interpolation)&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Notice the necessary double-quotes. Interpolation doesn&#39;t work without them.&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
-&lt;span class=&quot;c1&quot;&gt;# That&#39;s &quot;string interpolation&quot;. It&#39;s the same as this:&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Both ways are correct, but the string interpolation notation is more idiomatic.&lt;/p&gt;
-
-&lt;p&gt;In JavaScript, we call it “string concatenation”:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;nd-thing-we-learned-block-syntax&quot;&gt;2nd thing we learned (block syntax)&lt;/h2&gt;
-
-&lt;p&gt;We also learned two styles, or syntaxes, for writing blocks:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# stuff here&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# do ... end is one type of block notation. The other type is:&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# The curly braces replace the &quot;do&quot; and &quot;end&quot;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;div class=&quot;protip&quot;&gt;
-  &lt;h1&gt;Pro Tip&lt;/h1&gt;
-
-  &lt;p&gt;
-    Before we continue, I want to point out a couple style points. Rubyists often use &quot;soft tabs&quot;, or 2 spaces instead of just a 4-character tab, only because it different environments it remains readable (see &lt;a href=&quot;http://stackoverflow.com/questions/9446109/soft-tabs-or-hard-tabs&quot;&gt;this StackOVerflow question&lt;/a&gt;). Also, look at the spacing between the curly braces and pipes. I recommend something to you: &lt;a href=&quot;https://github.com/bbatsov/rubocop&quot;&gt;Rubocop&lt;/a&gt;, which is sort of the de-facto command line tool that tells you if your code looks bad according to the &lt;a href=&quot;https://github.com/bbatsov/ruby-style-guide&quot;&gt;community style guide on GitHub&lt;/a&gt;. It&#39;s good stuff.
-  &lt;/p&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;rd-thing-we-learned-enumerableeach--arrayprototypeforeach&quot;&gt;3rd thing we learned (&lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#each == Array.prototype.forEach&lt;/code&gt;)&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;Continuing, we learned that Ruby’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#each&lt;/code&gt; is equivalent to JavaScript’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt; (more or less).&lt;/strong&gt; I have found only one online blog post so far that has made Ruby’s &lt;code class=&quot;highlighter-rouge&quot;&gt;#each&lt;/code&gt; make sense to me. It is by &lt;a href=&quot;http://www.eriktrautman.com/posts/ruby-explained-map-select-and-other-enumerable-methods&quot;&gt;Erik Trautman&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h1 id=&quot;scooping-out-the-block-like-a-reusable-callback&quot;&gt;“Scooping out” the block like a reusable callback&lt;/h1&gt;
-
-&lt;p&gt;There are two common ways to make a reusable “callback” in Ruby. They are the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;&lt;/strong&gt;. There are &lt;strong&gt;very subtle differences between the two ways&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;lambda&quot;&gt;Lambda&lt;/h2&gt;
-
-&lt;script src=&quot;//repl.it/embed/jkQ/1.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;By the way, that’s the &lt;strong&gt;new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you’re curious)&lt;/strong&gt;. If you want to do a &lt;strong&gt;multi-line lambda&lt;/strong&gt;, you do:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;sayHello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-            &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-           &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now that’s some weird-ass looking syntax, huh? Let’s make it look even weirder:&lt;/p&gt;
-
-&lt;h2 id=&quot;proc-short-for-procedure&quot;&gt;Proc (short for “procedure”)&lt;/h2&gt;
-
-&lt;script src=&quot;//repl.it/embed/jkQ/2.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;Did you notice, by the way, &lt;strong&gt;that you can do multi-line variable assignment?&lt;/strong&gt; Pretty cool; you can’t do that in JavaScript.&lt;/p&gt;
-
-&lt;h2 id=&quot;differences&quot;&gt;Differences&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Lambda&lt;/strong&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;You don’t have to pass in all the arguments if you don’t want to&lt;/strong&gt;. If your “callback” needs, say, 3 arguments, and you only pass in 2 when you use it, &lt;strong&gt;there will be no error&lt;/strong&gt;. This is just like a JavaScript callback… but in JavaScript, the undefined arguments will be &lt;code class=&quot;highlighter-rouge&quot;&gt;undefined&lt;/code&gt;, and in Ruby, the undefined arguments will be &lt;code class=&quot;highlighter-rouge&quot;&gt;nil&lt;/code&gt;.&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;If you call &lt;code class=&quot;highlighter-rouge&quot;&gt;return &amp;lt;whatever&amp;gt;&lt;/code&gt;, the lambda stops, but any method that the lambda is in &lt;em&gt;does not&lt;/em&gt; stop&lt;/strong&gt;. You can use the lambda’s returned value in the rest of the containing method.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Proc&lt;/strong&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;You must pass in all the arguments&lt;/strong&gt;, or you’ll get an error.&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;If you call &lt;code class=&quot;highlighter-rouge&quot;&gt;return &amp;lt;whatever&amp;gt;&lt;/code&gt;, the Proc &lt;em&gt;and&lt;/em&gt; any method that it is in &lt;em&gt;will stop&lt;/em&gt;&lt;/strong&gt;. The Proc will return its value to the containing method, and the containing method will also return that same value.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; in JavaScript:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// This is a JavaScript lambda&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// This is the &quot;containing method&quot; that uses the lambda&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// world() returns, but it just gives up its value, and the function continues&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;who&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;who&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello world&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt; in JavaScript:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// This is a JavaScript Proc&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// This is the &quot;containing method&quot; that uses the Proc&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// The containing function returns the return value of the Proc&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;// Any code below here obviously won&#39;t run:&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;nothing will log here&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello world&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In Ruby, though, as a side note, we rarely use an explicit &lt;code class=&quot;highlighter-rouge&quot;&gt;return&lt;/code&gt; statement. You can just type a value.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;This JavaScript…:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;…is equivalent to this Ruby:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
-  &lt;span class=&quot;s1&quot;&gt;&#39;Hello&#39;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;the-ampersand-&quot;&gt;The ampersand (&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;)&lt;/h2&gt;
-
-&lt;p&gt;This confusing thing basically just makes sure the thing you’re passing into the method is a Proc, sort of. You can read about that in detail on &lt;a href=&quot;http://ablogaboutcode.com/2012/01/04/the-ampersand-operator-in-ruby/&quot;&gt;a.blog.about.code&lt;/a&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; error: wrong number of arguments (1 for 0)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The above error is basically saying, “why did you pass me an argument? I expected 0 arguments for &lt;code class=&quot;highlighter-rouge&quot;&gt;#each&lt;/code&gt;”. &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;sayHello&lt;/code&gt; is &lt;strong&gt;not&lt;/strong&gt; an argument! It is a &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;, &lt;strong&gt;and Ruby does not count &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;s as arguments!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;It’s weird, huh? That’s because &lt;strong&gt;you can pass in a block at the end of pretty much any method in Ruby, and it won’t see it as an argument, in the typical sense&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;Check it out:&lt;/p&gt;
-
-&lt;script src=&quot;//repl.it/embed/jld/3.js&quot;&gt;&lt;/script&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say &lt;code class=&quot;highlighter-rouge&quot;&gt;yield&lt;/code&gt;:&lt;/p&gt;
-
-&lt;script src=&quot;//repl.it/embed/jld/2.js&quot;&gt;&lt;/script&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt;  you&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#block_given?&lt;/code&gt; is a native method that returns a boolean (&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;) that checks if a block was passed in to the method. We have to use it in the above example, because if we just say &lt;code class=&quot;highlighter-rouge&quot;&gt;yield&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;yield if block_given?&lt;/code&gt;, then we’ll get an error that says &lt;code class=&quot;highlighter-rouge&quot;&gt;no block given (yield)&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Also, the question mark &lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt; is Ruby’s way of meaningfully letting the user know that the method is supposed to return a boolean. There’s nothing really special about it.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Now, going back to the original error (&lt;code class=&quot;highlighter-rouge&quot;&gt;error: wrong number of arguments (1 for 0)&lt;/code&gt;):&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;I’ll try my best to sort of construe a similar error in JavaScript:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// TypeError: [object Array] is not a function&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// It&#39;s saying &quot;names&quot; is not a function, which is true...&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// forEach expects one argument (a function)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// we expected: names.forEach(sayHello);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;If the above code were Ruby, you’d get an error something like &lt;code class=&quot;highlighter-rouge&quot;&gt;wrong number of arguments (2 for 1)&lt;/code&gt;. Once again, I want to emphasize this is because Ruby doesn’t see the &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt; as an argument.&lt;/p&gt;
-
-&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Use blocks as if they were callbacks.&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Use a &lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; or a  &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;.&lt;/strong&gt; Remember the two subtle differences between them (number of arguments, and return values).&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Put a &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; before the block that you pass into the method,&lt;/strong&gt; if you pass it in to a native Ruby method that will run a block, like &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumberable#each&lt;/code&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;further-reading&quot;&gt;Further reading&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.reactive.io/tips/2008/12/21/understanding-ruby-blocks-procs-and-lambdas/&quot;&gt;Reactive.IO: Understanding Ruby Blocks, Procs, and Lambdas&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://makandracards.com/makandra/17305-short-lambda-syntax-in-ruby-1-9&quot;&gt;makandracards: Short Lambda Syntax in Ruby 1.9&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 20 Apr 2015 04:40:00 -0700</pubDate>
-        <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</guid>
-        
-        
-        <category>javascript</category>
-        
-        <category>ruby</category>
-        
-      </item>
-    
-      <item>
-        <title>Something no one tells you about minifying AngularJS controllers (until it&#39;s too late)</title>
-        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
-This post is going to talk briefly about the common ways people are shown to write AngularJS controllers, why minifying your code will break your application if you write them in this way, and how to fix this problem.&lt;!--excerpt.end--&gt;
-&lt;/div&gt;
-
-&lt;h1 id=&quot;the-usual-approach-to-writing-controllers&quot;&gt;The usual approach to writing controllers&lt;/h1&gt;
-
-&lt;p&gt;In many online AngularJS tutorials, you’re taught (for simplicity’s sake) to write a controller as such:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;myModule&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;MyController&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;doSomething&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;c1&quot;&gt;// some code here&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The above code has several advantages. First, it’s simple to read. Second, it’s simple to write. However, it is generally recommended to minify your JavaScript code before deploying it live, since this reduces the size of the file that the server has to send (in other words, this can dramatically increase the user’s perception of how fast your application loads).&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Minifying the above controller will break your application. Here’s why…&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Quick little tangent&lt;/strong&gt;: if you’re curious, I use &lt;a href=&quot;http://gulpjs.com/&quot;&gt;Gulp&lt;/a&gt; to concatenate and minify my project files. If you’re just writing some code in &lt;a href=&quot;http://jsbin.com&quot;&gt;JSBin&lt;/a&gt;, for example, you can just head over to an online minifier like &lt;a href=&quot;http://jscompress.com/&quot;&gt;jscompress&lt;/a&gt;, which will do the job just fine in most cases.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Continuing on…&lt;/strong&gt; if you minify our above example and open your app, you’ll see that nothing happens. And you’ll get this error in your console:&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Error: [$injector:unpr]&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;So what is this error? If we click on the error in our console, it will take us to the AngularJS website, which will say something like this:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;This error results from the $injector being unable to resolve a required dependency. To fix this, make sure the dependency is defined and spelled correctly.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;In other words, because of the way AngularJS uses dependency injection (it actually parses the arguments of your functions), when the code is minified, &lt;code class=&quot;highlighter-rouge&quot;&gt;$scope&lt;/code&gt; is no longer &lt;code class=&quot;highlighter-rouge&quot;&gt;$scope&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;$route&lt;/code&gt; is no longer &lt;code class=&quot;highlighter-rouge&quot;&gt;$route&lt;/code&gt;, etc. Instead, they’re just minified variables, like &lt;code class=&quot;highlighter-rouge&quot;&gt;e&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt;, which don’t make any sense to AngularJS (if you want to understand a little bit more about dependency injection and how it works in JavaScript, check out these two posts: one by &lt;a href=&quot;http://anandmanisankar.com/posts/angularjs-dependency-injection-demystified/&quot;&gt;Anand&lt;/a&gt; and one by &lt;a href=&quot;http://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html&quot;&gt;Alex&lt;/a&gt;. For now, just know that minfiying breaks dependency injection.)&lt;/p&gt;
-
-&lt;p&gt;In fact, I’ve written two JSBin examples for you to see what exactly is going on.&lt;/p&gt;
-
-&lt;h2 id=&quot;working-example&quot;&gt;Working example&lt;/h2&gt;
-
-&lt;p&gt;&lt;a class=&quot;jsbin-embed&quot; href=&quot;http://jsbin.com/gijujiqixe/2/embed?js,output&quot;&gt;JS Bin&lt;/a&gt;&lt;script src=&quot;http://static.jsbin.com/js/embed.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;non-working-minified-example&quot;&gt;Non-working (minified) example&lt;/h2&gt;
-
-&lt;p&gt;&lt;a class=&quot;jsbin-embed&quot; href=&quot;http://jsbin.com/migine/1/embed?js,output&quot;&gt;JS Bin&lt;/a&gt;&lt;script src=&quot;http://static.jsbin.com/js/embed.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Open up your console (if you’re on Mac with Chrome, hit &lt;kbd&gt;CMD&lt;/kbd&gt;+&lt;kbd&gt;opt&lt;/kbd&gt;+&lt;kbd&gt;j&lt;/kbd&gt;), and you’ll actually see the injector error live on this site (since I embedded the JSBin).&lt;/p&gt;
-
-&lt;h1 id=&quot;how-to-fix-it&quot;&gt;How to fix it&lt;/h1&gt;
-
-&lt;p&gt;When you click on your error message in the console, which leads to the AngularJS website, they actually provide you with a solution to this error:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;myApp&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;MyController&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;myService&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;myService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// Do something with myService&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}]);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This way works completely fine. If you minify, AngularJS instead looks at each item in the array (which is the second argument passed to the controller in the above example), and resolves any minified dependency to match its correct string name.&lt;/p&gt;
-
-&lt;p&gt;But as you may or may not know, I am a big fan of John Papa’s &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide&quot;&gt;Style Guide&lt;/a&gt;, and he specifically recommends &lt;a href=&quot;https://github.com/johnpapa/angular-styleguide#style-y091&quot;&gt;against the above example&lt;/a&gt;, for several reasons. However, the biggest reason to me, is that with a long list of dependencies, the above code can get &lt;strong&gt;very hard to read, very quickly&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;Just imagine if we have something like this:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;myApp&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[])&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;MyController&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;$scope&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;$route&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Item&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;items&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;utils&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;shade&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;utils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shade&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// Do something&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}]);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Okay, okay, it’s not &lt;strong&gt;terrible&lt;/strong&gt;. But I think there’s a better way to write it. As John Papa says:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Why?: Avoid creating in-line dependencies as long lists can be difficult to read in the array. Also it can be confusing that the array is a series of strings while the last item is the component’s function.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;Use &lt;code class=&quot;highlighter-rouge&quot;&gt;$inject&lt;/code&gt;:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;myApp&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]);&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;MyController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$inject&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;$scope&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;$route&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Item&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;items&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;utils&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;shade&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;angular&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;myApp&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;controller&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;MyController&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MyController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MyController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$scope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Item&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;utils&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shade&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;c1&quot;&gt;// do something&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The above makes me breathe a sigh of relief, due to the now ease of readability. And, &lt;strong&gt;we’ve solved our issue of minification. We are now minification-safe!&lt;/strong&gt; Anyone looking at the code can now understand exactly what is happening. &lt;em&gt;“Oh, okay, so we have &lt;strong&gt;injected&lt;/strong&gt; several services into this controller…&lt;/em&gt;”&lt;/p&gt;
-
-&lt;p&gt;You’ll notice too that I separated the declarations of the module (I didn’t chain &lt;code class=&quot;highlighter-rouge&quot;&gt;.controller&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;angular.module(&#39;myApp&#39;,[])&lt;/code&gt;). Once again, I recommend reading John Papa’s style guide for quick clarification on that.&lt;/p&gt;
-
-&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
-
-&lt;p&gt;This doesn’t just go for controllers. It goes for anything where you inject anything. Directives, configs, runs, factories, etc. I am of the opinion that following the above implementation of dependency injection, at least in the current version of AngularJS at the time of writing this (end of March 2015), is probably one of the best solutions to solving the minification and readibility issues caused by other solutions.&lt;/p&gt;
-
-&lt;p&gt;So to recap what we learned… Minifying code that uses string-dependent dependency injection can break your application, unless you explicitly define the strings to use for the dependencies, which &lt;code class=&quot;highlighter-rouge&quot;&gt;$inject&lt;/code&gt; is perfect for.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 31 Mar 2015 03:48:00 -0700</pubDate>
-        <link>http://joshbeam.github.io/javascript/angularjs/2015/03/31/something-no-one-tells-you-about-minifying-angularjs-controllers-until-its-too-late.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/angularjs/2015/03/31/something-no-one-tells-you-about-minifying-angularjs-controllers-until-its-too-late.html</guid>
-        
-        
-        <category>javascript</category>
-        
-        <category>angularjs</category>
         
       </item>
     
