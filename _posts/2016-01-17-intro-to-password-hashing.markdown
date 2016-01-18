@@ -21,13 +21,15 @@ password => 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
 
 I happened to just use this sketchy website to generate this hash online: <a href="http://www.lorem-ipsum.co.uk/hasher.php">hash generator with optional salt</a> (I'll go over salts in a little bit). 
 
-So if one of your users' password is `password`, the hash above will be stored in your database. Any time they login, you convert the password they input to your login form (sent over <a href="">HTTPS</a>, of course) to a SHA-256 hash, and your server will just check if the hash they sent matches the hash in the database.
+So if one of your users' password is `password`, the hash above will be stored in your database. Any time they login, you convert the password they input to your login form (sent over <a href="/encryption/2016/01/17/breaking-down-https.html">HTTPS</a>, of course) to a SHA-256 hash, and your server will just check if the hash they sent matches the hash in the database.
 
 # Why use a hash at all, though?
 
-**We use hashes because it's very unlikely to find two different things that will result in the same hash.**
+**We use hashes because it's very unlikely to find two different things that will result in the same hash, and it's really hard to figure out what it was that created the hash (like, really, really, hard).**
 
-At this point, you might be asking, why is hash any more safe than just storing the password? Most people will give you this answer (from <a href="http://stackoverflow.com/a/4014407/2714730">Is it safe to ignore the possibility of SHA collisions in practice? on StackOverflow</a>:
+**Solving hashes is a factor of computational power, money, and opportunity.**
+
+At this point, you might be asking, why is a hash any more safe than just storing the password? Most people will give you this answer (from <a href="http://stackoverflow.com/a/4014407/2714730">Is it safe to ignore the possibility of SHA collisions in practice? on StackOverflow</a>:
 
 > The usual answer goes thus: what is the probability that a rogue asteroid crashes on Earth within the next second, obliterating civilization-as-we-know-it, and killing off a few billion people?
 
@@ -37,7 +39,7 @@ This is speculative at best without knowing how the actual algorithm works. Howe
 
 Schneier on Security has an interesting article called <a href="https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html">"When Will We See Collisions for SHA-1?"</a>. This is for SHA-1, remember, but the examples are still relevant.
 
-He quotes something interesting (about SHA-1, mind you):
+He quotes something interesting (about SHA-1, mind you), to point out that previous algorithms are becoming less secure, and that solving them is a factor of computational power, money, and opportunity:
 
 > A collision attack is therefore well within the range of what an organized crime syndicate can practically budget by 2018, and a university research project by 2021.
 
@@ -128,3 +130,5 @@ Again, I'll leave recommendations for specifically how to choose a password and 
 By the way, if this helps you sleep better at night, I was able to find a salted SHA-256 password hash that doesn't exist in that online rainbow table:
 
 <center><img src="/images/not-in-rainbow-table.png" width="66%" /></center>
+
+Not telling you what it was though, lest it end up in your rainbow table.

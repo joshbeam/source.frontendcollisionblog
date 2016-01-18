@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 17 Jan 2016 17:19:33 -0800</pubDate>
-    <lastBuildDate>Sun, 17 Jan 2016 17:19:33 -0800</lastBuildDate>
+    <pubDate>Sun, 17 Jan 2016 23:06:32 -0800</pubDate>
+    <lastBuildDate>Sun, 17 Jan 2016 23:06:32 -0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -26,13 +26,15 @@ password =&amp;gt; 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d154
 
 &lt;p&gt;I happened to just use this sketchy website to generate this hash online: &lt;a href=&quot;http://www.lorem-ipsum.co.uk/hasher.php&quot;&gt;hash generator with optional salt&lt;/a&gt; (I’ll go over salts in a little bit).&lt;/p&gt;
 
-&lt;p&gt;So if one of your users’ password is &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt;, the hash above will be stored in your database. Any time they login, you convert the password they input to your login form (sent over &lt;a href=&quot;&quot;&gt;HTTPS&lt;/a&gt;, of course) to a SHA-256 hash, and your server will just check if the hash they sent matches the hash in the database.&lt;/p&gt;
+&lt;p&gt;So if one of your users’ password is &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt;, the hash above will be stored in your database. Any time they login, you convert the password they input to your login form (sent over &lt;a href=&quot;/encryption/2016/01/17/breaking-down-https.html&quot;&gt;HTTPS&lt;/a&gt;, of course) to a SHA-256 hash, and your server will just check if the hash they sent matches the hash in the database.&lt;/p&gt;
 
 &lt;h1 id=&quot;why-use-a-hash-at-all-though&quot;&gt;Why use a hash at all, though?&lt;/h1&gt;
 
-&lt;p&gt;&lt;strong&gt;We use hashes because it’s very unlikely to find two different things that will result in the same hash.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;We use hashes because it’s very unlikely to find two different things that will result in the same hash, and it’s really hard to figure out what it was that created the hash (like, really, really, hard).&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;At this point, you might be asking, why is hash any more safe than just storing the password? Most people will give you this answer (from &lt;a href=&quot;http://stackoverflow.com/a/4014407/2714730&quot;&gt;Is it safe to ignore the possibility of SHA collisions in practice? on StackOverflow&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Solving hashes is a factor of computational power, money, and opportunity.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;At this point, you might be asking, why is a hash any more safe than just storing the password? Most people will give you this answer (from &lt;a href=&quot;http://stackoverflow.com/a/4014407/2714730&quot;&gt;Is it safe to ignore the possibility of SHA collisions in practice? on StackOverflow&lt;/a&gt;:&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;The usual answer goes thus: what is the probability that a rogue asteroid crashes on Earth within the next second, obliterating civilization-as-we-know-it, and killing off a few billion people?&lt;/p&gt;
@@ -44,7 +46,7 @@ password =&amp;gt; 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d154
 
 &lt;p&gt;Schneier on Security has an interesting article called &lt;a href=&quot;https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html&quot;&gt;“When Will We See Collisions for SHA-1?”&lt;/a&gt;. This is for SHA-1, remember, but the examples are still relevant.&lt;/p&gt;
 
-&lt;p&gt;He quotes something interesting (about SHA-1, mind you):&lt;/p&gt;
+&lt;p&gt;He quotes something interesting (about SHA-1, mind you), to point out that previous algorithms are becoming less secure, and that solving them is a factor of computational power, money, and opportunity:&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;A collision attack is therefore well within the range of what an organized crime syndicate can practically budget by 2018, and a university research project by 2021.&lt;/p&gt;
@@ -145,6 +147,8 @@ passwordkindofsalty =&amp;gt; c18b77bedee11a6f1d55d54fedb7a9c4578faece96165734c0
 &lt;p&gt;By the way, if this helps you sleep better at night, I was able to find a salted SHA-256 password hash that doesn’t exist in that online rainbow table:&lt;/p&gt;
 
 &lt;center&gt;&lt;img src=&quot;/images/not-in-rainbow-table.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
+
+&lt;p&gt;Not telling you what it was though, lest it end up in your rainbow table.&lt;/p&gt;
 </description>
         <pubDate>Sun, 17 Jan 2016 05:49:00 -0800</pubDate>
         <link>http://joshbeam.github.io/encryption/2016/01/17/intro-to-password-hashing.html</link>
@@ -158,12 +162,31 @@ passwordkindofsalty =&amp;gt; c18b77bedee11a6f1d55d54fedb7a9c4578faece96165734c0
       <item>
         <title>Breaking down HTTPS</title>
         <description>&lt;!--excerpt.start--&gt;
+&lt;p&gt;What is HTTPS, and why is it any more secure than HTTP? What is TLS, RSA, symmetric and asymmetric encryption, and what happens when I send my credit card over a secure connection so that I can buy Game of Thrones with the sole intention of binge watching the entire season in one evening? This article will attempt to answer those questions (but not the one about your obsession with Game of Thrones).
+&lt;!--excerpt.end--&gt;&lt;/p&gt;
 
-&lt;!--excerpt.end--&gt;
+&lt;h1 id=&quot;who-is-this-for&quot;&gt;Who is this for?&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;Intended audience&lt;/strong&gt;: Anyone who knows what basic HTTP (not secure) is, and…&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;You want to know what makes HTTPS any more secure&lt;/li&gt;
+  &lt;li&gt;You also want to know what terms like RSA, TLS, asymmetric, and symmetric actually mean&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You’ll have a head start if you’ve ever purchased a domain certificate in the past from someone like Comodo or GoDaddy, or if you already know that HTTPS protects your communications over the internet and want to know how that actually works.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Time to read&lt;/strong&gt;: 20 minutes of uninterrupted reading.&lt;/p&gt;
+
+&lt;h1 id=&quot;how-did-you-get-this-information&quot;&gt;How did you get this information?&lt;/h1&gt;
+
+&lt;p&gt;Lots of reading and some software engineering. I obtained all this information from various sources on the internet (some of which may or may not be canonical), like various &lt;a href=&quot;http://stackexchange.com/&quot;&gt;StackExchange&lt;/a&gt; websites, &lt;a href=&quot;http://robertheaton.com/2014/03/27/how-does-https-actually-work/&quot;&gt;Robert Heaton’s blog&lt;/a&gt;, &lt;a href=&quot;https://www.schneier.com/&quot;&gt;Schneier on Security&lt;/a&gt;, and &lt;a href=&quot;https://wikipedia.com&quot;&gt;Wikipedia&lt;/a&gt;. If you are generally skeptical of the veractiy of online sources which may or may not be opinionated, you’ll find some various specs and canonical references scattered throughout this article.&lt;/p&gt;
+
+&lt;h1 id=&quot;intro&quot;&gt;Intro&lt;/h1&gt;
 
 &lt;p&gt;I recently read a great &lt;a href=&quot;http://robertheaton.com/2014/03/27/how-does-https-actually-work/&quot;&gt;article by Robert Heaton (an engineer at Stripe), “How does HTTPS actually work?”&lt;/a&gt;. I would definitely recommend giving it a read.&lt;/p&gt;
 
-&lt;p&gt;I wanted to extend off of some of the concepts a bit, and give some examples of how authenticity and encryption work on a very basic level within the context of communicating over the internet. &lt;strong&gt;I’ll do this by giving a simplified example of the HTTPS flow using actual asymmetric and symmetric encryption algorithms&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;I wanted to extend off of some of the concepts a bit, and give some examples of how authenticity and encryption work on a very basic level within the context of communicating over the internet. &lt;strong&gt;I’ll do this by giving a simplified example of the HTTPS flow using asymmetric and symmetric encryption algorithms&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;p&gt;For starters, I want to breakdown some terminology. Stay with me, we’ll clarify the whole HTTPS process again later:&lt;/p&gt;
 
@@ -171,11 +194,11 @@ passwordkindofsalty =&amp;gt; c18b77bedee11a6f1d55d54fedb7a9c4578faece96165734c0
 
 &lt;p&gt;&lt;em&gt;Related: &lt;a href=&quot;http://security.stackexchange.com/a/5127/45897&quot;&gt;What’s the difference between SSL, TLS, and HTTPS? on StackExchange&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 
-&lt;p&gt;TLS (used to be called SSL) is the entire process used for secure communications over the internet. As you know, HTTP is the protocol used for clients and servers to exchange information (any type of information: sending HTML to the client, sending requests for, say, JSON to the server).&lt;/p&gt;
+&lt;p&gt;TLS (previously SSL) is the entire process used for secure communications over the internet. As you know, HTTP is the protocol used for clients and servers to exchange information (any type of information: sending HTML to the client, sending requests for, say, JSON to the server).&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;When HTTP implements TLS, we call it HTTPS&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;TLS uses RSA for &lt;strong&gt;asymmetric cryptography&lt;/strong&gt; (one part of what makes TLS secure). RSA in this case is &lt;em&gt;only&lt;/em&gt; used for the initial connection to verify &lt;em&gt;authenticity&lt;/em&gt; (the “handshake”, we call it). This is important! TLS also uses &lt;strong&gt;symmetric cryptography&lt;/strong&gt;. This second form of cryptography is how messages are actually encrypted and sent back and forth after the initial authenticity verification happens.&lt;/p&gt;
+&lt;p&gt;TLS uses RSA for &lt;strong&gt;asymmetric cryptography&lt;/strong&gt; (one part of what makes TLS secure). RSA in this case is &lt;em&gt;only&lt;/em&gt; used for the initial connection to verify &lt;em&gt;authenticity&lt;/em&gt; (the “handshake”, we call it). This is important! TLS also uses &lt;strong&gt;symmetric cryptography&lt;/strong&gt;. This second form of cryptography is how messages (like sensitive login details or your credit card number) are actually encrypted and sent back and forth after the initial authenticity verification happens.&lt;/p&gt;
 
 &lt;p&gt;Wait, wait, wait. &lt;strong&gt;Why don’t we just keep using RSA (our asymmetric cryptography) to send all of our messages back and forth? I’ll answer that soon. Keep reading.&lt;/strong&gt;&lt;/p&gt;
 
@@ -211,26 +234,54 @@ passwordkindofsalty =&amp;gt; c18b77bedee11a6f1d55d54fedb7a9c4578faece96165734c0
 
 &lt;p&gt;It is not a hashing algorithm. Again, refer to the above &lt;a href=&quot;http://stackoverflow.com/questions/733692/sha1-vs-rsa-whats-the-difference-between-them&quot;&gt;SHA1 VS RSA: what’s the difference between them? on StackOverflow&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;The same applies for SHA2 (sha256), etc. For some reason, RSA and hashing algorithms get mixed up easily.&lt;/p&gt;
+&lt;p&gt;The same applies for SHA2 (SHA-256), etc. For some reason, RSA and hashing algorithms get mixed up easily.&lt;/p&gt;
 
-&lt;p&gt;RSA is the algorithm for creating public and private key-pairs. SHA2, for example, might be used to hash a password to store it in a database. If you are unfamiliar with this, please read &lt;a href=&quot;/encryption/2016/01/17/intro-to-password-hashing.html&quot;&gt;this article of mine&lt;/a&gt; (it should take about 10 minutes), and then come back here. It’s important to understand what RSA isn’t.&lt;/p&gt;
+&lt;p&gt;RSA is the algorithm for creating public and private key-pairs. SHA2 (which is another name for SHA-256, by the way), for example, might be used to hash a password to store it in a database. If you are unfamiliar with this, please read &lt;a href=&quot;/encryption/2016/01/17/intro-to-password-hashing.html&quot;&gt;this article of mine&lt;/a&gt; (it should take about 10 minutes), and then come back here. It’s important to understand what RSA isn’t.&lt;/p&gt;
+
+&lt;h2 id=&quot;example&quot;&gt;Example&lt;/h2&gt;
 
 &lt;p&gt;Here’s a fake example of asymmetric cryptography:&lt;/p&gt;
 
 &lt;pre&gt;
-Private key:                abc
-Public key:                 xyz
-Message:                    hello world
+Private key:                            abc
+Public key:                             xyz
+Message we will &quot;encrypt&quot;:              hello world
 
-Signed by private key:      asdfghj
-Verified by public key:     hello world
+Output when signed by private key:      asdfghj
+Output when verified by public key:     hello world
 (OK cool, since we could verify it, it came from the owner of the private key)
 
-Encrypted by public key:    zxcvbnm
-Decrypted by private key:   hello world
+Output when encrypted by public key:    zxcvbnm
+Output when decrypted by private key:   hello world
 &lt;/pre&gt;
 
-&lt;p&gt;However, as you might notice above, we have to have some sort of expectation of what the message &lt;em&gt;should&lt;/em&gt; look like.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;OK cool, since we could verify it, it came from the owner of the private key&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Wait, what? If you didn’t know what the message was in the first place, how do you know it was really supposed to say &lt;code class=&quot;highlighter-rouge&quot;&gt;hello world&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;As you might notice above, we have to have some sort of expectation of what the message &lt;em&gt;should&lt;/em&gt; look like. We have to know that the message is supposed to be “hello world” in the first place. So what we do is send the original message along with a “digital signature”, which is simply the signed (remember, we don’t say encrypted when we encrypt something with a private key) version of the message. Then you just use the public key to verify (again remember, we don’t “decrypt” with a public key) the attached signature to make sure it matches the plain-text message.&lt;/p&gt;
+
+&lt;p&gt;Here is a fake example of how that would look:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;hello world&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;signature&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;privateKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// =&amp;gt; a5dc78923jhbc&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;certificate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;signature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;certificate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// =&amp;gt; hello worlda5dc78923jhbc&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;When we send that message to someone, they parse out the digital signature (the &lt;code class=&quot;highlighter-rouge&quot;&gt;a5dc78923jhbc&lt;/code&gt; part), and then verify and hash the original themselves to check if they are the same thing:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;verify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;a5dc78923jhbc&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;publicKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hello world&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In reality, certificates (such as the popular X.509 certificate) contain a different message, and the content of the digital signature is different. Here is &lt;a href=&quot;https://www.rfc-editor.org/rfc/rfc2459.txt&quot;&gt;the X.509 rfc&lt;/a&gt;, which echos the point above about hashing and then signing:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The data to be signed (e.g., the one-way hash function output value) is formatted for the signature algorithm to be used.  Then, a private key operation (e.g., RSA encryption) is performed to generate the signature value.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;There are some unanswered questions here, like, how do we know who this certificate actually came from. Could someone just copy and paste someone else’s certificate and send it (I don’t mean the private key; I mean the signature, which is public and attached to the certificate, which is also public)? More on this in a sec.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://coolaj86.com/articles/asymmetric-public--private-key-encryption-in-node-js/&quot;&gt;Asymmetric Public / Private Key Encryption (RSA) in Node.js&lt;/a&gt; puts it very well:&lt;/p&gt;
 
@@ -244,7 +295,7 @@ Decrypted by private key:   hello world
 
 &lt;p&gt;&lt;em&gt;Related: &lt;a href=&quot;https://en.wikipedia.org/wiki/Caesar_cipher&quot;&gt;Caesar cipher (Wikipedia)&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;example&quot;&gt;Example&lt;/h2&gt;
+&lt;h2 id=&quot;example-1&quot;&gt;Example&lt;/h2&gt;
 
 &lt;p&gt;On a high level, symmetric cryptography is something like this:&lt;/p&gt;
 
@@ -295,17 +346,36 @@ Password:          2d00cd9bd332cef43a41d80ef31b9ebb
 Encrypted message: 940f1f7e63f7bc229169fa 
 &lt;/pre&gt;
 
+&lt;p&gt;Symmetric algorithms are generally more efficient than their asymmetric counterparts, but we can’t send a session key (a symmetric shared key) over a non-secure network connection and expect any information encrypted with it to be secure. This is why we start off first with asymmetric encryption, and then end up using symmetric encryption for the rest of the time we’re connected. More on this in a sec.&lt;/p&gt;
+
 &lt;h1 id=&quot;revisiting-the-https-flow&quot;&gt;Revisiting the HTTPS flow&lt;/h1&gt;
 
-&lt;p&gt;Keeping it basic, here is essentially what happens when you visit a site that &lt;code class=&quot;highlighter-rouge&quot;&gt;https://&lt;/code&gt; in the URL (I’m shortening this into 2 broad steps, but know that there is more going on at a lower level):&lt;/p&gt;
+&lt;p&gt;Keeping it basic, here is essentially what happens when you visit a site that has &lt;code class=&quot;highlighter-rouge&quot;&gt;https://&lt;/code&gt; in the URL (I’m shortening this into 2 broad steps, but just know that there is more going on at a lower level):&lt;/p&gt;
 
 &lt;h2 id=&quot;step-1-of-2-server-proves-its-authenticity-by-sending-a-signed-certificate&quot;&gt;Step 1 of 2: Server proves its authenticity by sending a signed certificate&lt;/h2&gt;
 
+&lt;p&gt;Remember in the RSA section above where we asked, “how do we know who actually sent the certificate”? Even if there is a signature present, this only proves that the message was somehow signed by the server’s private key. But couldn’t anyone simply copy and paste a valid certificate and send it, pretending to be say, www.microsoft.com? Yes, but remember, the moment you encrypt something with Microsoft’s public key and send it back to the original sender, they will not be able to decrypt it (given that they don’t have the correct private key). Also, we rely on outside constraints like DNS servers to make sure the traffic is routed correctly.&lt;/p&gt;
+
+&lt;p&gt;Another example of this is in real life: you could write a new employment agreement granting yourself double your current salary, create a stamp of your boss’s signature, then stamp the memo and send it to HR. It looks like it came from your boss, but HR needs to check to make sure it actually did.&lt;/p&gt;
+
+&lt;p&gt;We can also sign certificates with as many signatures as we want, belonging to whomever we want.&lt;/p&gt;
+
 &lt;p&gt;Remember, your browser comes pre-installed with “root certificates” that you automatically trust. So, if the server bought its certificate from GoDaddy, the certificate can be signed with, say, GoDaddy’s private key as well as the server’s private key, and you use those two corresponding public keys to check the certificate (in other words, you’re checking that the certificate came from the server since only the server should have its private key, and you also check that the server bought their certificate from someone you trust already, like GoDaddy – we call them the “Certificate Authority”). In other word, we can have any number of people sign the certificate. This is the &lt;a href=&quot;https://en.wikipedia.org/wiki/Chain_of_trust&quot;&gt;Chain of trust (Wikipedia)&lt;/a&gt;.&lt;/p&gt;
 
+&lt;p&gt;As Heaton notes (in an example of Symantec hypothetical being the CA for Microsoft):&lt;/p&gt;
+
 &lt;blockquote&gt;
-  &lt;p&gt;TODO: actual example&lt;/p&gt;
+  &lt;p&gt;Symantec will have taken steps to ensure the organisation they are signing for really does own Microsoft.com, and so given that your client trusts Symantec, it can be sure that it really is talking to Microsoft Inc.&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;To simplify things, here are some ways we can check that the certificate in fact was sent by the correct server (instead of an attacker just copy and pasting an entire certificate and sending it to you, adapted from a &lt;a href=&quot;http://stackoverflow.com/a/188308/2714730&quot;&gt;fantastic answer&lt;/a&gt; to “How are ssl certificates verified?” on StackOverflow):&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The certificate is signed by a CA, any intermediate signatures, and the server’s private key.&lt;/li&gt;
+  &lt;li&gt;Your browser uses the pre-installed certificates to verify any CA signatures in the server’s certificate.&lt;/li&gt;
+  &lt;li&gt;The certificate contains an IP address or domain name, and the browser checks this is the server with which there is an open connection.&lt;/li&gt;
+  &lt;li&gt;The client encrypts the symmetric key (more on this in a second) with the server’s public key; only the server can decrypt this.&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;p&gt;From &lt;a href=&quot;http://robertheaton.com/2014/03/27/how-does-https-actually-work/&quot;&gt;Heaton’s article&lt;/a&gt;:&lt;/p&gt;
 
@@ -335,7 +405,7 @@ Encrypted message: 940f1f7e63f7bc229169fa
 
 &lt;p&gt;From now on, since the client and server both have a shared password (the “session key”), they can both encrypt and decrypt messages with it.&lt;/p&gt;
 
-&lt;p&gt;In our example from the “symmetric encryption”:&lt;/p&gt;
+&lt;p&gt;In our example from the “symmetric encryption” section (these are actual AES-encrypted keys and messages):&lt;/p&gt;
 
 &lt;pre&gt;
 Message:                      hello world
@@ -351,14 +421,44 @@ Encrypted message:            940f1f7e63f7bc229169fa
 
 &lt;p&gt;You can use &lt;a href=&quot;https://www.charlesproxy.com/&quot;&gt;Charles Proxy&lt;/a&gt; to test your native app API. Essentially, your’re performing a MITM attack against your own app. To understand this, check out &lt;a href=&quot;http://nickfishman.com/post/50557873036/reverse-engineering-native-apps-by-intercepting-network&quot;&gt;Reverse Engineering Native Apps by Intercepting Network Traffic&lt;/a&gt; (this was also linked at the end of Heaton’s article above, but I’d like to link to it as well since it is very relevant). You can also use Charles Proxy to perform a MITM attack on one of your co-workers. Remember there are &lt;a href=&quot;https://en.wikipedia.org/wiki/Electronic_Communications_Privacy_Act&quot;&gt;laws against this&lt;/a&gt; (also see &lt;a href=&quot;http://www.hackerlaw.org/?page_id=55&quot;&gt;Hacker Law&lt;/a&gt;). Or your boss could monitor all of your internet traffic (there is probably a clause in your employment agreement allowing your IT department to perform MITM attacks on you). There’s even an article called &lt;a href=&quot;http://www.entrepreneur.com/article/223686&quot;&gt;3 Tips for Legally and Ethically Monitoring Employees Online&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;Actual openssl examples
-Why use symmetric encryption alongside assymetric encryption
-Authenticity versus identity
-Buying a certificate&lt;/p&gt;
+&lt;p&gt;Also, I mentioned above something about “buying a certificate”. If you haven’t purchased a certificate before in order to enable HTTPS on your custom domain, here’s how it works (I’ve bought 3 or 4 certificates from different providers in the past). Some providers (like &lt;a href=&quot;https://www.comodo.com/&quot;&gt;Comodo&lt;/a&gt;) offer a free 90-day certificate where they don’t really verify much about you. On the other hand, you can buy a certificate from them, or from someone like GoDaddy, called “extended validation”, where they email the email address associated with the domain, they verify your business and address, etc. This allows the certificate authority to verify that they are giving a legitimate certificate to a legitimate entity. Does it always work out perfectly? I would say no.&lt;/p&gt;
+
+&lt;p&gt;For example, I could still be a bad guy setting up an HTTPS domain to steal information from people, and I could simply get one of Comodo’s free 90-day certificates, steal a bunch of information from unsuspected users visiting my site over an HTTPS connection. In other words:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Certificate authorities sign a certificate simply saying it belongs to a domain (and that’s it)&lt;/li&gt;
+  &lt;li&gt;The certificate allows you to use an HTTPS connection so people can’t steal data that’s going across the wire&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;But this doesn’t prove whether the owner of the server is good or bad. This whole process is just about identity, authentication, and secure communications. Just something to keep in mind.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;If you made it this far, I’d like to say… you have no life, and thank you for reading (just kidding about the “no life” part; you only spent 20 minutes reading this, I spent a whole day writing it… So who’s really the one with no life?)&lt;/p&gt;
+
+&lt;p&gt;In pseudo-code using pseudo-certificates, here’s our summary of what happens over HTTPS:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Client connects and asks server for their certificate, which in my pseudo-world looks like this: &lt;code class=&quot;highlighter-rouge&quot;&gt;ip:216.58.192.461:public_key:123456:signature:qa2ws3ed4rf&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Client verifies that &lt;code class=&quot;highlighter-rouge&quot;&gt;verify(&#39;qa2ws3ed4rf&#39;, public_key) === sha256(&#39;ip:216.58.192.461:public_key:123456&#39;)&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Client creates a shared symmetric session secret &lt;code class=&quot;highlighter-rouge&quot;&gt;caesarcipher&lt;/code&gt;, and encrypts this with the server’s public key&lt;/li&gt;
+  &lt;li&gt;Client sends &lt;code class=&quot;highlighter-rouge&quot;&gt;encrypt(&#39;caesarcipher&#39;, public_key)&lt;/code&gt; which turns out to look like &lt;code class=&quot;highlighter-rouge&quot;&gt;abcdefg&lt;/code&gt; to the server&lt;/li&gt;
+  &lt;li&gt;The server attempts to &lt;code class=&quot;highlighter-rouge&quot;&gt;decrypt(&#39;abcdefg&#39;, private_key)&lt;/code&gt;, and thankfully, the server gets &lt;code class=&quot;highlighter-rouge&quot;&gt;caesarcipher&lt;/code&gt; (the correct shared session key)&lt;/li&gt;
+  &lt;li&gt;The client buys the new season of Game of Thrones by sending his credit card number (encrypted with &lt;code class=&quot;highlighter-rouge&quot;&gt;caesarcipher&lt;/code&gt;) to the server and binge watches the entire season in one evening&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;That’s it. This is the real end. Again, this is a very, very basic overview and there is much more going on behind the scenes (for example, things like &lt;a href=&quot;http://security.stackexchange.com/questions/63971/how-is-the-premaster-secret-used-in-tls-generated&quot;&gt;pre-master and master secrets&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Cryptographic_nonce&quot;&gt;nonces&lt;/a&gt;, and all kinds of other stuff. Also, we are still discovering &lt;a href=&quot;http://robertheaton.com/2015/04/06/the-ssl-freak-vulnerability/&quot;&gt;bugs in SSL&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Further reading:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://vincent.bernat.im/en/blog/2011-ssl-perfect-forward-secrecy.html&quot;&gt;SSL/TLS &amp;amp; Perfect Forward Secrecy&lt;/a&gt; from Vincent Bernat&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://security.stackexchange.com/questions/20105/are-ssl-encrypted-requests-vulnerable-to-replay-attacks&quot;&gt;Are SSL encrypted requests vulnerable to Replay Attacks?&lt;/a&gt; on Security StackExchange (explains partially why we use randoms “so old signatures and temporary keys cannot be replayed.”)&lt;/li&gt;
+&lt;/ul&gt;
 </description>
         <pubDate>Sun, 17 Jan 2016 05:49:00 -0800</pubDate>
-        <link>http://joshbeam.github.io/encryption/2016/01/17/https-in-plain-english.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/encryption/2016/01/17/https-in-plain-english.html</guid>
+        <link>http://joshbeam.github.io/encryption/2016/01/17/breaking-down-https.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/encryption/2016/01/17/breaking-down-https.html</guid>
         
         
         <category>encryption</category>
