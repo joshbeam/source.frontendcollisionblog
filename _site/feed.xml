@@ -6,186 +6,9 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 18 Jan 2016 12:12:20 -0800</pubDate>
-    <lastBuildDate>Mon, 18 Jan 2016 12:12:20 -0800</lastBuildDate>
+    <pubDate>Mon, 18 Jan 2016 14:55:55 -0800</pubDate>
+    <lastBuildDate>Mon, 18 Jan 2016 14:55:55 -0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
-    
-      <item>
-        <title>Brutal Rainbows: intro to password hashing</title>
-        <description>&lt;!--excerpt.start--&gt;
-&lt;p&gt;We never store plaintext passwords in a database. This is because I could steal a database admin’s password, and then login to the database and steal all the users’ passwords. So how do we store passwords, if we can’t store passwords?
-&lt;!--excerpt.end--&gt;&lt;/p&gt;
-
-&lt;p&gt;We use “one way hashing”. I usually need to use Google for math, so if you would like to hear from a really smart person, I would recommend watching &lt;a href=&quot;https://www.youtube.com/watch?v=jzY3m5Kv7Y8&quot;&gt;Everything you need to know about cryptography in 1 hour by Colin Percival on YouTube&lt;/a&gt; (the video is actually almost 2 hours). If you don’t have 2 hours to spare, I will say one of the important points he makes is that right now, you should only use at least SHA-256 for hashing (it’s 2016 at the time of writing this, so if you are reading this from the future, I would suggest using whichever algorithm crypto experts recommend in your current decade).&lt;/p&gt;
-
-&lt;p&gt;Here’s an example of a SHA-256 hash:&lt;/p&gt;
-
-&lt;pre&gt;
-password =&amp;gt; 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8
-&lt;/pre&gt;
-
-&lt;p&gt;I happened to just use this sketchy website to generate this hash online: &lt;a href=&quot;http://www.lorem-ipsum.co.uk/hasher.php&quot;&gt;hash generator with optional salt&lt;/a&gt; (I’ll go over salts in a little bit).&lt;/p&gt;
-
-&lt;p&gt;So if one of your users’ password is &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt;, the hash above will be stored in your database. Any time they login, you convert the password they input to your login form (sent over &lt;a href=&quot;/encryption/2016/01/17/breaking-down-https.html&quot;&gt;HTTPS&lt;/a&gt;, of course) to a SHA-256 hash, and your server will just check if the hash they sent matches the hash in the database.&lt;/p&gt;
-
-&lt;h1 id=&quot;why-use-a-hash-at-all-though&quot;&gt;Why use a hash at all, though?&lt;/h1&gt;
-
-&lt;p&gt;&lt;strong&gt;We use hashes because it’s very unlikely to find two different things that will result in the same hash, and it’s really hard to figure out what it was that created the hash (like, really, really, hard).&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Solving hashes is a factor of computational power, money, and opportunity.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;However, if we know the constraints of the original input, we may have an easier time reverse engineering the hash.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;At this point, you might be asking, why is a hash any more safe than just storing the password? Most people will give you this answer (from &lt;a href=&quot;http://stackoverflow.com/a/4014407/2714730&quot;&gt;Is it safe to ignore the possibility of SHA collisions in practice? on StackOverflow&lt;/a&gt;:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The usual answer goes thus: what is the probability that a rogue asteroid crashes on Earth within the next second, obliterating civilization-as-we-know-it, and killing off a few billion people?&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;In other words, given the current power of computers today, people say that the possibility of finding two different words, sentences, messages, or whatever, that end up as the same SHA-256 hash is less than the probability of a rogue asteroid crashing onto earth in the next second, etc.&lt;/p&gt;
-
-&lt;p&gt;While a hash is a fixed size (in the case of SHA-256, it is 256 bits or 64 characters), the number of things that can be hashed is, well, near infinite. So while we can compute all possible hashes that can exist, it is not necessarily feasible to hash every possible “thing” (word, sentence, whatever) that can exist.&lt;/p&gt;
-
-&lt;p&gt;This is speculative at best without knowing how the actual algorithm works. However, I can link you to &lt;a href=&quot;http://csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf&quot;&gt;the specification from the National Institute of Standards and Technology&lt;/a&gt;, and warn you that reading that is about as dry as… whatever something really dry is. This algorithm (Secure Hash Algorithm) was design by the NSA (see the &lt;a href=&quot;https://en.wikipedia.org/wiki/SHA-2&quot;&gt;page on Wikipedia&lt;/a&gt;).&lt;/p&gt;
-
-&lt;p&gt;Schneier on Security has an interesting article called &lt;a href=&quot;https://www.schneier.com/blog/archives/2012/10/when_will_we_se.html&quot;&gt;“When Will We See Collisions for SHA-1?”&lt;/a&gt;. This is for SHA-1, remember, but the examples are still relevant.&lt;/p&gt;
-
-&lt;p&gt;He quotes something interesting (about SHA-1, mind you), to point out that previous algorithms are becoming less secure, and that solving them is a factor of computational power, money, and opportunity:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;A collision attack is therefore well within the range of what an organized crime syndicate can practically budget by 2018, and a university research project by 2021.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;If we have constraints though (for example, if we know the limitations of the input), it necessarily follows that we do not have infinite possibilities for inputs. There’s an interesting question on StackOverflow about finding which coordinates were used to generate a SHA-256 hash. We have an advantage here when we know how the coordinate are supposed to look in this example: &lt;code class=&quot;highlighter-rouge&quot;&gt;00.000000&lt;/code&gt;. &lt;a href=&quot;http://stackoverflow.com/a/21216552/2714730&quot;&gt;Martijn Pieters gives a great example&lt;/a&gt;:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Producing all possible coordinates between 00.000000 and 99.999999 is easy enough:&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;itertools&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;product&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;hashlib&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;digits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;0123456789&#39;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;combo&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;product&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;digits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repeat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;coords&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;{}.{} {}.{}&#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;&#39;&#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;combo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;&#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;combo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;&#39;&#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;combo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;&#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;combo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:]))&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hashlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coords&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hexdigest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;3f1c756daec9ebced7ff403acb10430659c13b328c676c4510773dc315784e4e&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;coords&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;This’ll brute-force all 10**16 (a big number) combinations. Sit back and relax, this’ll take a while.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;guessing-passwords&quot;&gt;Guessing passwords&lt;/h1&gt;
-
-&lt;p&gt;You have to keep in mind, too, how long it takes to “brute force” a password. This means that an attacker can tell his computer to go through every possible password that there could be, and try all of those passwords until he finds the correct one. Just as an interesting mental exercise, there’s an online &lt;a href=&quot;https://www.grc.com/haystack.htm&quot;&gt;brute force calculator&lt;/a&gt; that tries to tell you how many “computing years” it would take to brute force a certain password. Now, I link to this in caution, because there are many variables involved, but nonetheless, it’s interesting to look at:&lt;/p&gt;
-
-&lt;pre&gt;
-password =&amp;gt; 2.17 seconds (doing 100 billion guesses per second)
-&lt;/pre&gt;
-
-&lt;p&gt;Now, what happens if we have an even longer password?&lt;/p&gt;
-
-&lt;pre&gt;
-1234qewradsfZXCV =&amp;gt; 1.54 hundred million centuries (doing 100 billion guesses per second)
-&lt;/pre&gt;
-
-&lt;p&gt;Woah. However, there are other considerations. What if the first guess is correct? Good question, and you’re right. The above calculator only gives times for how long to search the entire character space would take. If we get the answer on the first guess, then it’s irrelevant.&lt;/p&gt;
-
-&lt;p&gt;Also, keep in mind, lots of web services and applications try to secure passwords from being brute forced by locking you out of your account after you get your password wrong several times in a row.&lt;/p&gt;
-
-&lt;p&gt;But wait a second, what if someone has a list of thousands and thousands of words, and their corresponding hashes? I’m glad you asked. This is a real thing: it’s called a “rainbow table”.&lt;/p&gt;
-
-&lt;h1 id=&quot;rainbow-tables&quot;&gt;Rainbow tables&lt;/h1&gt;
-
-&lt;p&gt;From &lt;a href=&quot;https://en.wikipedia.org/wiki/Rainbow_table&quot;&gt;Rainbow table on Wikipedia&lt;/a&gt;:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;A rainbow table is a precomputed table for reversing cryptographic hash functions, usually for cracking password hashes.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;There’s an interesting website called &lt;a href=&quot;https://crackstation.net/&quot;&gt;CrackStation&lt;/a&gt; that we can use for another practical exercise. It gives you a box where you can input a SHA-256 hash, and it will try and guess the corresponding password. But wait, I thought that it takes 13.12 million trillion trillion trillion trillion trillion trillion centuries to guess? That would be true, if we didn’t already have a table of thousands of words and their corresponding hashes, as mentioned above:&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;/images/hash-cracker.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;Interesting. So, how do we get around this?&lt;/p&gt;
-
-&lt;h1 id=&quot;getting-salty&quot;&gt;Getting salty&lt;/h1&gt;
-
-&lt;p&gt;From &lt;a href=&quot;https://en.wikipedia.org/wiki/Salt_(cryptography)&quot;&gt;Salt (cryptography) on Wikipedia&lt;/a&gt;:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The primary function of salts is to defend against dictionary attacks versus a list of password hashes and against pre-computed rainbow table attacks.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;The first thing you want to keep in mind is that you want your password to be something that is unlikely to exist in a rainbow table. I won’t make any specific suggestions on this, as there is a wide range of advice, but I will link you to &lt;a href=&quot;https://www.schneier.com/blog/archives/2014/03/choosing_secure_1.html&quot;&gt;Choosing Secure Passwords from Schneier on Security&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Aside from that, you might notice that every person who has the password “password” will have the same hash in the database.&lt;/p&gt;
-
-&lt;p&gt;This is bad too. If the attacker sees that &lt;code class=&quot;highlighter-rouge&quot;&gt;user.hash&lt;/code&gt; for 15 people is &lt;code class=&quot;highlighter-rouge&quot;&gt;5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8&lt;/code&gt;, and he uses a rainbow table to figure out that the corresponding password is &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt;, then he didn’t even have to lookup those 15 peoples’ hashes separately. They all have the same password.&lt;/p&gt;
-
-&lt;p&gt;A common thing is to use a “salt”, which is just some random information attached to the beginning or end of the password, which is different for each user. This should be “cryptographically random” according to most general knowledge (for example, by using &lt;code class=&quot;highlighter-rouge&quot;&gt;crypto.randomBytes(16)&lt;/code&gt; in Node.js) (see &lt;a href=&quot;https://coolaj86.com/articles/symmetric-cryptography-aes-with-webcrypto-and-node-js/&quot;&gt;Symmetric Cryptography (AES) with WebCrypto and Node.js from CoolAJ86&lt;/a&gt; for some other examples).&lt;/p&gt;
-
-&lt;p&gt;From &lt;a href=&quot;https://en.wikipedia.org/wiki/Salt_(cryptography)&quot;&gt;Salt (cryptography) on Wikipedia&lt;/a&gt;:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;A new salt is randomly generated for each password. In a typical setting, the salt and the password are concatenated and processed with a cryptographic hash function&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;How do we salt a password?&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;/images/salty.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;This means our password will actually be this:&lt;/p&gt;
-
-&lt;pre&gt;
-passwordsalty =&amp;gt; 29d6afd14bbcdf0b43d1f2c4fd8ecbe8bdedd5ee255e5fa530a3fb968cbbfa1a
-&lt;/pre&gt;
-
-&lt;p&gt;Now if we have 3 users with the same password and we salt them randomly, we would have:&lt;/p&gt;
-
-&lt;pre&gt;
-passwordsalty =&amp;gt; 29d6afd14bbcdf0b43d1f2c4fd8ecbe8bdedd5ee255e5fa530a3fb968cbbfa1a
-
-passwordverysalty =&amp;gt; af88afca3aaa435827396518fa2e2429ce42130904b118fee0f714894da0f546
-
-passwordkindofsalty =&amp;gt; c18b77bedee11a6f1d55d54fedb7a9c4578faece96165734c0d5a5bc53bacda6
-&lt;/pre&gt;
-
-&lt;p&gt;In other words, even though 15 users might have the same password, we’re forcing each password to be different (however, the user doesn’t need to remember the salt, which is cool). We’re enforcing password uniqueness without forcing the user to do anything different.&lt;/p&gt;
-
-&lt;p&gt;Remember, though, what I just mentioned?&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The first thing you want to keep in mind is that you want your password to be something that is unlikely to exist in a rainbow table.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;What if the salted password exists in the rainbow table too? Another great question, and you’re right:&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;/images/password-salty.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
-
-&lt;h1 id=&quot;to-conclude&quot;&gt;To conclude&lt;/h1&gt;
-
-&lt;p&gt;Again, I’ll leave recommendations for specifically how to choose a password and how to salt them to the crypto experts, but it’s useful to outline considerations as shown above, which may help readers to understand why we’ve come up with certain ways to try to store passwords in databases securely.&lt;/p&gt;
-
-&lt;p&gt;By the way, if this helps you sleep better at night, I was able to find a salted SHA-256 password hash that doesn’t exist in that online rainbow table:&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;/images/not-in-rainbow-table.png&quot; width=&quot;66%&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;Not telling you what it was though, lest it end up in your rainbow table.&lt;/p&gt;
-</description>
-        <pubDate>Sun, 17 Jan 2016 05:49:00 -0800</pubDate>
-        <link>http://joshbeam.github.io/encryption/2016/01/17/intro-to-password-hashing.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/encryption/2016/01/17/intro-to-password-hashing.html</guid>
-        
-        
-        <category>encryption</category>
-        
-      </item>
     
       <item>
         <title>Breaking down HTTPS</title>
@@ -1713,6 +1536,283 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
         <pubDate>Mon, 20 Apr 2015 07:57:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</guid>
+        
+        
+        <category>javascript</category>
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>From JavaScript to Ruby: Using Blocks Like Callbacks</title>
+        <description>&lt;!--excerpt.start--&gt;
+&lt;p&gt;This post is the first in the series of &lt;strong&gt;&lt;em&gt;“From JavaScript to Ruby”&lt;/em&gt;&lt;/strong&gt;, which is aimed at helping JavaScript developers transition their thinking from JavaScript to Ruby. This post will answer this fundamental question: how do I do “callbacks” in Ruby? The answer is: the “idiomatic” way (we’ll talk about what “idiomatic” means) to use so-called callbacks in Ruby is to use &lt;strong&gt;blocks&lt;/strong&gt;. We’ll discuss blocks, and their similarities to JavaScript callbacks.
+&lt;!--excerpt.end--&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;defining-callback-through-practical-examples&quot;&gt;Defining “callback” through practical examples&lt;/h1&gt;
+
+&lt;p&gt;A callback is a function that happens after we call another function, but the catch is, they’re coupled. However, being coupled in this way doesn’t mean we can’t reuse the callback function.&lt;/p&gt;
+
+&lt;p&gt;We often use anonymous functions in JavaScript as callbacks. Here’s an example using &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Sue&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Aron&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Joseph&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Bob&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Sue&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Aron&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Joseph&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can actually sort of “scoop out” the function that we passed into &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt; in order to make it &lt;strong&gt;reusable&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Sue&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Aron&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Joseph&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Bob&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Sue&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Aron&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Joseph&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;how-do-we-do-this-in-ruby-and-what-does-idiomatic-mean&quot;&gt;How do we do this in Ruby? And what does “idiomatic” mean?&lt;/h1&gt;
+
+&lt;p&gt;You’ll hear a lot of Rubyists use the word “idiomatic”. Read:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The idiomatic way to pass arguments to a method in Ruby is such and such…&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The idiomatic way to use a “callback” in Ruby is to such and such…&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In normal-people speak, you’d say:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The common way to go about doing this is such and such…&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Make sense? In other words, &lt;strong&gt;there are certain patterns and best practices (solutions) for common problems in Ruby: we call these solutions “idioms”.&lt;/strong&gt; So, the idiomatic way to use callbacks in Ruby is &lt;strong&gt;not to use callbacks at all. Instead, we use blocks.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Here’s how we can do the &lt;strong&gt;same exact thing in Ruby, instead of JavaScript&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;script src=&quot;//repl.it/embed/jkQ.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;If you run the above, you’ll see &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello &amp;lt;name&amp;gt;&lt;/code&gt; printed for each name, and at the end it’ll actually return the entire array for you to use.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Let’s compare the two. Essentially, this JavaScript…:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;…is the same as this Ruby:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;We can also write the above Ruby in another, shorter way:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;So here’s a few things we’ve learned from the above.&lt;/p&gt;
+
+&lt;h2 id=&quot;st-thing-we-learned-string-interpolation&quot;&gt;1st thing we learned (string interpolation)&lt;/h2&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Notice the necessary double-quotes. Interpolation doesn&#39;t work without them.&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;# That&#39;s &quot;string interpolation&quot;. It&#39;s the same as this:&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Both ways are correct, but the string interpolation notation is more idiomatic.&lt;/p&gt;
+
+&lt;p&gt;In JavaScript, we call it “string concatenation”:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;nd-thing-we-learned-block-syntax&quot;&gt;2nd thing we learned (block syntax)&lt;/h2&gt;
+
+&lt;p&gt;We also learned two styles, or syntaxes, for writing blocks:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# stuff here&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# do ... end is one type of block notation. The other type is:&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# The curly braces replace the &quot;do&quot; and &quot;end&quot;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;protip&quot;&gt;
+  &lt;h1&gt;Pro Tip&lt;/h1&gt;
+
+  &lt;p&gt;
+    Before we continue, I want to point out a couple style points. Rubyists often use &quot;soft tabs&quot;, or 2 spaces instead of just a 4-character tab, only because it different environments it remains readable (see &lt;a href=&quot;http://stackoverflow.com/questions/9446109/soft-tabs-or-hard-tabs&quot;&gt;this StackOVerflow question&lt;/a&gt;). Also, look at the spacing between the curly braces and pipes. I recommend something to you: &lt;a href=&quot;https://github.com/bbatsov/rubocop&quot;&gt;Rubocop&lt;/a&gt;, which is sort of the de-facto command line tool that tells you if your code looks bad according to the &lt;a href=&quot;https://github.com/bbatsov/ruby-style-guide&quot;&gt;community style guide on GitHub&lt;/a&gt;. It&#39;s good stuff.
+  &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;rd-thing-we-learned-enumerableeach--arrayprototypeforeach&quot;&gt;3rd thing we learned (&lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#each == Array.prototype.forEach&lt;/code&gt;)&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Continuing, we learned that Ruby’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#each&lt;/code&gt; is equivalent to JavaScript’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt; (more or less).&lt;/strong&gt; I have found only one online blog post so far that has made Ruby’s &lt;code class=&quot;highlighter-rouge&quot;&gt;#each&lt;/code&gt; make sense to me. It is by &lt;a href=&quot;http://www.eriktrautman.com/posts/ruby-explained-map-select-and-other-enumerable-methods&quot;&gt;Erik Trautman&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;scooping-out-the-block-like-a-reusable-callback&quot;&gt;“Scooping out” the block like a reusable callback&lt;/h1&gt;
+
+&lt;p&gt;There are two common ways to make a reusable “callback” in Ruby. They are the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;&lt;/strong&gt;. There are &lt;strong&gt;very subtle differences between the two ways&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;lambda&quot;&gt;Lambda&lt;/h2&gt;
+
+&lt;script src=&quot;//repl.it/embed/jkQ/1.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;By the way, that’s the &lt;strong&gt;new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you’re curious)&lt;/strong&gt;. If you want to do a &lt;strong&gt;multi-line lambda&lt;/strong&gt;, you do:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;sayHello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+            &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+           &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now that’s some weird-ass looking syntax, huh? Let’s make it look even weirder:&lt;/p&gt;
+
+&lt;h2 id=&quot;proc-short-for-procedure&quot;&gt;Proc (short for “procedure”)&lt;/h2&gt;
+
+&lt;script src=&quot;//repl.it/embed/jkQ/2.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Did you notice, by the way, &lt;strong&gt;that you can do multi-line variable assignment?&lt;/strong&gt; Pretty cool; you can’t do that in JavaScript.&lt;/p&gt;
+
+&lt;h2 id=&quot;differences&quot;&gt;Differences&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Lambda&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;You don’t have to pass in all the arguments if you don’t want to&lt;/strong&gt;. If your “callback” needs, say, 3 arguments, and you only pass in 2 when you use it, &lt;strong&gt;there will be no error&lt;/strong&gt;. This is just like a JavaScript callback… but in JavaScript, the undefined arguments will be &lt;code class=&quot;highlighter-rouge&quot;&gt;undefined&lt;/code&gt;, and in Ruby, the undefined arguments will be &lt;code class=&quot;highlighter-rouge&quot;&gt;nil&lt;/code&gt;.&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;If you call &lt;code class=&quot;highlighter-rouge&quot;&gt;return &amp;lt;whatever&amp;gt;&lt;/code&gt;, the lambda stops, but any method that the lambda is in &lt;em&gt;does not&lt;/em&gt; stop&lt;/strong&gt;. You can use the lambda’s returned value in the rest of the containing method.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Proc&lt;/strong&gt;:
+    &lt;ul&gt;
+      &lt;li&gt;&lt;strong&gt;You must pass in all the arguments&lt;/strong&gt;, or you’ll get an error.&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;If you call &lt;code class=&quot;highlighter-rouge&quot;&gt;return &amp;lt;whatever&amp;gt;&lt;/code&gt;, the Proc &lt;em&gt;and&lt;/em&gt; any method that it is in &lt;em&gt;will stop&lt;/em&gt;&lt;/strong&gt;. The Proc will return its value to the containing method, and the containing method will also return that same value.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; in JavaScript:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// This is a JavaScript lambda&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// This is the &quot;containing method&quot; that uses the lambda&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// world() returns, but it just gives up its value, and the function continues&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;who&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;who&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello world&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt; in JavaScript:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// This is a JavaScript Proc&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// This is the &quot;containing method&quot; that uses the Proc&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// The containing function returns the return value of the Proc&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// Any code below here obviously won&#39;t run:&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;nothing will log here&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello world&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In Ruby, though, as a side note, we rarely use an explicit &lt;code class=&quot;highlighter-rouge&quot;&gt;return&lt;/code&gt; statement. You can just type a value.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;This JavaScript…:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;…is equivalent to this Ruby:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;&#39;Hello&#39;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;the-ampersand-&quot;&gt;The ampersand (&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;)&lt;/h2&gt;
+
+&lt;p&gt;This confusing thing basically just makes sure the thing you’re passing into the method is a Proc, sort of. You can read about that in detail on &lt;a href=&quot;http://ablogaboutcode.com/2012/01/04/the-ampersand-operator-in-ruby/&quot;&gt;a.blog.about.code&lt;/a&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; error: wrong number of arguments (1 for 0)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The above error is basically saying, “why did you pass me an argument? I expected 0 arguments for &lt;code class=&quot;highlighter-rouge&quot;&gt;#each&lt;/code&gt;”. &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;sayHello&lt;/code&gt; is &lt;strong&gt;not&lt;/strong&gt; an argument! It is a &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;, &lt;strong&gt;and Ruby does not count &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;s as arguments!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s weird, huh? That’s because &lt;strong&gt;you can pass in a block at the end of pretty much any method in Ruby, and it won’t see it as an argument, in the typical sense&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Check it out:&lt;/p&gt;
+
+&lt;script src=&quot;//repl.it/embed/jld/3.js&quot;&gt;&lt;/script&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say &lt;code class=&quot;highlighter-rouge&quot;&gt;yield&lt;/code&gt;:&lt;/p&gt;
+
+&lt;script src=&quot;//repl.it/embed/jld/2.js&quot;&gt;&lt;/script&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt;  you&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#block_given?&lt;/code&gt; is a native method that returns a boolean (&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;) that checks if a block was passed in to the method. We have to use it in the above example, because if we just say &lt;code class=&quot;highlighter-rouge&quot;&gt;yield&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;yield if block_given?&lt;/code&gt;, then we’ll get an error that says &lt;code class=&quot;highlighter-rouge&quot;&gt;no block given (yield)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Also, the question mark &lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt; is Ruby’s way of meaningfully letting the user know that the method is supposed to return a boolean. There’s nothing really special about it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Now, going back to the original error (&lt;code class=&quot;highlighter-rouge&quot;&gt;error: wrong number of arguments (1 for 0)&lt;/code&gt;):&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I’ll try my best to sort of construe a similar error in JavaScript:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// TypeError: [object Array] is not a function&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// It&#39;s saying &quot;names&quot; is not a function, which is true...&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// forEach expects one argument (a function)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// we expected: names.forEach(sayHello);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If the above code were Ruby, you’d get an error something like &lt;code class=&quot;highlighter-rouge&quot;&gt;wrong number of arguments (2 for 1)&lt;/code&gt;. Once again, I want to emphasize this is because Ruby doesn’t see the &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt; as an argument.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Use blocks as if they were callbacks.&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Use a &lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; or a  &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;.&lt;/strong&gt; Remember the two subtle differences between them (number of arguments, and return values).&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Put a &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; before the block that you pass into the method,&lt;/strong&gt; if you pass it in to a native Ruby method that will run a block, like &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumberable#each&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;further-reading&quot;&gt;Further reading&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.reactive.io/tips/2008/12/21/understanding-ruby-blocks-procs-and-lambdas/&quot;&gt;Reactive.IO: Understanding Ruby Blocks, Procs, and Lambdas&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://makandracards.com/makandra/17305-short-lambda-syntax-in-ruby-1-9&quot;&gt;makandracards: Short Lambda Syntax in Ruby 1.9&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 20 Apr 2015 04:40:00 -0700</pubDate>
+        <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</guid>
         
         
         <category>javascript</category>
