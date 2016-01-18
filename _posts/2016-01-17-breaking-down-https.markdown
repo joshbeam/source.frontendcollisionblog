@@ -78,7 +78,7 @@ It is not a hashing algorithm. Again, refer to the above <a href="http://stackov
 
 The same applies for SHA2 (SHA-256), etc. For some reason, RSA and hashing algorithms get mixed up easily.
 
-RSA is the algorithm for creating public and private key-pairs. SHA2 (which is another name for SHA-256, by the way), for example, might be used to hash a password to store it in a database. If you are unfamiliar with this, please read <a href="/encryption/2016/01/17/intro-to-password-hashing.html">this article of mine</a> (it should take about 10 minutes), and then come back here. It's important to understand what RSA isn't.
+RSA is the algorithm for creating public and private key-pairs. SHA2 (which is another name for SHA-256, by the way), for example, might be used to hash a password to store it in a database.
 
 ## Example
 

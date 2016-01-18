@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 18 Jan 2016 15:24:54 -0800</pubDate>
-    <lastBuildDate>Mon, 18 Jan 2016 15:24:54 -0800</lastBuildDate>
+    <pubDate>Mon, 18 Jan 2016 15:25:42 -0800</pubDate>
+    <lastBuildDate>Mon, 18 Jan 2016 15:25:42 -0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -89,7 +89,7 @@
 
 &lt;p&gt;The same applies for SHA2 (SHA-256), etc. For some reason, RSA and hashing algorithms get mixed up easily.&lt;/p&gt;
 
-&lt;p&gt;RSA is the algorithm for creating public and private key-pairs. SHA2 (which is another name for SHA-256, by the way), for example, might be used to hash a password to store it in a database. If you are unfamiliar with this, please read &lt;a href=&quot;/encryption/2016/01/17/intro-to-password-hashing.html&quot;&gt;this article of mine&lt;/a&gt; (it should take about 10 minutes), and then come back here. It’s important to understand what RSA isn’t.&lt;/p&gt;
+&lt;p&gt;RSA is the algorithm for creating public and private key-pairs. SHA2 (which is another name for SHA-256, by the way), for example, might be used to hash a password to store it in a database.&lt;/p&gt;
 
 &lt;h2 id=&quot;example&quot;&gt;Example&lt;/h2&gt;
 
