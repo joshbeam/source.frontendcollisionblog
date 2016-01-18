@@ -29,11 +29,15 @@ So if one of your users' password is `password`, the hash above will be stored i
 
 **Solving hashes is a factor of computational power, money, and opportunity.**
 
+**However, if we know the constraints of the original input, we may have an easier time reverse engineering the hash.**
+
 At this point, you might be asking, why is a hash any more safe than just storing the password? Most people will give you this answer (from <a href="http://stackoverflow.com/a/4014407/2714730">Is it safe to ignore the possibility of SHA collisions in practice? on StackOverflow</a>:
 
 > The usual answer goes thus: what is the probability that a rogue asteroid crashes on Earth within the next second, obliterating civilization-as-we-know-it, and killing off a few billion people?
 
 In other words, given the current power of computers today, people say that the possibility of finding two different words, sentences, messages, or whatever, that end up as the same SHA-256 hash is less than the probability of a rogue asteroid crashing onto earth in the next second, etc.
+
+While a hash is a fixed size (in the case of SHA-256, it is 256 bits or 64 characters), the number of things that can be hashed is, well, near infinite. So while we can compute all possible hashes that can exist, it is not necessarily feasible to hash every possible "thing" (word, sentence, whatever) that can exist.
 
 This is speculative at best without knowing how the actual algorithm works. However, I can link you to <a href="http://csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf">the specification from the National Institute of Standards and Technology</a>, and warn you that reading that is about as dry as... whatever something really dry is. This algorithm (Secure Hash Algorithm) was design by the NSA (see the <a href="https://en.wikipedia.org/wiki/SHA-2">page on Wikipedia</a>).
 
@@ -43,6 +47,28 @@ He quotes something interesting (about SHA-1, mind you), to point out that previ
 
 > A collision attack is therefore well within the range of what an organized crime syndicate can practically budget by 2018, and a university research project by 2021.
 
+If we have constraints though (for example, if we know the limitations of the input), it necessarily follows that we do not have infinite possibilities for inputs. There's an interesting question on StackOverflow about finding which coordinates were used to generate a SHA-256 hash. We have an advantage here when we know how the coordinate are supposed to look in this example: `00.000000`. <a href="http://stackoverflow.com/a/21216552/2714730">Martijn Pieters gives a great example</a>:
+
+> Producing all possible coordinates between 00.000000 and 99.999999 is easy enough:
+
+{% highlight python %}
+from itertools import product
+import hashlib
+
+digits = '0123456789'
+
+for combo in product(digits, repeat=16):
+    coords = '{}.{} {}.{}'.format(
+        ''.join(combo[:2]), ''.join(combo[2:8]),
+        ''.join(combo[8:10]), ''.join(combo[10:]))
+    hash = hashlib.sha256(coords).hexdigest()
+    if hash == '3f1c756daec9ebced7ff403acb10430659c13b328c676c4510773dc315784e4e':
+        print coords
+        break
+{% endhighlight %}
+
+> This'll brute-force all 10**16 (a big number) combinations. Sit back and relax, this'll take a while.
+
 # Guessing passwords
 
 You have to keep in mind, too, how long it takes to "brute force" a password. This means that an attacker can tell his computer to go through every possible password that there could be, and try all of those passwords until he finds the correct one. Just as an interesting mental exercise, there's an online <a href="https://www.grc.com/haystack.htm">brute force calculator</a> that tries to tell you how many "computing years" it would take to brute force a certain password. Now, I link to this in caution, because there are many variables involved, but nonetheless, it's interesting to look at:
@@ -51,10 +77,10 @@ You have to keep in mind, too, how long it takes to "brute force" a password. Th
 password => 2.17 seconds (doing 100 billion guesses per second)
 </pre>
 
-Now, what happens if we put the hash in the calculator instead?
+Now, what happens if we have an even longer password?
 
 <pre>
-5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8 => 13.12 million trillion trillion trillion trillion trillion trillion centuries (doing 100 billion guesses per second)
+1234qewradsfZXCV => 1.54 hundred million centuries (doing 100 billion guesses per second)
 </pre>
 
 Woah. However, there are other considerations. What if the first guess is correct? Good question, and you're right. The above calculator only gives times for how long to search the entire character space would take. If we get the answer on the first guess, then it's irrelevant.
