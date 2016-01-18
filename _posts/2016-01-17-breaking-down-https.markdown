@@ -26,6 +26,8 @@ You'll have a head start if you've ever purchased a domain certificate in the pa
 
 Lots of reading and some software engineering. I obtained all this information from various sources on the internet (some of which may or may not be canonical), like various <a href="http://stackexchange.com/">StackExchange</a> websites, <a href="http://robertheaton.com/2014/03/27/how-does-https-actually-work/">Robert Heaton's blog</a>, <a href="https://www.schneier.com/">Schneier on Security</a>, and <a href="https://wikipedia.com">Wikipedia</a>. If you are generally skeptical of the veractiy of online sources which may or may not be opinionated, you'll find some various specs and canonical references scattered throughout this article.
 
+If you want to see a step by step breakdown of an actual HTTPS request, I recommend <a href="http://www.moserware.com/2009/06/first-few-milliseconds-of-https.html">The First Few Milliseconds of HTTPS by Moserware</a>.
+
 # Intro
 
 I recently read a great <a href="http://robertheaton.com/2014/03/27/how-does-https-actually-work/">article by Robert Heaton (an engineer at Stripe), "How does HTTPS actually work?"</a>. I would definitely recommend giving it a read.

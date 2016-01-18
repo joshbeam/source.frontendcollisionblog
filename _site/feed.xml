@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 17 Jan 2016 23:06:32 -0800</pubDate>
-    <lastBuildDate>Sun, 17 Jan 2016 23:06:32 -0800</lastBuildDate>
+    <pubDate>Sun, 17 Jan 2016 23:35:12 -0800</pubDate>
+    <lastBuildDate>Sun, 17 Jan 2016 23:35:12 -0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -181,6 +181,8 @@ passwordkindofsalty =&amp;gt; c18b77bedee11a6f1d55d54fedb7a9c4578faece96165734c0
 &lt;h1 id=&quot;how-did-you-get-this-information&quot;&gt;How did you get this information?&lt;/h1&gt;
 
 &lt;p&gt;Lots of reading and some software engineering. I obtained all this information from various sources on the internet (some of which may or may not be canonical), like various &lt;a href=&quot;http://stackexchange.com/&quot;&gt;StackExchange&lt;/a&gt; websites, &lt;a href=&quot;http://robertheaton.com/2014/03/27/how-does-https-actually-work/&quot;&gt;Robert Heaton’s blog&lt;/a&gt;, &lt;a href=&quot;https://www.schneier.com/&quot;&gt;Schneier on Security&lt;/a&gt;, and &lt;a href=&quot;https://wikipedia.com&quot;&gt;Wikipedia&lt;/a&gt;. If you are generally skeptical of the veractiy of online sources which may or may not be opinionated, you’ll find some various specs and canonical references scattered throughout this article.&lt;/p&gt;
+
+&lt;p&gt;If you want to see a step by step breakdown of an actual HTTPS request, I recommend &lt;a href=&quot;http://www.moserware.com/2009/06/first-few-milliseconds-of-https.html&quot;&gt;The First Few Milliseconds of HTTPS by Moserware&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h1 id=&quot;intro&quot;&gt;Intro&lt;/h1&gt;
 
