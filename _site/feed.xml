@@ -6,9 +6,275 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 18 Jan 2016 15:25:42 -0800</pubDate>
-    <lastBuildDate>Mon, 18 Jan 2016 15:25:42 -0800</lastBuildDate>
+    <pubDate>Wed, 27 Jan 2016 22:44:23 -0800</pubDate>
+    <lastBuildDate>Wed, 27 Jan 2016 22:44:23 -0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>Understanding Mongoose Deep Population</title>
+        <description>&lt;!--excerpt.start--&gt;
+&lt;p&gt;While MongoDB doesn’t natively support joins, the Mongoose framework now supports “deep population” (Mongoose has supported single-level populations for a while), which is akin to passing Mongoose a “graph” of what data should be populated in the results of your query. 
+&lt;!--excerpt.end--&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;who-is-this-post-for&quot;&gt;Who is this post for?&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Those who have used or are familiar with &lt;a href=&quot;http://mongoosejs.com/&quot;&gt;Mongoose for MongoDB&lt;/a&gt; in a &lt;a href=&quot;https://nodejs.org/en/&quot;&gt;Node.js&lt;/a&gt; app and are familiar with basics of models, schemas, and queries.&lt;/li&gt;
+  &lt;li&gt;You may also have noticed that to aggregate data, you have several built-in MongoDB and Mongoose options available, but realized that queries for aggregating data oftentimes result in having to make multiple round-trips between your server and the database&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;intro&quot;&gt;Intro&lt;/h1&gt;
+
+&lt;p&gt;It looks like &lt;a href=&quot;http://mongoosejs.com/&quot;&gt;Mongoose&lt;/a&gt; recently added sub-population to its API (see &lt;a href=&quot;https://github.com/Automattic/mongoose/blob/4.1.0/lib/utils.js#L464&quot;&gt;the exact line in the 4.1.0 (github)&lt;/a&gt; release, which is the first mention I can see of &lt;code class=&quot;highlighter-rouge&quot;&gt;subPopulate&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;This means that if you upgrade from Mongoose 3.8.x to ^4.1.x (the latest release is &lt;a href=&quot;https://github.com/Automattic/mongoose/tree/4.3.7&quot;&gt;4.3.7 (github)&lt;/a&gt; at the time of writing), then you get this built in, as well as some other feature. Keep in mind, however, there are backwards breaking changes, but &lt;a href=&quot;http://mongoosejs.com/docs/migration.html&quot;&gt;this guide (mongoose docs)&lt;/a&gt; covers how to migrate successfully.&lt;/p&gt;
+
+&lt;p&gt;If you don’t know what sub-population is, or have never even heard of &lt;strong&gt;population&lt;/strong&gt;, keep reading…&lt;/p&gt;
+
+&lt;h1 id=&quot;quick-primer-on-population&quot;&gt;Quick primer on population&lt;/h1&gt;
+
+&lt;p&gt;Skip this section if you’re already familiar with &lt;a href=&quot;http://mongoosejs.com/docs/populate.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Model.populate&lt;/code&gt; (mongoose docs)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Let’s pretend we’re building a social app, and we have two models: a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; and a &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;UserSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PostSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you run this query: &lt;code class=&quot;highlighter-rouge&quot;&gt;Post.find({}).populate(&#39;user&#39;).exec(callback)&lt;/code&gt;, Mongoose will look at the field &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; in the post, see that it has a &lt;code class=&quot;highlighter-rouge&quot;&gt;ref&lt;/code&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; model, and find that user by its &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; (yes, right now, &lt;a href=&quot;https://github.com/Automattic/mongoose/issues/2562&quot;&gt;only &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; (github issues)&lt;/a&gt;, but this covers most general use-cases).&lt;/p&gt;
+
+&lt;p&gt;In other words, this query might return you this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Post&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1234&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;josh&#39;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It’s almost like a “join” in a SQL language, but not quite (remember, MongoDB doesn’t support joins, but there are some features like the &lt;a href=&quot;https://www.mongodb.com/blog/post/joins-and-other-aggregation-enhancements-coming-in-mongodb-3-2-part-1-of-3-introduction&quot;&gt;Aggregation framework (MongoDB blog post)&lt;/a&gt;, but I won’t cover that in this article). &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; still requires some round-trips, but it optimizes this under the hood so that to you, the developer, it appears that you got all the aggregated data you requested in one fell swoop.&lt;/p&gt;
+
+&lt;p&gt;Mongoose says this quite frankly:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;There are no joins in MongoDB&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Population is the process of automatically replacing the specified paths in the document with document(s) from other collection(s). We may populate a single document, multiple documents, plain object, multiple plain objects, or all objects returned from a query.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If, for whatever reason, you didn’t find out about &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; until you already have an app running in production and might not feel like changing schemas around or doing any migrations, you can also specify a model for your query (this means that your schema &lt;strong&gt;&lt;em&gt;does not&lt;/em&gt;&lt;/strong&gt; need a &lt;code class=&quot;highlighter-rouge&quot;&gt;ref&lt;/code&gt; field):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;popuplate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If the query were to fail, your &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; field would just be &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;So this is cool, but what if your &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; &lt;strong&gt;&lt;em&gt;also&lt;/em&gt;&lt;/strong&gt; has some field you want to populate? Let’s go deeper…&lt;/p&gt;
+
+&lt;h1 id=&quot;deep-population&quot;&gt;Deep population&lt;/h1&gt;
+
+&lt;p&gt;This is the new thing I was talking about.&lt;/p&gt;
+
+&lt;p&gt;Maybe our user has friends. Let’s update our &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; schema (we’ll drop the &lt;code class=&quot;highlighter-rouge&quot;&gt;ref&lt;/code&gt; fields too):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;UserSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can populate down an extra level:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;friends&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Even better. Now we’ll get this as our result:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Post&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1234&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;josh&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;9012&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;barry&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;3456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;7890&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;3456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;rooney&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;9012&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;        
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You might have noticed that &lt;code class=&quot;highlighter-rouge&quot;&gt;josh&lt;/code&gt;’s friends also have friends. So you’ll have to define your graph even down further if you want to keep populating.&lt;/p&gt;
+
+&lt;p&gt;So how does Mongoose fetch all the correct data?&lt;/p&gt;
+
+&lt;h1 id=&quot;under-the-hood&quot;&gt;Under the hood&lt;/h1&gt;
+
+&lt;p&gt;So I talked about how Mongoose does some smart stuff behind the scenes. If you look at the actual query being made as a result of this &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; query, it’ll look something like this under the hood:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({});&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;$in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;9012&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;3456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Aha! So it’s just an &lt;a href=&quot;https://docs.mongodb.org/manual/reference/operator/query/in/&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$in&lt;/code&gt;&lt;/a&gt; query! Mongoose collects all of the &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; fields that it needs to look for per collection, and then after that… I’m not quite sure. Looking at the source code, it looks like it does some smart stuff to reflect on the results of that query and map the correct objects back to each original document, based on its position in the &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; graph that you passed into the query… or something like that (you can look over the source code starting around &lt;a href=&quot;https://github.com/Automattic/mongoose/blob/4.3.7/lib/model.js#L2468&quot;&gt;line 2468 of lib/model.js&lt;/a&gt; if you’re so inclined).&lt;/p&gt;
+
+&lt;p&gt;In other words, yes, we’re making multiple round-trips as expected, and you as the developer could do this same query yourself, but this nice Mongoose API simply &lt;strong&gt;&lt;em&gt;let’s us define a graph of data that we want&lt;/em&gt;&lt;/strong&gt; and takes care of the rest under the hood. Not sure how much of this might be similar to the structure of what &lt;a href=&quot;https://facebook.github.io/react/blog/2015/05/01/graphql-introduction.html&quot;&gt;GraphQL&lt;/a&gt; could be intending to do in the future (I would be interested to know, as I’m not very familiar with that).&lt;/p&gt;
+
+&lt;p&gt;Let’s back up a second. We saw that we can start at one level and traverse down arbitrarily, but what about siblings?&lt;/p&gt;
+
+&lt;h1 id=&quot;sibling-populations&quot;&gt;Sibling populations&lt;/h1&gt;
+
+&lt;p&gt;Let’s back up and add something to our &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; schema. We’re going to add “related posts”, which is just an array of &lt;code class=&quot;highlighter-rouge&quot;&gt;Post&lt;/code&gt; IDs:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PostSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;related_posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;So now we want to start at 2 different root nodes: the &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; field, and the &lt;code class=&quot;highlighter-rouge&quot;&gt;related_posts&lt;/code&gt; field. Mongoose supports this too, and has for quite some time (but only deeply since recently):&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;friends&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;related_posts&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Post&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;friends&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see above, we simply can define sibling graphs in an array. If you look starting at &lt;a href=&quot;https://github.com/Automattic/mongoose/blob/4.3.7/lib/utils.js#L543&quot;&gt;line 543 of the lib/utils.js source code&lt;/a&gt;, you can see that we check first if the graph is an array, and if so, map over each individual graph, and then looking for sub-populations, and recursing over and over until we collect all the relevant IDs, perform our &lt;code class=&quot;highlighter-rouge&quot;&gt;$in&lt;/code&gt; query, and then map the resulting docs back to the original docs. Whew. I’m glad Mongoose does that for us.&lt;/p&gt;
+
+&lt;p&gt;It seems like defining an arbitrarily deep graph every time we want to populate something might be a pain in the ass. Do we have to define graphs every time, or can we do it automatically?&lt;/p&gt;
+
+&lt;h1 id=&quot;automatic-population-per-document&quot;&gt;Automatic population per document&lt;/h1&gt;
+
+&lt;p&gt;MongoDB &lt;a href=&quot;https://www.mongodb.com/blog/post/introducing-version-40-mongoose-nodejs-odm&quot;&gt;published an article referencing Mongoose 4.0&lt;/a&gt;, and gave an example using the new &lt;code class=&quot;highlighter-rouge&quot;&gt;pre&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;post&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt; hooks (&lt;a href=&quot;http://mongoosejs.com/docs/middleware.html&quot;&gt;middleware&lt;/a&gt;):&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;But what if you always wanted to load the lead singer every time you loaded a band?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// example from the article above&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bandSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;lead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Types&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ObjectId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;person&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;lead&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;bandSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;pre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;findOne&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;pre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;find&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Band&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;band&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bandSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;bands&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Nice. So if we define populations at the model level, we never have to actually call &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt;. So in our previous examples, we could just add the hooks to each model, and simply call this:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({},&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Much cleaner. If you don’t want to handle this middleware yourself, you can use &lt;a href=&quot;https://www.npmjs.com/package/mongoose-autopopulate&quot;&gt;mongoose-autopopulate&lt;/a&gt; plugin:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;PostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;plugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;autopopulate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1 id=&quot;some-weaknesses-and-things-that-arent-supported&quot;&gt;Some weaknesses and things that aren’t supported&lt;/h1&gt;
+
+&lt;p&gt;If you weren’t aware, you can have multiple models of different schemas all living in the same collection:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;PhotoPost&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PhotoPostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;posts&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;TextPost&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TextPostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;posts&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Or, if you’re using &lt;a href=&quot;https://github.com/briankircho/mongoose-schema-extend&quot;&gt;mongoose-schema-extend&lt;/a&gt;:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PhotosPostSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;extend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// your schema&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;posts&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It’s hard for Mongoose to discriminate under the hood which IDs might be duplicated across documents, so you might end up with &lt;code class=&quot;highlighter-rouge&quot;&gt;$in&lt;/code&gt; queries that have duplicate IDs if you’re querying the entire &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; collection. Keep in mind, though, that you can also define different graphs by &lt;a href=&quot;http://mongoosejs.com/docs/discriminators.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;discriminatorKey&lt;/code&gt;&lt;/a&gt; (by default, &lt;code class=&quot;highlighter-rouge&quot;&gt;__t&lt;/code&gt;). You do this with the &lt;code class=&quot;highlighter-rouge&quot;&gt;match&lt;/code&gt; parameter:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;populationGraph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;PhotoPost&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// then continue with deep population&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This can &lt;strong&gt;&lt;em&gt;limit specific graphs to certain models which may have varying schemas that exist in the same collection&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Some other things that aren’t supported by &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; itself that I may write about in the future:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Renaming fields (for example, truly, &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; is just an ID… shouldn’t it be called &lt;code class=&quot;highlighter-rouge&quot;&gt;user_id&lt;/code&gt; then in the database, but be returned to the client as &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; when it’s populated?)&lt;/li&gt;
+  &lt;li&gt;Service calls (what if you want to populate a path based on some &lt;em&gt;outside service&lt;/em&gt;?)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;This seems like a useful tool in being able to define a &lt;strong&gt;declarative model&lt;/strong&gt; for what your data should look like as a result of any query. There are some inherent weaknesses to a lack of true “joins”, but the Mongoose API does an elegant job of optimizing these types of queries under the hood.&lt;/p&gt;
+
+&lt;p&gt;I’ve only recently begun using this, so if you know something that I don’t and would like to contribute to the discussion for anyone reading this article, feel free to comment below with any critiques, suggestions, random quotes, or song lyrics. Thanks.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 24 Jan 2016 09:45:00 -0800</pubDate>
+        <link>http://joshbeam.github.io/mongodb/2016/01/24/mongoose-populate.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/mongodb/2016/01/24/mongoose-populate.html</guid>
+        
+        
+        <category>mongodb</category>
+        
+      </item>
     
       <item>
         <title>Breaking down HTTPS</title>
@@ -1536,283 +1802,6 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
         <pubDate>Mon, 20 Apr 2015 07:57:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</guid>
-        
-        
-        <category>javascript</category>
-        
-        <category>ruby</category>
-        
-      </item>
-    
-      <item>
-        <title>From JavaScript to Ruby: Using Blocks Like Callbacks</title>
-        <description>&lt;!--excerpt.start--&gt;
-&lt;p&gt;This post is the first in the series of &lt;strong&gt;&lt;em&gt;“From JavaScript to Ruby”&lt;/em&gt;&lt;/strong&gt;, which is aimed at helping JavaScript developers transition their thinking from JavaScript to Ruby. This post will answer this fundamental question: how do I do “callbacks” in Ruby? The answer is: the “idiomatic” way (we’ll talk about what “idiomatic” means) to use so-called callbacks in Ruby is to use &lt;strong&gt;blocks&lt;/strong&gt;. We’ll discuss blocks, and their similarities to JavaScript callbacks.
-&lt;!--excerpt.end--&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;defining-callback-through-practical-examples&quot;&gt;Defining “callback” through practical examples&lt;/h1&gt;
-
-&lt;p&gt;A callback is a function that happens after we call another function, but the catch is, they’re coupled. However, being coupled in this way doesn’t mean we can’t reuse the callback function.&lt;/p&gt;
-
-&lt;p&gt;We often use anonymous functions in JavaScript as callbacks. Here’s an example using &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt;:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Sue&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Aron&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Joseph&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Bob&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Sue&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Aron&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Joseph&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We can actually sort of “scoop out” the function that we passed into &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt; in order to make it &lt;strong&gt;reusable&lt;/strong&gt;:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Sue&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Aron&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Joseph&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Bob&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Sue&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Aron&quot;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello Joseph&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1 id=&quot;how-do-we-do-this-in-ruby-and-what-does-idiomatic-mean&quot;&gt;How do we do this in Ruby? And what does “idiomatic” mean?&lt;/h1&gt;
-
-&lt;p&gt;You’ll hear a lot of Rubyists use the word “idiomatic”. Read:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The idiomatic way to pass arguments to a method in Ruby is such and such…&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The idiomatic way to use a “callback” in Ruby is to such and such…&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;In normal-people speak, you’d say:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The common way to go about doing this is such and such…&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Make sense? In other words, &lt;strong&gt;there are certain patterns and best practices (solutions) for common problems in Ruby: we call these solutions “idioms”.&lt;/strong&gt; So, the idiomatic way to use callbacks in Ruby is &lt;strong&gt;not to use callbacks at all. Instead, we use blocks.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Here’s how we can do the &lt;strong&gt;same exact thing in Ruby, instead of JavaScript&lt;/strong&gt;:&lt;/p&gt;
-
-&lt;script src=&quot;//repl.it/embed/jkQ.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;If you run the above, you’ll see &lt;code class=&quot;highlighter-rouge&quot;&gt;Hello &amp;lt;name&amp;gt;&lt;/code&gt; printed for each name, and at the end it’ll actually return the entire array for you to use.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Let’s compare the two. Essentially, this JavaScript…:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;…is the same as this Ruby:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;We can also write the above Ruby in another, shorter way:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;So here’s a few things we’ve learned from the above.&lt;/p&gt;
-
-&lt;h2 id=&quot;st-thing-we-learned-string-interpolation&quot;&gt;1st thing we learned (string interpolation)&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# Notice the necessary double-quotes. Interpolation doesn&#39;t work without them.&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; 
-&lt;span class=&quot;c1&quot;&gt;# That&#39;s &quot;string interpolation&quot;. It&#39;s the same as this:&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Both ways are correct, but the string interpolation notation is more idiomatic.&lt;/p&gt;
-
-&lt;p&gt;In JavaScript, we call it “string concatenation”:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;nd-thing-we-learned-block-syntax&quot;&gt;2nd thing we learned (block syntax)&lt;/h2&gt;
-
-&lt;p&gt;We also learned two styles, or syntaxes, for writing blocks:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# stuff here&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# do ... end is one type of block notation. The other type is:&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# The curly braces replace the &quot;do&quot; and &quot;end&quot;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;div class=&quot;protip&quot;&gt;
-  &lt;h1&gt;Pro Tip&lt;/h1&gt;
-
-  &lt;p&gt;
-    Before we continue, I want to point out a couple style points. Rubyists often use &quot;soft tabs&quot;, or 2 spaces instead of just a 4-character tab, only because it different environments it remains readable (see &lt;a href=&quot;http://stackoverflow.com/questions/9446109/soft-tabs-or-hard-tabs&quot;&gt;this StackOVerflow question&lt;/a&gt;). Also, look at the spacing between the curly braces and pipes. I recommend something to you: &lt;a href=&quot;https://github.com/bbatsov/rubocop&quot;&gt;Rubocop&lt;/a&gt;, which is sort of the de-facto command line tool that tells you if your code looks bad according to the &lt;a href=&quot;https://github.com/bbatsov/ruby-style-guide&quot;&gt;community style guide on GitHub&lt;/a&gt;. It&#39;s good stuff.
-  &lt;/p&gt;
-&lt;/div&gt;
-
-&lt;h2 id=&quot;rd-thing-we-learned-enumerableeach--arrayprototypeforeach&quot;&gt;3rd thing we learned (&lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#each == Array.prototype.forEach&lt;/code&gt;)&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;Continuing, we learned that Ruby’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#each&lt;/code&gt; is equivalent to JavaScript’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Array.prototype.forEach&lt;/code&gt; (more or less).&lt;/strong&gt; I have found only one online blog post so far that has made Ruby’s &lt;code class=&quot;highlighter-rouge&quot;&gt;#each&lt;/code&gt; make sense to me. It is by &lt;a href=&quot;http://www.eriktrautman.com/posts/ruby-explained-map-select-and-other-enumerable-methods&quot;&gt;Erik Trautman&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h1 id=&quot;scooping-out-the-block-like-a-reusable-callback&quot;&gt;“Scooping out” the block like a reusable callback&lt;/h1&gt;
-
-&lt;p&gt;There are two common ways to make a reusable “callback” in Ruby. They are the &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;&lt;/strong&gt;. There are &lt;strong&gt;very subtle differences between the two ways&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;lambda&quot;&gt;Lambda&lt;/h2&gt;
-
-&lt;script src=&quot;//repl.it/embed/jkQ/1.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;By the way, that’s the &lt;strong&gt;new syntax for the single-line lambda as of Ruby 1.9 (I have Ruby 2.1 right now, if you’re curious)&lt;/strong&gt;. If you want to do a &lt;strong&gt;multi-line lambda&lt;/strong&gt;, you do:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;sayHello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-            &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-           &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now that’s some weird-ass looking syntax, huh? Let’s make it look even weirder:&lt;/p&gt;
-
-&lt;h2 id=&quot;proc-short-for-procedure&quot;&gt;Proc (short for “procedure”)&lt;/h2&gt;
-
-&lt;script src=&quot;//repl.it/embed/jkQ/2.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;Did you notice, by the way, &lt;strong&gt;that you can do multi-line variable assignment?&lt;/strong&gt; Pretty cool; you can’t do that in JavaScript.&lt;/p&gt;
-
-&lt;h2 id=&quot;differences&quot;&gt;Differences&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Lambda&lt;/strong&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;You don’t have to pass in all the arguments if you don’t want to&lt;/strong&gt;. If your “callback” needs, say, 3 arguments, and you only pass in 2 when you use it, &lt;strong&gt;there will be no error&lt;/strong&gt;. This is just like a JavaScript callback… but in JavaScript, the undefined arguments will be &lt;code class=&quot;highlighter-rouge&quot;&gt;undefined&lt;/code&gt;, and in Ruby, the undefined arguments will be &lt;code class=&quot;highlighter-rouge&quot;&gt;nil&lt;/code&gt;.&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;If you call &lt;code class=&quot;highlighter-rouge&quot;&gt;return &amp;lt;whatever&amp;gt;&lt;/code&gt;, the lambda stops, but any method that the lambda is in &lt;em&gt;does not&lt;/em&gt; stop&lt;/strong&gt;. You can use the lambda’s returned value in the rest of the containing method.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Proc&lt;/strong&gt;:
-    &lt;ul&gt;
-      &lt;li&gt;&lt;strong&gt;You must pass in all the arguments&lt;/strong&gt;, or you’ll get an error.&lt;/li&gt;
-      &lt;li&gt;&lt;strong&gt;If you call &lt;code class=&quot;highlighter-rouge&quot;&gt;return &amp;lt;whatever&amp;gt;&lt;/code&gt;, the Proc &lt;em&gt;and&lt;/em&gt; any method that it is in &lt;em&gt;will stop&lt;/em&gt;&lt;/strong&gt;. The Proc will return its value to the containing method, and the containing method will also return that same value.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; in JavaScript:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// This is a JavaScript lambda&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// This is the &quot;containing method&quot; that uses the lambda&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// world() returns, but it just gives up its value, and the function continues&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;who&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;who&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello world&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt; in JavaScript:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// This is a JavaScript Proc&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// This is the &quot;containing method&quot; that uses the Proc&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// The containing function returns the return value of the Proc&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;// Any code below here obviously won&#39;t run:&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;nothing will log here&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// =&amp;gt; &quot;Hello world&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In Ruby, though, as a side note, we rarely use an explicit &lt;code class=&quot;highlighter-rouge&quot;&gt;return&lt;/code&gt; statement. You can just type a value.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;This JavaScript…:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Hello&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;strong&gt;…is equivalent to this Ruby:&lt;/strong&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hello&lt;/span&gt;
-  &lt;span class=&quot;s1&quot;&gt;&#39;Hello&#39;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;the-ampersand-&quot;&gt;The ampersand (&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt;)&lt;/h2&gt;
-
-&lt;p&gt;This confusing thing basically just makes sure the thing you’re passing into the method is a Proc, sort of. You can read about that in detail on &lt;a href=&quot;http://ablogaboutcode.com/2012/01/04/the-ampersand-operator-in-ruby/&quot;&gt;a.blog.about.code&lt;/a&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; error: wrong number of arguments (1 for 0)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The above error is basically saying, “why did you pass me an argument? I expected 0 arguments for &lt;code class=&quot;highlighter-rouge&quot;&gt;#each&lt;/code&gt;”. &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;sayHello&lt;/code&gt; is &lt;strong&gt;not&lt;/strong&gt; an argument! It is a &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;, &lt;strong&gt;and Ruby does not count &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;s as arguments!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;It’s weird, huh? That’s because &lt;strong&gt;you can pass in a block at the end of pretty much any method in Ruby, and it won’t see it as an argument, in the typical sense&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;Check it out:&lt;/p&gt;
-
-&lt;script src=&quot;//repl.it/embed/jld/3.js&quot;&gt;&lt;/script&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We passed in a block at the end, but it didn’t run. But we didn’t get any error either. If we want the block to actually run, we can just say &lt;code class=&quot;highlighter-rouge&quot;&gt;yield&lt;/code&gt;:&lt;/p&gt;
-
-&lt;script src=&quot;//repl.it/embed/jld/2.js&quot;&gt;&lt;/script&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; What&#39;s up&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# =&amp;gt;  you&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;#block_given?&lt;/code&gt; is a native method that returns a boolean (&lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;false&lt;/code&gt;) that checks if a block was passed in to the method. We have to use it in the above example, because if we just say &lt;code class=&quot;highlighter-rouge&quot;&gt;yield&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;yield if block_given?&lt;/code&gt;, then we’ll get an error that says &lt;code class=&quot;highlighter-rouge&quot;&gt;no block given (yield)&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Also, the question mark &lt;code class=&quot;highlighter-rouge&quot;&gt;?&lt;/code&gt; is Ruby’s way of meaningfully letting the user know that the method is supposed to return a boolean. There’s nothing really special about it.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Now, going back to the original error (&lt;code class=&quot;highlighter-rouge&quot;&gt;error: wrong number of arguments (1 for 0)&lt;/code&gt;):&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;I’ll try my best to sort of construe a similar error in JavaScript:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// TypeError: [object Array] is not a function&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// It&#39;s saying &quot;names&quot; is not a function, which is true...&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// forEach expects one argument (a function)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// we expected: names.forEach(sayHello);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;If the above code were Ruby, you’d get an error something like &lt;code class=&quot;highlighter-rouge&quot;&gt;wrong number of arguments (2 for 1)&lt;/code&gt;. Once again, I want to emphasize this is because Ruby doesn’t see the &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt; as an argument.&lt;/p&gt;
-
-&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;Use blocks as if they were callbacks.&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Use a &lt;code class=&quot;highlighter-rouge&quot;&gt;lambda&lt;/code&gt; or a  &lt;code class=&quot;highlighter-rouge&quot;&gt;Proc&lt;/code&gt;.&lt;/strong&gt; Remember the two subtle differences between them (number of arguments, and return values).&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;Put a &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;amp;&lt;/code&gt; before the block that you pass into the method,&lt;/strong&gt; if you pass it in to a native Ruby method that will run a block, like &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumberable#each&lt;/code&gt;.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;further-reading&quot;&gt;Further reading&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.reactive.io/tips/2008/12/21/understanding-ruby-blocks-procs-and-lambdas/&quot;&gt;Reactive.IO: Understanding Ruby Blocks, Procs, and Lambdas&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://makandracards.com/makandra/17305-short-lambda-syntax-in-ruby-1-9&quot;&gt;makandracards: Short Lambda Syntax in Ruby 1.9&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 20 Apr 2015 04:40:00 -0700</pubDate>
-        <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-using-blocks-like-callbacks.html</guid>
         
         
         <category>javascript</category>
