@@ -204,7 +204,7 @@ $(function(Query) {
 
 	var query = new Query();
 
-	$('.search').on('submit',exec);	
+	$('.search').on('submit',submit);	
 
 	function submit(e) {
 		// stop the form from doing its default behavior
