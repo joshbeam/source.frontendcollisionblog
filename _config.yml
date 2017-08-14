@@ -11,6 +11,8 @@ url: "http://joshbeam.github.io" # the base hostname & protocol for your site
 twitter_username: joshbeam92
 github_username:  joshbeam
 
+future: true
+
 # Build settings
 markdown: kramdown
 

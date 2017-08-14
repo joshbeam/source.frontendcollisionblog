@@ -6,9 +6,129 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 11 Feb 2016 21:58:46 -0800</pubDate>
-    <lastBuildDate>Thu, 11 Feb 2016 21:58:46 -0800</lastBuildDate>
-    <generator>Jekyll v3.0.1</generator>
+    <pubDate>Mon, 14 Aug 2017 14:49:24 +0200</pubDate>
+    <lastBuildDate>Mon, 14 Aug 2017 14:49:24 +0200</lastBuildDate>
+    <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Practical Queue Considerations</title>
+        <description>&lt;!--excerpt.start--&gt;
+&lt;p&gt;Intuitively, we jump to HTTP to use as our communication protocol between services in a system. However, using a queue has many benefits. In this post, instead of diving only into theory of queues, I’ll give practical advice on implementing a queue, illustrate some use cases I’ve encountered in a production system where using a queue had obvious benefits versus HTTP, as well as give some practical implementation ideas.
+&lt;!--excerpt.end--&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;who-is-this-post-for&quot;&gt;Who is this post for?&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Those who have used or are familiar with the idea behind queues (like &lt;a href=&quot;https://www.rabbitmq.com/&quot;&gt;RabbitMQ&lt;/a&gt;), and have a general idea about the purpose and benefits/tradeoffs of a system that uses &lt;a href=&quot;https://martinfowler.com/articles/microservices.html&quot;&gt;microservices&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;recommended-reading&quot;&gt;Recommended Reading&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.amazon.com/Enterprise-Integration-Patterns-Designing-Deploying/dp/0321200683&quot;&gt;Enterprise Integration Patterns&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;tldr&quot;&gt;TL;DR&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Tip: Use message types properly. &lt;strong&gt;Read &lt;a href=&quot;https://www.amazon.com/Enterprise-Integration-Patterns-Designing-Deploying/dp/0321200683&quot;&gt;Enterprise Integration Patterns&lt;/a&gt; to learn about message types (document, command, and event messages)&lt;/strong&gt;… I cannot stress this point enough&lt;/li&gt;
+  &lt;li&gt;Benefit: messages still get delivered even if a server goes down (in theory). But, make sure your consumers are idempotent.&lt;/li&gt;
+  &lt;li&gt;Implementation idea: try using a queue for each service&lt;/li&gt;
+  &lt;li&gt;Tip: set up a dead letter queue&lt;/li&gt;
+  &lt;li&gt;Tip: encrypt everything yourself&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;message-types&quot;&gt;Message Types&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.amazon.com/Enterprise-Integration-Patterns-Designing-Deploying/dp/0321200683&quot;&gt;Enterprise Integration Patterns&lt;/a&gt; was published back in 2004, but has invaluable information for patterns in developing a system that uses queues for communication. Best of all, the information is clear and practical (by the way, I don’t get anything for recommending this book, I just think it’s really good). The biggest question I had going into implementing a queue system was:&lt;/p&gt;
+
+&lt;p&gt;How do I format my messages? (Book gives you the patterns: &lt;a href=&quot;http://www.enterpriseintegrationpatterns.com/patterns/messaging/DocumentMessage.html&quot;&gt;document&lt;/a&gt;, &lt;a href=&quot;http://www.enterpriseintegrationpatterns.com/patterns/messaging/EventMessage.html&quot;&gt;event&lt;/a&gt;, &lt;a href=&quot;http://www.enterpriseintegrationpatterns.com/patterns/messaging/CommandMessage.html&quot;&gt;command&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;Very briefly:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Document message - data is a single unit of data. It is a piece of information (for example, a MongoDB or SQL document)&lt;/li&gt;
+  &lt;li&gt;Event message - it’s simply a notification that something happened (*)&lt;/li&gt;
+  &lt;li&gt;Command message - it is a verb that says “do this”&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I’ll give you an example of how these message types interact with one another:&lt;/p&gt;
+
+&lt;p&gt;You send a &lt;strong&gt;command&lt;/strong&gt; message to a particular service (with the routing key &lt;strong&gt;DoSomething&lt;/strong&gt;). Some asynchronous stuff happens in the background, and an &lt;strong&gt;event&lt;/strong&gt; message &lt;strong&gt;SomethingDone&lt;/strong&gt; is broadcasted to &lt;em&gt;all&lt;/em&gt; queues that are interested when something is done. This message contains the &lt;code&gt;_id&lt;/code&gt; of a document that was affected, and then each service that heard the &lt;strong&gt;SomethingDone&lt;/strong&gt; event requests via a request-reply queue for the document with the &lt;code&gt;_id&lt;/code&gt; that was received in the event message (and whichever service knows about that document type sends a &lt;strong&gt;document&lt;/strong&gt; message to the requesting service) (**).&lt;/p&gt;
+
+&lt;p&gt;This is a very lightweight interaction method between services, and is especially useful when the communication can happen asynchronously. It may seem convoluted, but when you have your infrastructure set up, it can all happen pretty automatically.&lt;/p&gt;
+
+&lt;p&gt;(*) &lt;em&gt;There is a nuance between event messages that contain metadata, versus an event message that contains a document, which is described in the book&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;(**) &lt;em&gt;This is the “pull” method, as opposed to the “push” method. The “push” method would actually send the entire document along with the event message so that there doesn’t need to be a separate RPC request for the document after the event is received. For brevity, I’ll leave out the details here, and recommend you again to read the Message Types chapters in the book&lt;/em&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;message-delivery&quot;&gt;Message Delivery&lt;/h1&gt;
+
+&lt;p&gt;Queues are especially useful when you have &lt;strong&gt;important messages&lt;/strong&gt; that you want to know &lt;strong&gt;will be delivered&lt;/strong&gt;. However, your design pattern for your messages and your message consumers should be &lt;strong&gt;idempotent&lt;/strong&gt; (meaning, given the same message, the consumer will do the same thing each time). In other words, you don’t want a consumer that increments somebody’s bank account value by $1 every time it receives a message. Instead, you want the consumer to set the value to a specific value (which was $1 plus whatever the previous known value was). This is safer.&lt;/p&gt;
+
+&lt;p&gt;There are caveats to this, and it depends on if, for example, your queues are durable, your messages are persistent, and your queue server is up (you can mitigate this risk too, by using an offline in-memory queue). However, given that your queue system itself is generally reliable, you have now managed to separate message delivery reliability from the application server itself.&lt;/p&gt;
+
+&lt;p&gt;Places where this is helpful:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;If an app server crashes and restarts&lt;/li&gt;
+  &lt;li&gt;If you have to manually restart a server&lt;/li&gt;
+  &lt;li&gt;If you need to scale a cloud server, which causes a restart&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;For points 1 and 2, most people will quip back with “well, you should have error handlers”. Yes, agreed. However, this assumes that the engineer managed to provide 100% error coverage, which isn’t realistic. Servers still crash, servers still need to be restarted, etc.&lt;/p&gt;
+
+&lt;p&gt;For point 3, if you’ve used something like &lt;a href=&quot;https://www.heroku.com&quot;&gt;Heroku&lt;/a&gt;, you’ll notice that you have the option to scale horizontally, which means in Heroku’s context that you increase the number of dynos, which supports more traffic to the dyno. However, this also causes a server restart.&lt;/p&gt;
+
+&lt;p&gt;Now, the benefit: I’ve seen a server restart, watched the logs, and then see a message get delivered (a message that was sent immediately &lt;em&gt;before&lt;/em&gt; the server restarted). It didn’t really click in my head until I actually saw it happen in production in a critical instance: I restarted the server, and a message was still consumed by the process that I restarted.&lt;/p&gt;
+
+&lt;p&gt;This is fantastic. However, &lt;strong&gt;it is also extremely important that your services consume messages in an idempotent manner&lt;/strong&gt;. For example:&lt;/p&gt;
+
+&lt;p&gt;A service sends a message to invoke a process that will take 15 seconds, and then the message will be acknowledged. However, the process crashed at 10 seconds, but unfortunately 10 database documents were already manipulated in that time. The message wasn’t acknowledged yet, so when the server boots up again, the message &lt;em&gt;will be redelivered&lt;/em&gt;. So, will those updates cause the 10 documents to be updated &lt;em&gt;again&lt;/em&gt;? Is there some value you’re incrementing, for example? That wouldn’t necessarily be idempotent.&lt;/p&gt;
+
+&lt;h1 id=&quot;queue-per-service&quot;&gt;Queue Per Service&lt;/h1&gt;
+
+&lt;p&gt;In HTTP, there exist common patterns for deciding how services will communicate (for example, REST). However, a pain point in building out a queue system from scratch is that you also have to figure out what “queue” means in &lt;em&gt;your&lt;/em&gt; system. Do I set up a queue for certain message types (possibly)? Do I set up a queue per service and deliver all messages on that queue?&lt;/p&gt;
+
+&lt;p&gt;The method I’ve had luck with in production so far is using a queue per service. This is the simplest way for me to reason about it in my head. You have a routing key for your message, and then it goes to a specific place (this would be for a “direct” queue using command messages).&lt;/p&gt;
+
+&lt;p&gt;So, if you have a service that maintains user data, and the service is named “user-service”, then you create a queue called “user-service”. There are other patterns, but depending on your system, you may find the “queue per service” pattern useful.&lt;/p&gt;
+
+&lt;p&gt;If you’re using RabbitMQ, you can just send a message with a specific routing key, and the queue server knows automatically which queue to send it to.&lt;/p&gt;
+
+&lt;h1 id=&quot;dead-letters&quot;&gt;Dead letters&lt;/h1&gt;
+
+&lt;p&gt;There are nuances between Dead Letter Channels and Invalid Message Channels. For brevity, again, I’ll recommend you read those 2 chapters in EIP, but for the sake of practical advice, I’ll tell you &lt;strong&gt;set up a dead letter queue&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;What do you do with those messages? Do you store them to a database? Do you redeliver them?&lt;/p&gt;
+
+&lt;p&gt;Depending on your system, you could decrypt the message and store it in a database that provides encryption at rest. This will allow you a quick way to scan through the messages that couldn’t be delivered and debug (your mileage may vary here; depending on your system, you might have to encrypt certain fields yourself, etc.)&lt;/p&gt;
+
+&lt;h1 id=&quot;encryption&quot;&gt;Encryption&lt;/h1&gt;
+
+&lt;p&gt;TL;DR&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Use &lt;code&gt;amqps://&lt;/code&gt; protocol&lt;/li&gt;
+  &lt;li&gt;Encrypt your message before sending to the queue server&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you’re using the secure protocol, you have encryption while in-transit, but depending on your provider, you might not have encryption at rest.&lt;/p&gt;
+
+&lt;p&gt;Encrypting your messages might be a hassle, since now your services all need to use, say, a shared key, but you can bury this under the hood of your API using a message adapater to automatically handle the key negotiation, encryption, and decryption.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;Again, I can’t recommend the EIP book enough. It can be hard to find coherent internet resources for implementing a queue, and this book provides well-tested production design patterns. Remember, consider your messages types, encrypt everything, and consider storing your dead letter messages to persistent storage to help you debug your system when (not if) something fails.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 14 Aug 2017 15:45:00 +0200</pubDate>
+        <link>http://joshbeam.github.io/rabbitmq/2017/08/14/practical-queue-considerations.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/rabbitmq/2017/08/14/practical-queue-considerations.html</guid>
+        
+        
+        <category>rabbitmq</category>
+        
+      </item>
     
       <item>
         <title>Understanding Mongoose Deep Population</title>
@@ -45,23 +165,23 @@
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PostSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
     &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;If you run this query: &lt;code class=&quot;highlighter-rouge&quot;&gt;Post.find({}).populate(&#39;user&#39;).exec(callback)&lt;/code&gt;, Mongoose will look at the field &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; in the post, see that it has a &lt;code class=&quot;highlighter-rouge&quot;&gt;ref&lt;/code&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; model, and find that user by its &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; (yes, right now, &lt;a href=&quot;https://github.com/Automattic/mongoose/issues/2562&quot;&gt;only &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; (github issues)&lt;/a&gt;, but this covers most general use-cases).&lt;/p&gt;
+&lt;p&gt;If you run this query: &lt;code class=&quot;highlighter-rouge&quot;&gt;Post.find({}).populate('user').exec(callback)&lt;/code&gt;, Mongoose will look at the field &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; in the post, see that it has a &lt;code class=&quot;highlighter-rouge&quot;&gt;ref&lt;/code&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; model, and find that user by its &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; (yes, right now, &lt;a href=&quot;https://github.com/Automattic/mongoose/issues/2562&quot;&gt;only &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; (github issues)&lt;/a&gt;, but this covers most general use-cases).&lt;/p&gt;
 
 &lt;p&gt;In other words, this query might return you this:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Post&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1234&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Post'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'1234'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
     &lt;span class=&quot;na&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;josh&#39;&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'5678'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'josh'&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
@@ -81,8 +201,8 @@
 &lt;p&gt;If, for whatever reason, you didn’t find out about &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; until you already have an app running in production and might not feel like changing schemas around or doing any migrations, you can also specify a model for your query (this means that your schema &lt;strong&gt;&lt;em&gt;does not&lt;/em&gt;&lt;/strong&gt; need a &lt;code class=&quot;highlighter-rouge&quot;&gt;ref&lt;/code&gt; field):&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;popuplate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;If the query were to fail, your &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; field would just be &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt;.&lt;/p&gt;
@@ -104,11 +224,11 @@
 &lt;p&gt;Now we can populate down an extra level:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;friends&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'friends'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
@@ -116,24 +236,24 @@
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;results&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Post&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1234&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Post'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'1234'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
     &lt;span class=&quot;na&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;josh&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'5678'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'josh'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
       &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
         &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;9012&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;barry&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;3456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;7890&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'9012'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'barry'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'3456'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'7890'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
         &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
         &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;3456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;rooney&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;9012&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;        
+          &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'3456'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'rooney'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;friends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'9012'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'5678'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;        
         &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
@@ -149,7 +269,7 @@
 &lt;p&gt;So I talked about how Mongoose does some smart stuff behind the scenes. If you look at the actual query being made as a result of this &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; query, it’ll look something like this under the hood:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({});&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;$in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;5678&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;9012&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;3456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;nx&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;$in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'5678'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'9012'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'3456'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Aha! So it’s just an &lt;a href=&quot;https://docs.mongodb.org/manual/reference/operator/query/in/&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$in&lt;/code&gt;&lt;/a&gt; query! Mongoose collects all of the &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; fields that it needs to look for per collection, and then after that… I’m not quite sure. Looking at the source code, it looks like it does some smart stuff to reflect on the results of that query and map the correct objects back to each original document, based on its position in the &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt; graph that you passed into the query… or something like that (you can look over the source code starting around &lt;a href=&quot;https://github.com/Automattic/mongoose/blob/4.3.7/lib/model.js#L2468&quot;&gt;line 2468 of lib/model.js&lt;/a&gt; if you’re so inclined).&lt;/p&gt;
 
@@ -171,22 +291,22 @@
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
     &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;friends&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'friends'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;related_posts&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Post&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'related_posts'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Post'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
     &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
       &lt;span class=&quot;na&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;friends&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'friends'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
@@ -208,19 +328,19 @@
 
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bandSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;lead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Types&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ObjectId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;person&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;lead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Types&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ObjectId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ref&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'person'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;lead&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;populate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'lead'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
   &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 
 &lt;span class=&quot;nx&quot;&gt;bandSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;pre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;findOne&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;pre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;find&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;pre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'findOne'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;pre&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'find'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;autoPopulateLead&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Band&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;band&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bandSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;bands&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Band&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'band'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bandSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'bands'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Nice. So if we define populations at the model level, we never have to actually call &lt;code class=&quot;highlighter-rouge&quot;&gt;populate&lt;/code&gt;. So in our previous examples, we could just add the hooks to each model, and simply call this:&lt;/p&gt;
 
@@ -234,21 +354,21 @@
 
 &lt;p&gt;If you weren’t aware, you can have multiple models of different schemas all living in the same collection:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;PhotoPost&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PhotoPostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;posts&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;TextPost&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TextPostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;posts&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'PhotoPost'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PhotoPostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'posts'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;mongoose&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'TextPost'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TextPostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'posts'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Or, if you’re using &lt;a href=&quot;https://github.com/briankircho/mongoose-schema-extend&quot;&gt;mongoose-schema-extend&lt;/a&gt;:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PhotosPostSchema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PostSchema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;extend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
   &lt;span class=&quot;c1&quot;&gt;// your schema&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;posts&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'posts'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;It’s hard for Mongoose to discriminate under the hood which IDs might be duplicated across documents, so you might end up with &lt;code class=&quot;highlighter-rouge&quot;&gt;$in&lt;/code&gt; queries that have duplicate IDs if you’re querying the entire &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; collection. Keep in mind, though, that you can also define different graphs by &lt;a href=&quot;http://mongoosejs.com/docs/discriminators.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;discriminatorKey&lt;/code&gt;&lt;/a&gt; (by default, &lt;code class=&quot;highlighter-rouge&quot;&gt;__t&lt;/code&gt;). You do this with the &lt;code class=&quot;highlighter-rouge&quot;&gt;match&lt;/code&gt; parameter:&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;populationGraph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;PhotoPost&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;user&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;__t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'PhotoPost'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'user'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;c1&quot;&gt;// then continue with deep population&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
@@ -267,7 +387,7 @@
 
 &lt;p&gt;I’ve only recently begun using this, so if you know something that I don’t and would like to contribute to the discussion for anyone reading this article, feel free to comment below with any critiques, suggestions, random quotes, or song lyrics. Thanks.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 24 Jan 2016 09:45:00 -0800</pubDate>
+        <pubDate>Sun, 24 Jan 2016 18:45:00 +0100</pubDate>
         <link>http://joshbeam.github.io/mongodb/2016/01/24/mongoose-populate.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/mongodb/2016/01/24/mongoose-populate.html</guid>
         
@@ -384,7 +504,7 @@ Output when decrypted by private key:   hello world
 
 &lt;p&gt;Here is a fake example of how that would look:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;hello world&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'hello world'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;signature&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;privateKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// =&amp;gt; a5dc78923jhbc&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;certificate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;signature&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
@@ -392,7 +512,7 @@ Output when decrypted by private key:   hello world
 
 &lt;p&gt;When we send that message to someone, they parse out the digital signature (the &lt;code class=&quot;highlighter-rouge&quot;&gt;a5dc78923jhbc&lt;/code&gt; part), and then verify and hash the original themselves to check if they are the same thing:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;verify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;a5dc78923jhbc&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;publicKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hello world&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;verify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'a5dc78923jhbc'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;publicKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hello world'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;In reality, certificates (such as the popular X.509 certificate) contain a different message, and the content of the digital signature is different. Here is &lt;a href=&quot;https://www.rfc-editor.org/rfc/rfc2459.txt&quot;&gt;the X.509 rfc&lt;/a&gt;, which echos the point above about hashing and then signing:&lt;/p&gt;
 
@@ -433,21 +553,21 @@ HELLO WORLD =&amp;gt; EBIIL TLOIA
 
 &lt;p&gt;To give an AES example in code (adapted from &lt;a href=&quot;http://lollyrock.com/articles/nodejs-encryption/&quot;&gt;Encrypt and decrypt content with Nodejs&lt;/a&gt;):&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;crypto&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;algorithm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;aes-256-ctr&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'crypto'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;algorithm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'aes-256-ctr'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;randomBytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
   &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createCipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;algorithm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;utf8&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hex&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hex&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'utf8'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hex'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hex'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;encrypted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
  
 &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
   &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;crypto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createDecipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;algorithm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;hex&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;utf8&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;utf8&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hex'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'utf8'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;decipher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;final&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'utf8'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
@@ -559,10 +679,10 @@ Encrypted message:            940f1f7e63f7bc229169fa
 
 &lt;ol&gt;
   &lt;li&gt;Client connects and asks server for their certificate, which in my pseudo-world looks like this: &lt;code class=&quot;highlighter-rouge&quot;&gt;ip:216.58.192.461:public_key:123456:signature:qa2ws3ed4rf&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Client verifies that &lt;code class=&quot;highlighter-rouge&quot;&gt;verify(&#39;qa2ws3ed4rf&#39;, public_key) === sha256(&#39;ip:216.58.192.461:public_key:123456&#39;)&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Client verifies that &lt;code class=&quot;highlighter-rouge&quot;&gt;verify('qa2ws3ed4rf', public_key) === sha256('ip:216.58.192.461:public_key:123456')&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;Client creates a shared symmetric session secret &lt;code class=&quot;highlighter-rouge&quot;&gt;caesarcipher&lt;/code&gt;, and encrypts this with the server’s public key&lt;/li&gt;
-  &lt;li&gt;Client sends &lt;code class=&quot;highlighter-rouge&quot;&gt;encrypt(&#39;caesarcipher&#39;, public_key)&lt;/code&gt; which turns out to look like &lt;code class=&quot;highlighter-rouge&quot;&gt;abcdefg&lt;/code&gt; to the server&lt;/li&gt;
-  &lt;li&gt;The server attempts to &lt;code class=&quot;highlighter-rouge&quot;&gt;decrypt(&#39;abcdefg&#39;, private_key)&lt;/code&gt;, and thankfully, the server gets &lt;code class=&quot;highlighter-rouge&quot;&gt;caesarcipher&lt;/code&gt; (the correct shared session key)&lt;/li&gt;
+  &lt;li&gt;Client sends &lt;code class=&quot;highlighter-rouge&quot;&gt;encrypt('caesarcipher', public_key)&lt;/code&gt; which turns out to look like &lt;code class=&quot;highlighter-rouge&quot;&gt;abcdefg&lt;/code&gt; to the server&lt;/li&gt;
+  &lt;li&gt;The server attempts to &lt;code class=&quot;highlighter-rouge&quot;&gt;decrypt('abcdefg', private_key)&lt;/code&gt;, and thankfully, the server gets &lt;code class=&quot;highlighter-rouge&quot;&gt;caesarcipher&lt;/code&gt; (the correct shared session key)&lt;/li&gt;
   &lt;li&gt;The client buys the new season of Game of Thrones by sending his credit card number (encrypted with &lt;code class=&quot;highlighter-rouge&quot;&gt;caesarcipher&lt;/code&gt;) to the server and binge watches the entire season in one evening&lt;/li&gt;
 &lt;/ol&gt;
 
@@ -575,7 +695,7 @@ Encrypted message:            940f1f7e63f7bc229169fa
   &lt;li&gt;&lt;a href=&quot;http://security.stackexchange.com/questions/20105/are-ssl-encrypted-requests-vulnerable-to-replay-attacks&quot;&gt;Are SSL encrypted requests vulnerable to Replay Attacks?&lt;/a&gt; on Security StackExchange (explains partially why we use randoms “so old signatures and temporary keys cannot be replayed.”)&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Sun, 17 Jan 2016 05:49:00 -0800</pubDate>
+        <pubDate>Sun, 17 Jan 2016 14:49:00 +0100</pubDate>
         <link>http://joshbeam.github.io/encryption/2016/01/17/breaking-down-https.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/encryption/2016/01/17/breaking-down-https.html</guid>
         
@@ -588,7 +708,7 @@ Encrypted message:            940f1f7e63f7bc229169fa
         <title>Using node.js to upload your app to Google Play</title>
         <description>&lt;div class=&quot;note&quot;&gt;
 &lt;!--excerpt.start--&gt;
-If you&#39;re developing a hybrid mobile app, you may want to stick with node.js to upload your app to the Google Play Store. However, Google&#39;s node.js client is still in &quot;alpha&quot;, and documentation is very limited. This post gives information about basic setup to get started using the googleapis client.
+If you're developing a hybrid mobile app, you may want to stick with node.js to upload your app to the Google Play Store. However, Google's node.js client is still in &quot;alpha&quot;, and documentation is very limited. This post gives information about basic setup to get started using the googleapis client.
 &lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 
@@ -660,42 +780,42 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;p&gt;There’s a lot going on here. Here are the initial module declarations.&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// our handy library&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;google&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;googleapis&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;google&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'googleapis'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;// this is optional, but helpful&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Promise&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;bluebird&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Promise&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'bluebird'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;c1&quot;&gt;// just a utility library (handy, if you haven&#39;t used it before)&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;lodash&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// just a utility library (handy, if you haven't used it before)&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'lodash'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;// command line parsing&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;argv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;yargs&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;argv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'yargs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;// see below in &quot;Finding your secret.json&quot; to find out how to get this&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;../../../secret.json&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'../../../secret.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-&lt;span class=&quot;c1&quot;&gt;// I&#39;m using my package.json as my source of truth for my versioning&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;../../../package.json&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// I'm using my package.json as my source of truth for my versioning&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'../../../package.json'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;// any unique id will do; a timestamp is easiest&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;editId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;&#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getTime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;editId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getTime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;// editing &quot;scope&quot; allowed for OAuth2&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scopes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-  &lt;span class=&quot;s1&quot;&gt;&#39;https://www.googleapis.com/auth/androidpublisher&#39;&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;'https://www.googleapis.com/auth/androidpublisher'&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
-&lt;span class=&quot;c1&quot;&gt;// here, we&#39;ll initialize our client&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// here, we'll initialize our client&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;OAuth2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;OAuth2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;oauth2Client&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;OAuth2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;jwtClient&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;JWT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;client_email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;private_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;scopes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;play&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;google&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;androidpublisher&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;v2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'v2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;auth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;oauth2Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;// default options&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;// this is the package name for your initial app you&#39;ve already set up on the Play Store&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;packageName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;com.example.app&#39;&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// this is the package name for your initial app you've already set up on the Play Store&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;packageName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'com.example.app'&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 
@@ -714,7 +834,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;center&gt;
   &lt;img src=&quot;/images/googleapis-permissions-service-account.png&quot; width=&quot;90%&quot; /&gt;
   &lt;br /&gt;
-  &lt;i&gt;You can generate your key here. Don&#39;t worry, as of the date of writing this post, you can generate as many keys as you&#39;d like without the fear of revoking other active keys! :)&lt;/i&gt;&lt;br /&gt;
+  &lt;i&gt;You can generate your key here. Don't worry, as of the date of writing this post, you can generate as many keys as you'd like without the fear of revoking other active keys! :)&lt;/i&gt;&lt;br /&gt;
 &lt;/center&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;secret.json&lt;/code&gt; should look something like this:&lt;/p&gt;
@@ -734,9 +854,9 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// &quot;open&quot; our edit&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;startEdit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;apk&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;fs&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;./Chronicled.apk&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;apk&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'fs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readFileSync&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'./Chronicled.apk'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-  &lt;span class=&quot;c1&quot;&gt;// stage the upload (doesn&#39;t actually upload anything)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// stage the upload (doesn't actually upload anything)&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
     &lt;span class=&quot;na&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
     &lt;span class=&quot;na&quot;&gt;apk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;apk&lt;/span&gt;
@@ -755,7 +875,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 
   &lt;span class=&quot;c1&quot;&gt;// log our success!&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Successful upload:&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Successful upload:'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -798,7 +918,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
 &lt;span class=&quot;cm&quot;&gt;/**
- *  Stages an upload of the APK (but doesn&#39;t actually upload anything)
+ *  Stages an upload of the APK (but doesn't actually upload anything)
  */&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;edit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
@@ -809,7 +929,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
       &lt;span class=&quot;na&quot;&gt;editId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
       &lt;span class=&quot;na&quot;&gt;media&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 
-        &lt;span class=&quot;na&quot;&gt;mimeType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;application/vnd.android.package-archive&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;mimeType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'application/vnd.android.package-archive'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
         &lt;span class=&quot;na&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;apk&lt;/span&gt;
       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -818,7 +938,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
       &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
       &lt;span class=&quot;c1&quot;&gt;// pass any data we care about to the next function call&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;omit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;extend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uploadResults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;apk&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;omit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;extend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uploadResults&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'apk'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
@@ -828,7 +948,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
  */&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setTrack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;edit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;track&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tracks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;alpha&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;track&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tracks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'alpha'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
   &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;nx&quot;&gt;play&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;edits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;tracks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
@@ -879,12 +999,12 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 
 &lt;p&gt;If all went well, you should see something like this printed in your consol:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Successful&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;upload&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1234567&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;expiryTimeSeconds&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1441766670&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;Successful&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;upload&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;edit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'1234567'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;expiryTimeSeconds&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'1441766670'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
   &lt;span class=&quot;nx&quot;&gt;uploadResults&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;versionCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-     &lt;span class=&quot;nx&quot;&gt;binary&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;sha1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;dddddd444444aaaaa55555&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;setTrackResults&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;track&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;beta&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;versionCodes&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;commitToPlayStoreResults&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1234567&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;expiryTimeSeconds&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1441766670&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+     &lt;span class=&quot;nx&quot;&gt;binary&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;sha1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'dddddd444444aaaaa55555'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;setTrackResults&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;track&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'beta'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;versionCodes&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;commitToPlayStoreResults&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'1234567'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;expiryTimeSeconds&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'1441766670'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;h2 id=&quot;forgetting-to-bump-your-version&quot;&gt;Forgetting to bump your version&lt;/h2&gt;
 
@@ -893,10 +1013,10 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;Error&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;APK&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;specifies&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;that&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;has&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;already&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;been&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;used&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;
   &lt;span class=&quot;nl&quot;&gt;code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;403&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;nx&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
-   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;androidpublisher&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-       &lt;span class=&quot;na&quot;&gt;reason&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;apkUpgradeVersionConflict&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-       &lt;span class=&quot;na&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;APK specifies a version code that has already been used.&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;TypeError&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cannot&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;property&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;edit&#39;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;domain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'androidpublisher'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;reason&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'apkUpgradeVersionConflict'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       &lt;span class=&quot;na&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'APK specifies a version code that has already been used.'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;TypeError&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cannot&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;read&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;property&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'edit'&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;This means you need to bump your &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt; version.&lt;/p&gt;
 
@@ -910,7 +1030,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 
 &lt;p&gt;Another gaping hole missing in this tutorial is &lt;strong&gt;promotion through tracks&lt;/strong&gt;. If anyone knows more about that, please comment below! Thanks for reading, and I hope you’ve found some useful information in this post!&lt;/p&gt;
 </description>
-        <pubDate>Sat, 26 Dec 2015 07:30:00 -0800</pubDate>
+        <pubDate>Sat, 26 Dec 2015 16:30:00 +0100</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/12/26/using-nodejs-to-upload-app-to-google-play.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/12/26/using-nodejs-to-upload-app-to-google-play.html</guid>
         
@@ -923,7 +1043,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
         <title>Initial thoughts on event sourcing</title>
         <description>&lt;div class=&quot;note&quot;&gt;
 &lt;!--excerpt.start--&gt;
-&quot;The state of any object can be derived from the events that affect it.&quot; In a nutshell, this is the thesis of &quot;event sourcing&quot;, which, when implemented in an application, becomes an &quot;event driven architecture&quot;. In this post I&#39;ll discuss some of the practical applications, benefits, and drawbacks that the team and I have noticed after migrating our current, stateful database to a more event-driven approach.
+&quot;The state of any object can be derived from the events that affect it.&quot; In a nutshell, this is the thesis of &quot;event sourcing&quot;, which, when implemented in an application, becomes an &quot;event driven architecture&quot;. In this post I'll discuss some of the practical applications, benefits, and drawbacks that the team and I have noticed after migrating our current, stateful database to a more event-driven approach.
 &lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 
@@ -999,7 +1119,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;p&gt;For example, say we want to prevent users from posting an ad for their used motorcycle on our app unless they’ve verified they’re email address. In a traditional, synchronous, active-record approach, we might do this:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;POST /advertisement BODY: { type: &#39;motorcycle&#39;, make: &#39;Harley Davidson&#39; }&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;POST /advertisement BODY: { type: 'motorcycle', make: 'Harley Davidson' }&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;Server checks &lt;code class=&quot;highlighter-rouge&quot;&gt;user.emailVerified === true&lt;/code&gt;?&lt;/li&gt;
   &lt;li&gt;If not, respond with, say, &lt;code class=&quot;highlighter-rouge&quot;&gt;401: Unauthorized&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;This response triggers logic on the client to show a prompt asking for the user to enter their email address in order to be sent an email with a link to verify it&lt;/li&gt;
@@ -1020,17 +1140,17 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// UserUpdated event&lt;/span&gt;
 
 &lt;span class=&quot;nx&quot;&gt;UserUpdated&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;auth0|123456&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;new_email@gmail.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'auth0|123456'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'new_email@gmail.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;updated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;MailingList&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;aXd45&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;new_email@gmail.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;User&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;bgg7x&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;new_email@gmail.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'MailingList'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'aXd45'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'new_email@gmail.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'bgg7x'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'new_email@gmail.com'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;There are still many questions to be answered, and lots of cool things that can be implemented here. It is a shift in the commonly-taught paradigm (the “active record” approach). I am excited to learn more from others who have experience with this! Thanks for reading, and feel free to chime in in the comments below.&lt;/p&gt;
 </description>
-        <pubDate>Thu, 24 Dec 2015 07:26:00 -0800</pubDate>
+        <pubDate>Thu, 24 Dec 2015 16:26:00 +0100</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/12/24/initial-thoughts-on-event-sourcing.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/12/24/initial-thoughts-on-event-sourcing.html</guid>
         
@@ -1043,7 +1163,7 @@ If you&#39;re developing a hybrid mobile app, you may want to stick with node.js
         <title>Get rid of $scope, and extend into the view model</title>
         <description>&lt;div class=&quot;note&quot;&gt;
 &lt;!--excerpt.start--&gt;
-AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first step into being able to have some sort of sense of hierarchy in applications. However, large controllers can still get unwieldy. We can move towards controlling our controllers with &lt;code&gt;angular.extend&lt;/code&gt;.
+AngularJS's &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first step into being able to have some sort of sense of hierarchy in applications. However, large controllers can still get unwieldy. We can move towards controlling our controllers with &lt;code&gt;angular.extend&lt;/code&gt;.
 &lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 
@@ -1080,9 +1200,9 @@ AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first ste
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// parent.controller.js&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;job&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Builder&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Yes we can!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Bob'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;job&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Builder'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Yes we can!'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
 &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -1098,9 +1218,9 @@ AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first ste
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;c1&quot;&gt;// a bunch of $$ angular properties, and then...&lt;/span&gt;
   &lt;span class=&quot;nl&quot;&gt;parent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;job&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Builder&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Yes we can!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Bob'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;job&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Builder'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Yes we can!'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
     &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){...}&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
@@ -1117,9 +1237,9 @@ AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first ste
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// parent.controller.js&lt;/span&gt;
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Bob&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;job&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Builder&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Yes we can!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Bob'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;job&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Builder'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;motto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Yes we can!'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
   &lt;span class=&quot;na&quot;&gt;speak&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;speak&lt;/span&gt; 
 &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 
@@ -1131,7 +1251,7 @@ AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first ste
 
 &lt;p&gt;However, you’ll notice that it’ll usually be better from then on to continue to refer to controller properties with &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt; rather than &lt;code class=&quot;highlighter-rouge&quot;&gt;vm&lt;/code&gt;, because any changes through data-binding will propogate only to &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt; (our namespaced controller), and not to our &lt;code class=&quot;highlighter-rouge&quot;&gt;vm&lt;/code&gt; object reference. You can leverage things like &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind&quot;&gt;&lt;code&gt;Function.prototype.bind&lt;/code&gt;&lt;/a&gt; if you get into hairy contexts (like &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt; loops, etc.).&lt;/p&gt;
 </description>
-        <pubDate>Sun, 23 Aug 2015 11:30:00 -0700</pubDate>
+        <pubDate>Sun, 23 Aug 2015 20:30:00 +0200</pubDate>
         <link>http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html</guid>
         
@@ -1144,7 +1264,7 @@ AngularJS&#39;s &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first ste
         <title>3 lessons in solving stupid engineering problems (without resorting to manslaughter)</title>
         <description>&lt;div class=&quot;note&quot;&gt;
 &lt;!--excerpt.start--&gt;
-Recently, some colleagues and I dreadfully spent (read: wasted) valuable man hours attempting to solve a bug in a hybrid mobile app. The cause of the bug? A missing &amp;lt;script&amp;gt; tag. Several important lessons can be learned from the ways in which we decided to go about solving this simple headbanger (no, not like you&#39;d do at a heavy metal concert; rather, where you actually consider banging your head on a solid object) of a problem.
+Recently, some colleagues and I dreadfully spent (read: wasted) valuable man hours attempting to solve a bug in a hybrid mobile app. The cause of the bug? A missing &amp;lt;script&amp;gt; tag. Several important lessons can be learned from the ways in which we decided to go about solving this simple headbanger (no, not like you'd do at a heavy metal concert; rather, where you actually consider banging your head on a solid object) of a problem.
 &lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 
@@ -1179,7 +1299,7 @@ Recently, some colleagues and I dreadfully spent (read: wasted) valuable man hou
 &amp;lt;script src=&quot;cordova.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;However, with plethora build tools available (like &lt;a href=&quot;http://webpack.github.io/&quot;&gt;webpack&lt;/a&gt;), one can usually just &lt;code class=&quot;highlighter-rouge&quot;&gt;require(&#39;ionic&#39;)&lt;/code&gt; or whatever. Instead, we got rid of the &lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt; and replaced it with our own, because we thought we were being super developers who could build an app in one step. There are many issues that play into this (for example, the whole point of a build tool such as webpack &lt;em&gt;is&lt;/em&gt; to be able to be a super developer and build the app in one step… but we’ll ignore that for now).&lt;/p&gt;
+&lt;p&gt;However, with plethora build tools available (like &lt;a href=&quot;http://webpack.github.io/&quot;&gt;webpack&lt;/a&gt;), one can usually just &lt;code class=&quot;highlighter-rouge&quot;&gt;require('ionic')&lt;/code&gt; or whatever. Instead, we got rid of the &lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt; and replaced it with our own, because we thought we were being super developers who could build an app in one step. There are many issues that play into this (for example, the whole point of a build tool such as webpack &lt;em&gt;is&lt;/em&gt; to be able to be a super developer and build the app in one step… but we’ll ignore that for now).&lt;/p&gt;
 
 &lt;p&gt;Anyway, &lt;strong&gt;the initial assumption was that the environment was set up correctly from the get-go&lt;/strong&gt;. Usually this is a reasonable assumption, and everything &lt;em&gt;did&lt;/em&gt; appear to be working correctly from the get-go, but there were some clues that we weren’t paying attention to.&lt;/p&gt;
 
@@ -1252,7 +1372,7 @@ Recently, some colleagues and I dreadfully spent (read: wasted) valuable man hou
   &lt;img src=&quot;/images/y-u-no-include-cordova-webpack-meme.png&quot; width=&quot;50%&quot; /&gt;
 &lt;/center&gt;
 </description>
-        <pubDate>Sun, 23 Aug 2015 06:39:00 -0700</pubDate>
+        <pubDate>Sun, 23 Aug 2015 15:39:00 +0200</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/08/23/solving-stupid-problems.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/08/23/solving-stupid-problems.html</guid>
         
@@ -1271,7 +1391,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;img src=&quot;https://i.imgflip.com/pm0to.jpg&quot; title=&quot;made at imgflip.com&quot; width=&quot;50%&quot; /&gt;
 &lt;/center&gt;
 
-&lt;h1 id=&quot;you-should-be-filtering&quot;&gt;3) You should be filtering&lt;/h1&gt;
+&lt;h1 id=&quot;3-you-should-be-filtering&quot;&gt;3) You should be filtering&lt;/h1&gt;
 
 &lt;p&gt;In this example, we have an array, and we want to eliminate items from an array that don’t meet a specific criteria. Here’s how you’ll see it done with &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt;:&lt;/p&gt;
 
@@ -1323,7 +1443,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;h1 id=&quot;you-should-be-mapping&quot;&gt;2) You should be mapping&lt;/h1&gt;
+&lt;h1 id=&quot;2-you-should-be-mapping&quot;&gt;2) You should be mapping&lt;/h1&gt;
 
 &lt;p&gt;In this example, we want to “change” each value in an array to something else. Here’s how we’d do it with &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt;:&lt;/p&gt;
 
@@ -1335,16 +1455,16 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stringNames&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
 
 &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Josh&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Beam&#39;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Josh'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Beam'&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Ozzy&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Osbourne&#39;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Ozzy'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Osbourne'&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
 
 &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;stringNames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39; &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;stringNames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;' '&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
   &lt;/div&gt;
@@ -1365,18 +1485,18 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;div&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Josh&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Beam&#39;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Josh'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Beam'&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Ozzy&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Osbourne&#39;&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Ozzy'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Osbourne'&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}]&lt;/span&gt;
 
 &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fullName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fullName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39; &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;' '&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
 &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
@@ -1389,7 +1509,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;h1 id=&quot;you-should-be-reducing&quot;&gt;1) You should be reducing&lt;/h1&gt;
+&lt;h1 id=&quot;1-you-should-be-reducing&quot;&gt;1) You should be reducing&lt;/h1&gt;
 
 &lt;p&gt;Here, we want to &lt;em&gt;combine certain values&lt;/em&gt; in an array.&lt;/p&gt;
 
@@ -1453,7 +1573,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;img src=&quot;https://i.imgflip.com/pm0kr.jpg&quot; title=&quot;made at imgflip.com&quot; width=&quot;50%&quot; /&gt;
 &lt;/center&gt;
 </description>
-        <pubDate>Sat, 15 Aug 2015 12:04:00 -0700</pubDate>
+        <pubDate>Sat, 15 Aug 2015 21:04:00 +0200</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/08/15/3-reasons-you-should-not-be-using-foreach.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/08/15/3-reasons-you-should-not-be-using-foreach.html</guid>
         
@@ -1465,30 +1585,30 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
       <item>
         <title>5 Things I Learned in My First Month at a Startup</title>
         <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
-In a departure from the normal content of this blog, I wanted to talk briefly about some of (what I think) are some important things I&#39;ve learned so far in my first month working for a Bay Area tech startup.&lt;!--excerpt.end--&gt;
+In a departure from the normal content of this blog, I wanted to talk briefly about some of (what I think) are some important things I've learned so far in my first month working for a Bay Area tech startup.&lt;!--excerpt.end--&gt;
 &lt;/div&gt;
 
 &lt;p&gt;In no particular order (and at a very high level of abstraction and with as little fluff as possible)…&lt;/p&gt;
 
-&lt;h1 id=&quot;dont-come-with-a-problem-come-with-a-working-prototype&quot;&gt;5) Don’t come with a problem. Come with a working prototype.&lt;/h1&gt;
+&lt;h1 id=&quot;5-dont-come-with-a-problem-come-with-a-working-prototype&quot;&gt;5) Don’t come with a problem. Come with a working prototype.&lt;/h1&gt;
 
 &lt;p&gt;A working prototype says much more about a proposed solution, than does talking about the proposed solution.&lt;/p&gt;
 
-&lt;h1 id=&quot;be-both-purist-and-pragmatic&quot;&gt;4) Be both purist and pragmatic&lt;/h1&gt;
+&lt;h1 id=&quot;4-be-both-purist-and-pragmatic&quot;&gt;4) Be both purist and pragmatic&lt;/h1&gt;
 
 &lt;p&gt;This is a careful balance of business goals vs. coding nirvana, ruthless pragmatism vs. lofty purism. In other words, it’s both good to know exactly what the perfect solution &lt;em&gt;should&lt;/em&gt; look like, and to know what compromises you have to make to have a working solution based on business timeline constraints.&lt;/p&gt;
 
-&lt;h1 id=&quot;conflict-breeds-results-but-always-listen&quot;&gt;3) Conflict breeds results (but always listen)&lt;/h1&gt;
+&lt;h1 id=&quot;3-conflict-breeds-results-but-always-listen&quot;&gt;3) Conflict breeds results (but always listen)&lt;/h1&gt;
 
 &lt;p&gt;As our patient, level-headed CTO says, “One person scores, but the whole team gets them there.” By “conflict” I don’t mean the &lt;em&gt;bad&lt;/em&gt; type of conflict. I mean the conflict that arises from a group of passionate people all trying to arrive at the best solution.&lt;/p&gt;
 
 &lt;p&gt;The opposite side of the coin is: communication. “Today, I will learn nothing by speaking, but much by listening.” &lt;a href=&quot;https://twitter.com/mhkt/status/619526422906961920&quot;&gt;Beme engineer Matt Hackett (previously VP of Engineering at Tumblr) says&lt;/a&gt;: “Most important engineering skill: Humility.”&lt;/p&gt;
 
-&lt;h1 id=&quot;the-pieces-eventually-come-together&quot;&gt;2) The pieces eventually come together&lt;/h1&gt;
+&lt;h1 id=&quot;2-the-pieces-eventually-come-together&quot;&gt;2) The pieces eventually come together&lt;/h1&gt;
 
 &lt;p&gt;When working on teams of engineers (perhaps in an Agile environment), all the pieces of the product seem scattered, but eventually, everything will begin to cleanly merge back into the product that everyone has been imagining it would be.&lt;/p&gt;
 
-&lt;h1 id=&quot;work-hard&quot;&gt;1) Work hard&lt;/h1&gt;
+&lt;h1 id=&quot;1-work-hard&quot;&gt;1) Work hard&lt;/h1&gt;
 
 &lt;p&gt;You’re it. You directly influence the success or failure of your company. Dwayne Johnson says, “always be the hardest worker in the room.” This is a tough goal when everyone else is already working harder than everyone else in the room.&lt;/p&gt;
 
@@ -1498,7 +1618,7 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
 
 &lt;p&gt;— Simon Sinek, &lt;i&gt;&lt;a href=&quot;http://www.goodreads.com/work/quotes/7367737&quot;&gt;Start with Why: How Great Leaders Inspire Everyone to Take Action&lt;/a&gt;&lt;/i&gt;&lt;/p&gt;
 </description>
-        <pubDate>Tue, 11 Aug 2015 10:48:00 -0700</pubDate>
+        <pubDate>Tue, 11 Aug 2015 19:48:00 +0200</pubDate>
         <link>http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</guid>
         
@@ -1543,9 +1663,9 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
 
 &lt;p&gt;When you click on the toggle, it gets an “on” class added or removed, through some nice vanilla JavaScript:&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;[].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByClassName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;toggle&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;$toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;mouseup&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;on&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;[].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByClassName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'toggle'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;$toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mouseup'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'on'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
@@ -1565,7 +1685,7 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
   &lt;span class=&quot;c1&quot;&gt;// change the width of the whole toggle
 &lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;$toggle-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;70px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
   
-  &lt;span class=&quot;c1&quot;&gt;// don&#39;t change these calculations
+  &lt;span class=&quot;c1&quot;&gt;// don't change these calculations
 &lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;$toggle-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$switch-margin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$switch-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
   &lt;span class=&quot;nv&quot;&gt;$toggle-padding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
   
@@ -1628,8 +1748,8 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
 
 &lt;h2 id=&quot;javascript&quot;&gt;JavaScript:&lt;/h2&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByClassName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;toggle&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onclick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;on&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByClassName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'toggle'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onclick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'on'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
@@ -1638,7 +1758,7 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
 
 &lt;p&gt;&lt;strong&gt;Key points&lt;/strong&gt;: The switch moves by just changing the padding, and you can add a transition to make it all smooth-like.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 26 May 2015 12:07:00 -0700</pubDate>
+        <pubDate>Tue, 26 May 2015 21:07:00 +0200</pubDate>
         <link>http://joshbeam.github.io/javascript/sass/2015/05/26/modern-looking-css-toggle-switch.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/sass/2015/05/26/modern-looking-css-toggle-switch.html</guid>
         
@@ -1646,167 +1766,6 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
         <category>javascript</category>
         
         <category>sass</category>
-        
-      </item>
-    
-      <item>
-        <title>From JavaScript to Ruby: Style Guide</title>
-        <description>&lt;!--excerpt.start--&gt;
-&lt;p&gt;This post is the second in the series of &lt;strong&gt;&lt;em&gt;“From JavaScript to Ruby”&lt;/em&gt;&lt;/strong&gt;, which is aimed at helping JavaScript developers transition their thinking from JavaScript to Ruby. Here you’ll find a table of the ways we do things in JavaScript, and the way you’re supposed to do them in Ruby.
-&lt;!--excerpt.end--&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;style-guide&quot;&gt;Style Guide&lt;/h1&gt;
-
-&lt;p&gt;This post is a living document. Expect changes as necessary. Suggestions? Leave a comment below or email &lt;a href=&quot;mailto:frontendcollisionblog@gmail.com&quot;&gt;Josh&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Last updated: Apr 20, 2015&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;
-        If you do this in JavaScript...
-        &lt;br /&gt;
-        &lt;small&gt;&lt;a href=&quot;https://github.com/airbnb/javascript&quot;&gt;Airbnb&lt;/a&gt;&lt;/small&gt;
-      &lt;/th&gt;
-      &lt;th&gt;
-        ...do it like this in Ruby
-        &lt;br /&gt;
-        &lt;small&gt;&lt;a href=&quot;https://github.com/bbatsov/ruby-style-guide&quot;&gt;bbatsov&lt;/a&gt;&lt;/small&gt;
-      &lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;th colspan=&quot;2&quot;&gt;String quotes&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code&gt;&#39;Some string&#39;&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code&gt;&#39;Some string&#39;&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;th colspan=&quot;2&quot;&gt;String concatenation&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world!&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;helloWorld&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;hello &#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-      &lt;td&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;world&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;world&#39;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;hello_world&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;hello &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;world&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;th colspan=&quot;2&quot;&gt;Variable names&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;
-        &lt;code&gt;camelCaseVariable = true&lt;/code&gt;
-      &lt;/td&gt;
-      &lt;td&gt;
-        &lt;code&gt;camel_case_variable = false&lt;/code&gt;
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;th colspan=&quot;2&quot;&gt;Tabs&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;// &#39;hard tab&#39;, 4 spaces&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-      &lt;td&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# &#39;soft tab&#39;, 2 spaces&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;th colspan=&quot;2&quot;&gt;Callbacks&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;someFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;hello&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;undefined&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;someFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-      &lt;td&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;someMethod&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;hello&#39;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;yield&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;block_given?&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;someMethod&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# or&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;someMethod&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;th colspan=&quot;2&quot;&gt;Talking about methods&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code&gt;someClass.someMethod&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;code&gt;SomeClass#some_method&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;th colspan=&quot;2&quot;&gt;Comments&lt;/th&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;
-        &lt;code&gt;// single-line comment&lt;/code&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;cm&quot;&gt;/*
-  multi-line
-  comment
-*/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-      &lt;td&gt;
-        &lt;code&gt;# single-line comment&lt;/code&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# multi-line&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# comment&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-      &lt;/td&gt;
-    &lt;/tr&gt;    
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-</description>
-        <pubDate>Mon, 20 Apr 2015 07:57:00 -0700</pubDate>
-        <link>http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/ruby/2015/04/20/from-javascript-to-ruby-style-guide.html</guid>
-        
-        
-        <category>javascript</category>
-        
-        <category>ruby</category>
         
       </item>
     
