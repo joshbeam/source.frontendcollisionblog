@@ -6,9 +6,145 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 14 Aug 2017 14:49:24 +0200</pubDate>
-    <lastBuildDate>Mon, 14 Aug 2017 14:49:24 +0200</lastBuildDate>
+    <pubDate>Tue, 15 Aug 2017 13:51:08 +0200</pubDate>
+    <lastBuildDate>Tue, 15 Aug 2017 13:51:08 +0200</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>How to Actually Brainstorm (like a respectable businessperson)</title>
+        <description>&lt;!--excerpt.start--&gt;
+&lt;p&gt;How do you brainstorm while maintaining a balance between pragmatism and creativity? In this post, I’ll discuss some theory behind maintaining this balance, and then I’ll discuess some actual, real-world tips for how to “actually brainstorm”, and where to proceed next.
+&lt;!--excerpt.end--&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;who-is-this-for&quot;&gt;Who is this for?&lt;/h1&gt;
+
+&lt;p&gt;This is mostly geared towards small groups, perhaps working in a startup environment. It revolves around a company structure that may have certain elements, like the business, engineering, and design team or individuals.&lt;/p&gt;
+
+&lt;p&gt;We’ll start with a bit of theory, and then go into some practical methods to actually get something out of a brainstorming session.&lt;/p&gt;
+
+&lt;h1 id=&quot;tldr&quot;&gt;TL;DR&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;There are 2 extremes: overly pragmatic and overly naïve&lt;/li&gt;
+  &lt;li&gt;There &lt;em&gt;are&lt;/em&gt; bad ideas, but you don’t know which part of it is bad until you say it out loud&lt;/li&gt;
+  &lt;li&gt;Lay the groundwork, have a facilitator, and warm it up&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://betterhumans.coach.me/rule-of-three-bad-ideas-arguments-and-brainstorming-ac0d06fbd4ee&quot;&gt;Ideas come in 3s&lt;/a&gt;: one idea is a bad idea, two ideas is an argument, and three ideas is brainstorming&lt;/li&gt;
+  &lt;li&gt;Have a respectable plant who says bad ideas to unblock people&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;intro&quot;&gt;Intro&lt;/h1&gt;
+
+&lt;p&gt;Typically, the term “brainstorming” brings to mind one of the following scenarios:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;The boss calls a brainstorming session, and mostly people are quiet for fear of saying something stupid. A couple brave ideas might be written on a whiteboard. The meeting is adjourned with people feeling like they didn’t &lt;em&gt;really&lt;/em&gt; come up with any good ideas.&lt;/li&gt;
+  &lt;li&gt;Someone calls a brainstorming session, and everybody is throwing out random, unrealistic ideas. People are talking over one another; smaller groups form where independent ideas are discussed separately from the rest of the group. The meeting is adjourned with people feeling more confused than when they started.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;These 2 scenarios represent a couple of common extremes (one on either side of the spectrum): &lt;strong&gt;control, but no creativity&lt;/strong&gt;, and &lt;strong&gt;creativity, but no control&lt;/strong&gt;. The trick is to find a proper balance.&lt;/p&gt;
+
+&lt;h1 id=&quot;hang-ups&quot;&gt;Hang ups&lt;/h1&gt;
+
+&lt;p&gt;On one side of the spectrum, there is the overly &lt;strong&gt;pragmatic&lt;/strong&gt; person or people in the room who view brainstorming as a waste of time, and any ideas that are not completely realistic should be immediately suppressed before they are even said.&lt;/p&gt;
+
+&lt;p&gt;Even further on that side of the spectrum, there are people who suppress even the notion of openly discussing new ideas, for fear that those who are discussing the ideas are &lt;em&gt;planning to execute them&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;You should not conflate the two ideas, as they are completely separate things: &lt;strong&gt;open discussion of new ideas should not be interpreted to suggest that they will be implemented&lt;/strong&gt;. This fear is valid, because you don’t want a “runaway” engineering or design team, and, contrary to the popular aphorism “there are no bad ideas”, &lt;strong&gt;there &lt;em&gt;are&lt;/em&gt; bad ideas&lt;/strong&gt;. But that doesn’t mean you shouldn’t say them out loud.&lt;/p&gt;
+
+&lt;h1 id=&quot;ideas-are-like-faucets&quot;&gt;Ideas are like faucets&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“View it as a dirty tap. When you switch on the dirty tap on it’s going to flow shit water for a substantial amount of time. Then, clean water is going to start flowing. Every now and again you’re gonna get a bit of shit, but as long as you get it out of you, it’s fine. It’s the same thing with gigs. You will always play bad gigs in the beginning. The more gigs you do, the better you will get.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ed Sheeran, one of the fastest growing artists in the world over the last couple years, &lt;a href=&quot;https://www.youtube.com/watch?v=RDyg_41QF1w&quot;&gt;said the above&lt;/a&gt; in regards to songwriting, as a way to express how he approaches songwriting.&lt;/p&gt;
+
+&lt;p&gt;This translates nicely into our mental model for brainstorming as well: just get the idea out there. There are bad ideas, but it’s easier to understand which parts are good, and which parts are bad, if you actually say it out loud. Get the shit out of the way, and let the clean water flow.&lt;/p&gt;
+
+&lt;h1 id=&quot;imagine-the-unimaginable-humor-your-imagination&quot;&gt;“Imagine the unimaginable, humor your imagination.”&lt;/h1&gt;
+
+&lt;p&gt;The above sentiment comes from Pete Blaber, a prior Delta Force commander, who participated in (and had great success with) Operation Anaconda. If you don’t know what any of this means, just know that it’s coming from a pretty badass guy who was in charge of autonomously leading a group of other badass guys in extremely dangerous circumstances, and he was really good at it.&lt;/p&gt;
+
+&lt;p&gt;I know, I know: the comparison between business and special forces is an old, tired, annoying one. Bear with me for a second, though. Don’t worry, I’m not gonna call anybody a “design ninja” or a “coding warrior”.&lt;/p&gt;
+
+&lt;p&gt;He wrote a book called &lt;a href=&quot;https://www.amazon.com/Mission-Men-Me-Lessons-Commander/dp/0425236579&quot;&gt;“The Mission, The Men, and Me”&lt;/a&gt; that shares some of his philosophies. However, the one that I think is mostly relevant here (which is a lesson made &lt;a href=&quot;http://peteblaber.weebly.com/lessons.html&quot;&gt;available online&lt;/a&gt;) is in regards to brainstorming.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;At the start of a new mission, the force is attempting to capture one of the most notorious war criminals on the UN’s most-wanted list, Osama Bin Ladin (UBL). Pete’s job is to collect any information on the environment and around the road that UBL will be traveling. They filmed the road in every possible angle so nothing could be hidden. The team gets together to try and figure out a concept to achieve surprise. One member thought to create an accident or woman looking for help, but they thought the criminal wouldn’t bother to slow down. Then someone thought of a gorilla suit. The team almost considered using a gorilla suit to capture UBL. The imagination that the team thought of was crazy, but brought the humor out to everyone. Pete believes that imagination created the evolution of man to dominate the planet to keep ourselves from extinction. Mankind found the ability to use fire, water, and wood by imagining. The side that usually wins the battle is the one that can out-smart and out-imagine the enemy as history has proven. The importance from this quote is that imagination drives the road to success. The imagination could then be turned into reality which can end in victory.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The important part here is to allow yourself to come up with stupid ideas. This reinforces the idea that, yes, there are bad ideas, but there may be seeds of truth (or “good parts”) to some bad idea. But &lt;em&gt;you need to say it first&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;how-to-actually-brainstorm&quot;&gt;How to actually brainstorm&lt;/h1&gt;
+
+&lt;h2 id=&quot;step-1-everybody-on-the-same-page&quot;&gt;Step 1: everybody on the same page&lt;/h2&gt;
+
+&lt;p&gt;Firstly, I think the basis of any good brainstorming is that &lt;em&gt;people are on the same page from the get-go&lt;/em&gt;. This means that everyone you are in the room with is familiar with the same theory behind what you’re trying to accomplish. They’ve been indoctrinated to the faucet analogy. They know the 2 extremes we discussed above, and they know how to avoid being overly pragmatic and overly naïve. It follows then, that brainstorming is both a uniquely individual &lt;em&gt;and&lt;/em&gt; collective experience.&lt;/p&gt;
+
+&lt;p&gt;Make sure everybody knows the basis from which they are operating.&lt;/p&gt;
+
+&lt;h2 id=&quot;step-2-have-a-facilitator&quot;&gt;Step 2: have a facilitator&lt;/h2&gt;
+
+&lt;p&gt;Make sure people know who is the facilitator. The facilitator’s job is not to be in charge of anything, nor decide anything about which ideas go up on the whiteboard, or which ones stay off. The facilitator simply directs the flow of things. This allows us to have a certain degree of structure, so that we don’t wander into “fluffy hipster territory”. This is a business, after all.&lt;/p&gt;
+
+&lt;p&gt;This person will simply take ideas and write them on a whiteboard, or a window, or a piece of paper.&lt;/p&gt;
+
+&lt;h2 id=&quot;step-3-warm-it-up&quot;&gt;Step 3: warm it up&lt;/h2&gt;
+
+&lt;p&gt;Once everybody is on the same page and knows who the facilitator is, let’s then start talking. Lay down a goal: what are we trying to figure out?&lt;/p&gt;
+
+&lt;p&gt;Even if everybody is on the same page, most people will fear that they will say something stupid. This fear is powerful, because it is directly tied to a person’s &lt;em&gt;credibility&lt;/em&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“If I say stupid stuff in a brainstorming session, how can I then be trusted to do my job?”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The idea of warming up means that we need to break the logical fallacy, and ensure that people unconsciously (or better yet, consciously) understand that saying something stupid here, does not mean they are stupid in other places of their lives. Again, break the conflation.&lt;/p&gt;
+
+&lt;p&gt;There are a few tricks for this: &lt;strong&gt;ideas in threes&lt;/strong&gt;, and &lt;strong&gt;a plant&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;The concept of &lt;a href=&quot;https://betterhumans.coach.me/rule-of-three-bad-ideas-arguments-and-brainstorming-ac0d06fbd4ee&quot;&gt;ideas in threes&lt;/a&gt;, basically means that any time one idea is said, and no one is willing to give any other ideas, we must collectively force 2 other relevant ideas. &lt;strong&gt;One idea is a bad idea, two ideas is an argument, and three ideas is a brainstorm&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In that article, another interesting thing is mentioned:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;For some reason, bad ideas unblock people. My theory is that people are blocked because they’re trying to edit their ideas to things that perfectly meet their own idea of the requirements. That’s natural — people want to say smart things, not stupid things.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This brings the concept of &lt;strong&gt;a plant&lt;/strong&gt;. Ideally, this is somebody more senior in the group, who has some sort of real or perceived authority or respect in some aspect of what they do. It’s easy to do: this person just says with tongue in cheek, “hey guys, I’m gonna be the bad idea guy/girl. For the sake of getting all the bad ideas out of my system, I’m gonna go ahead and say one…”, and then proceeds with some off-the-wall, partially realistic idea. This can be said with a bit of a sly smile, so that people know you’re half-joking, but half-serious.&lt;/p&gt;
+
+&lt;p&gt;However, the end result is that people realize the following:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;“He knows he’s saying something stupid, but there’s a reason for it”&lt;/li&gt;
+  &lt;li&gt;“If someone with authority and respect in the company is saying something stupid and isn’t shamed or criticized for it, surely I can say my idea, which isn’t nearly as stupid”&lt;/li&gt;
+  &lt;li&gt;People laugh&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;People are now unblocked. You can use the plant throughout the entire brainstorming session. The idea is to &lt;strong&gt;unblock the faucet so that the dirty and clean water can flow out&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;where-to-go-next&quot;&gt;Where to go next&lt;/h1&gt;
+
+&lt;p&gt;Okay, brainstorm is over, now what? Well, now you can do lots of stuff:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;You can rate the priority and quality of the ideas&lt;/li&gt;
+  &lt;li&gt;Once you have these ratings, you can use this information in your next product planning meeting&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Aside from that, now you have everybody on the same page for implementing possible features, etc. The idea here isn’t necessarily to have a strict plan; it’s more to have a framework for generating information that can be useful in the future.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;Remember, you don’t need to fool yourself: there &lt;em&gt;are&lt;/em&gt; bad ideas, but you need to say them out loud to find out which one are the good ones. Make sure everybody knows this when you’re brainstorming. It’s good to utilize some little tricks, like “ideas in threes” and “the plant” in order to unblock people.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Aug 2017 14:45:00 +0200</pubDate>
+        <link>http://joshbeam.github.io/product/2017/08/15/how-to-actually-brainstorm.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/product/2017/08/15/how-to-actually-brainstorm.html</guid>
+        
+        
+        <category>product</category>
+        
+      </item>
     
       <item>
         <title>Practical Queue Considerations</title>
@@ -1624,148 +1760,6 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
         
         
         <category>engineering</category>
-        
-      </item>
-    
-      <item>
-        <title>Modern Looking CSS Toggle Switch</title>
-        <description>&lt;!--excerpt.start--&gt;
-&lt;p&gt;Create a nice, modern toggle switch that works by just changing its padding and adding a transition (all it takes is a JavaScript click handler to add or remove a class)!
-&lt;!--excerpt.end--&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a class=&quot;jsbin-embed&quot; href=&quot;http://jsbin.com/guduco/1/embed?output&quot;&gt;JS Bin&lt;/a&gt;&lt;script src=&quot;http://static.jsbin.com/js/embed.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;em&gt;Works in the latest version of IE, Chrome, Firefox, and Safari.&lt;/em&gt;&lt;/p&gt;
-
-&lt;p&gt;This toggle switch can be used to turn things into an “on” or “off” state (for example, through HTTP requests via AJAX), and the state is represented by the toggle’s CSS.&lt;/p&gt;
-
-&lt;h1 id=&quot;components&quot;&gt;Components&lt;/h1&gt;
-
-&lt;p&gt;The toggle is made up of two components:&lt;/p&gt;
-
-&lt;p&gt;The “toggle” (the container for the whole thing):&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;/images/2015-05-26-modern-looking-css-toggle-switch-toggle.png&quot; /&gt;&lt;/center&gt;
-
-&lt;p&gt;This toggle gets the badass class name of, you guessed it, &lt;code class=&quot;highlighter-rouge&quot;&gt;.toggle&lt;/code&gt;. It can also receive the &lt;code class=&quot;highlighter-rouge&quot;&gt;.on&lt;/code&gt; class via JavaScript.&lt;/p&gt;
-
-&lt;p&gt;The next component is the “switch” (the little round thing that moves back and forth):&lt;/p&gt;
-
-&lt;center&gt;&lt;img src=&quot;/images/2015-05-26-modern-looking-css-toggle-switch-switch.png&quot; /&gt;&lt;/center&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;toggle&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;switch&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1 id=&quot;principle-of-function&quot;&gt;Principle of function&lt;/h1&gt;
-
-&lt;p&gt;&lt;strong&gt;The only thing that changes when you click the toggle is its padding!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;When you click on the toggle, it gets an “on” class added or removed, through some nice vanilla JavaScript:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;[].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByClassName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'toggle'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;$toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;$toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mouseup'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'on'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;What this “on” class does is set the &lt;code&gt;padding-left&lt;/code&gt; of the toggle (&lt;img width=&quot;30&quot; src=&quot;/images/2015-05-26-modern-looking-css-toggle-switch-toggle.png&quot; /&gt;) so that the switch appears to move to the side.&lt;/p&gt;
-
-&lt;p&gt;All we do after that is add some nice CSS3 transitions to the &lt;code&gt;background-color&lt;/code&gt; and &lt;code&gt;padding&lt;/code&gt; by saying something like &lt;code&gt;transition: 400ms cubic-bezier(0, 0, 0, 1);&lt;/code&gt;, and we have a working switch.&lt;/p&gt;
-
-&lt;h1 id=&quot;dont-sass-me&quot;&gt;Don’t SASS me&lt;/h1&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scss&quot; data-lang=&quot;scss&quot;&gt;&lt;span class=&quot;nc&quot;&gt;.toggle&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// this is both the width and height of the little circular switch
-&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;$switch-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;36px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  
-  &lt;span class=&quot;c1&quot;&gt;// change the spacing between the switch and the entire toggle
-&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;$switch-margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  
-  &lt;span class=&quot;c1&quot;&gt;// change the width of the whole toggle
-&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;$toggle-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;70px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  
-  &lt;span class=&quot;c1&quot;&gt;// don't change these calculations
-&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;$toggle-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$switch-margin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$switch-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nv&quot;&gt;$toggle-padding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  
-  &lt;span class=&quot;nl&quot;&gt;background-color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;#eee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;border&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1px&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;solid&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;#fff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;border-radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;box-shadow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5px&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;#ddd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;box-sizing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;border-box&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;transition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;400ms&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;cubic-bezier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  
-  &lt;span class=&quot;k&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;.on&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;background&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;lightblue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;padding-left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$toggle-padding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  
-  &lt;span class=&quot;nc&quot;&gt;.switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;background&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;#fff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;border-radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$switch-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;relative&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$switch-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;z-index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1 id=&quot;in-its-simplest-form&quot;&gt;In its simplest form&lt;/h1&gt;
-
-&lt;p&gt;For the slow people like me, here is a bare-bones version using regular ol’ &lt;code&gt;onclick&lt;/code&gt; and CSS (and some bad practices).&lt;/p&gt;
-
-&lt;p&gt;&lt;a class=&quot;jsbin-embed&quot; href=&quot;http://jsbin.com/yovipa/1/embed?output&quot;&gt;JS Bin&lt;/a&gt;&lt;script src=&quot;http://static.jsbin.com/js/embed.js&quot;&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;html&quot;&gt;HTML:&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;toggle&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;switch&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;css&quot;&gt;CSS:&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-scss&quot; data-lang=&quot;scss&quot;&gt;&lt;span class=&quot;nc&quot;&gt;.toggle&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;background&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;#eee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;box-sizing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;border-box&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;transition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;500ms&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;150px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nc&quot;&gt;.toggle.on&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;padding-left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;nc&quot;&gt;.switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;background&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;white&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;border&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1px&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;solid&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;gray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;50px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;50px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h2 id=&quot;javascript&quot;&gt;JavaScript:&lt;/h2&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByClassName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'toggle'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onclick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;classList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toggle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'on'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
-
-&lt;p&gt;Well that’s that: a simple CSS selector switch (all it needs is a click handler). You could also make this an AngularJS directive called, say, &lt;code&gt;&amp;lt;toggle&amp;gt;&amp;lt;/toggle&amp;gt;&lt;/code&gt;, and add the click handler inside the directive.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Key points&lt;/strong&gt;: The switch moves by just changing the padding, and you can add a transition to make it all smooth-like.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 26 May 2015 21:07:00 +0200</pubDate>
-        <link>http://joshbeam.github.io/javascript/sass/2015/05/26/modern-looking-css-toggle-switch.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/javascript/sass/2015/05/26/modern-looking-css-toggle-switch.html</guid>
-        
-        
-        <category>javascript</category>
-        
-        <category>sass</category>
         
       </item>
     
