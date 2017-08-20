@@ -8,7 +8,7 @@ comments: true
 ---
 
 <!--excerpt.start-->
-How do you brainstorm while maintaining a balance between pragmatism and creativity? In this post, I'll discuss some theory behind maintaining this balance, and then I'll discuess some actual, real-world tips for how to "actually brainstorm", and where to proceed next.
+How do you brainstorm while maintaining a balance between pragmatism and creativity? In this post, I'll discuss some theory behind maintaining this balance, and then I'll discuss some actual, real-world tips for how to "actually brainstorm", and where to proceed next.
 <!--excerpt.end-->
 
 # Who is this for?

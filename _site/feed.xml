@@ -6,14 +6,14 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 15 Aug 2017 13:51:08 +0200</pubDate>
-    <lastBuildDate>Tue, 15 Aug 2017 13:51:08 +0200</lastBuildDate>
+    <pubDate>Sun, 20 Aug 2017 14:36:26 -0700</pubDate>
+    <lastBuildDate>Sun, 20 Aug 2017 14:36:26 -0700</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
         <title>How to Actually Brainstorm (like a respectable businessperson)</title>
         <description>&lt;!--excerpt.start--&gt;
-&lt;p&gt;How do you brainstorm while maintaining a balance between pragmatism and creativity? In this post, I’ll discuss some theory behind maintaining this balance, and then I’ll discuess some actual, real-world tips for how to “actually brainstorm”, and where to proceed next.
+&lt;p&gt;How do you brainstorm while maintaining a balance between pragmatism and creativity? In this post, I’ll discuss some theory behind maintaining this balance, and then I’ll discuss some actual, real-world tips for how to “actually brainstorm”, and where to proceed next.
 &lt;!--excerpt.end--&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;who-is-this-for&quot;&gt;Who is this for?&lt;/h1&gt;
@@ -137,7 +137,7 @@
 
 &lt;p&gt;Remember, you don’t need to fool yourself: there &lt;em&gt;are&lt;/em&gt; bad ideas, but you need to say them out loud to find out which one are the good ones. Make sure everybody knows this when you’re brainstorming. It’s good to utilize some little tricks, like “ideas in threes” and “the plant” in order to unblock people.&lt;/p&gt;
 </description>
-        <pubDate>Tue, 15 Aug 2017 14:45:00 +0200</pubDate>
+        <pubDate>Tue, 15 Aug 2017 05:45:00 -0700</pubDate>
         <link>http://joshbeam.github.io/product/2017/08/15/how-to-actually-brainstorm.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/product/2017/08/15/how-to-actually-brainstorm.html</guid>
         
@@ -257,7 +257,7 @@
 
 &lt;p&gt;Again, I can’t recommend the EIP book enough. It can be hard to find coherent internet resources for implementing a queue, and this book provides well-tested production design patterns. Remember, consider your messages types, encrypt everything, and consider storing your dead letter messages to persistent storage to help you debug your system when (not if) something fails.&lt;/p&gt;
 </description>
-        <pubDate>Mon, 14 Aug 2017 15:45:00 +0200</pubDate>
+        <pubDate>Mon, 14 Aug 2017 06:45:00 -0700</pubDate>
         <link>http://joshbeam.github.io/rabbitmq/2017/08/14/practical-queue-considerations.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/rabbitmq/2017/08/14/practical-queue-considerations.html</guid>
         
@@ -523,7 +523,7 @@
 
 &lt;p&gt;I’ve only recently begun using this, so if you know something that I don’t and would like to contribute to the discussion for anyone reading this article, feel free to comment below with any critiques, suggestions, random quotes, or song lyrics. Thanks.&lt;/p&gt;
 </description>
-        <pubDate>Sun, 24 Jan 2016 18:45:00 +0100</pubDate>
+        <pubDate>Sun, 24 Jan 2016 09:45:00 -0800</pubDate>
         <link>http://joshbeam.github.io/mongodb/2016/01/24/mongoose-populate.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/mongodb/2016/01/24/mongoose-populate.html</guid>
         
@@ -831,7 +831,7 @@ Encrypted message:            940f1f7e63f7bc229169fa
   &lt;li&gt;&lt;a href=&quot;http://security.stackexchange.com/questions/20105/are-ssl-encrypted-requests-vulnerable-to-replay-attacks&quot;&gt;Are SSL encrypted requests vulnerable to Replay Attacks?&lt;/a&gt; on Security StackExchange (explains partially why we use randoms “so old signatures and temporary keys cannot be replayed.”)&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Sun, 17 Jan 2016 14:49:00 +0100</pubDate>
+        <pubDate>Sun, 17 Jan 2016 05:49:00 -0800</pubDate>
         <link>http://joshbeam.github.io/encryption/2016/01/17/breaking-down-https.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/encryption/2016/01/17/breaking-down-https.html</guid>
         
@@ -1166,7 +1166,7 @@ If you're developing a hybrid mobile app, you may want to stick with node.js to 
 
 &lt;p&gt;Another gaping hole missing in this tutorial is &lt;strong&gt;promotion through tracks&lt;/strong&gt;. If anyone knows more about that, please comment below! Thanks for reading, and I hope you’ve found some useful information in this post!&lt;/p&gt;
 </description>
-        <pubDate>Sat, 26 Dec 2015 16:30:00 +0100</pubDate>
+        <pubDate>Sat, 26 Dec 2015 07:30:00 -0800</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/12/26/using-nodejs-to-upload-app-to-google-play.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/12/26/using-nodejs-to-upload-app-to-google-play.html</guid>
         
@@ -1286,7 +1286,7 @@ If you're developing a hybrid mobile app, you may want to stick with node.js to 
 
 &lt;p&gt;There are still many questions to be answered, and lots of cool things that can be implemented here. It is a shift in the commonly-taught paradigm (the “active record” approach). I am excited to learn more from others who have experience with this! Thanks for reading, and feel free to chime in in the comments below.&lt;/p&gt;
 </description>
-        <pubDate>Thu, 24 Dec 2015 16:26:00 +0100</pubDate>
+        <pubDate>Thu, 24 Dec 2015 07:26:00 -0800</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/12/24/initial-thoughts-on-event-sourcing.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/12/24/initial-thoughts-on-event-sourcing.html</guid>
         
@@ -1387,7 +1387,7 @@ AngularJS's &lt;code&gt;controllerAs&lt;/code&gt; syntax is a good first step in
 
 &lt;p&gt;However, you’ll notice that it’ll usually be better from then on to continue to refer to controller properties with &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt; rather than &lt;code class=&quot;highlighter-rouge&quot;&gt;vm&lt;/code&gt;, because any changes through data-binding will propogate only to &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt; (our namespaced controller), and not to our &lt;code class=&quot;highlighter-rouge&quot;&gt;vm&lt;/code&gt; object reference. You can leverage things like &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind&quot;&gt;&lt;code&gt;Function.prototype.bind&lt;/code&gt;&lt;/a&gt; if you get into hairy contexts (like &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt; loops, etc.).&lt;/p&gt;
 </description>
-        <pubDate>Sun, 23 Aug 2015 20:30:00 +0200</pubDate>
+        <pubDate>Sun, 23 Aug 2015 11:30:00 -0700</pubDate>
         <link>http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/angularjs/2015/08/23/extending-vm-into-this.html</guid>
         
@@ -1508,7 +1508,7 @@ Recently, some colleagues and I dreadfully spent (read: wasted) valuable man hou
   &lt;img src=&quot;/images/y-u-no-include-cordova-webpack-meme.png&quot; width=&quot;50%&quot; /&gt;
 &lt;/center&gt;
 </description>
-        <pubDate>Sun, 23 Aug 2015 15:39:00 +0200</pubDate>
+        <pubDate>Sun, 23 Aug 2015 06:39:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/08/23/solving-stupid-problems.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/08/23/solving-stupid-problems.html</guid>
         
@@ -1709,7 +1709,7 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
   &lt;img src=&quot;https://i.imgflip.com/pm0kr.jpg&quot; title=&quot;made at imgflip.com&quot; width=&quot;50%&quot; /&gt;
 &lt;/center&gt;
 </description>
-        <pubDate>Sat, 15 Aug 2015 21:04:00 +0200</pubDate>
+        <pubDate>Sat, 15 Aug 2015 12:04:00 -0700</pubDate>
         <link>http://joshbeam.github.io/javascript/2015/08/15/3-reasons-you-should-not-be-using-foreach.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/javascript/2015/08/15/3-reasons-you-should-not-be-using-foreach.html</guid>
         
@@ -1754,7 +1754,7 @@ In a departure from the normal content of this blog, I wanted to talk briefly ab
 
 &lt;p&gt;— Simon Sinek, &lt;i&gt;&lt;a href=&quot;http://www.goodreads.com/work/quotes/7367737&quot;&gt;Start with Why: How Great Leaders Inspire Everyone to Take Action&lt;/a&gt;&lt;/i&gt;&lt;/p&gt;
 </description>
-        <pubDate>Tue, 11 Aug 2015 19:48:00 +0200</pubDate>
+        <pubDate>Tue, 11 Aug 2015 10:48:00 -0700</pubDate>
         <link>http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</link>
         <guid isPermaLink="true">http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</guid>
         
