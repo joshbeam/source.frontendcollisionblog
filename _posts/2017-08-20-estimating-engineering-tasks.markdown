@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Estimating Engineering Tasks: The Soft Side"
-date:   2017-08-15 12:45:00
+date:   2017-08-20 18:00:00
 categories: product
 author: Josh Beam
 comments: true
