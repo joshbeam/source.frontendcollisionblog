@@ -6,9 +6,445 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Aug 2017 14:36:26 -0700</pubDate>
-    <lastBuildDate>Sun, 20 Aug 2017 14:36:26 -0700</lastBuildDate>
+    <pubDate>Sun, 20 Aug 2017 18:09:52 -0700</pubDate>
+    <lastBuildDate>Sun, 20 Aug 2017 18:09:52 -0700</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
+    
+      <item>
+        <title>Estimating Engineering Tasks: The Soft Side</title>
+        <description>&lt;!--excerpt.start--&gt;
+&lt;p&gt;Estimating work is the bane of every engineer’s existence. If you overestimate and deliver too quickly, the perception is that you’re sandbagging, whereas if you underestimate and deliver too late, the perception is that you’re not competent. Most resources about task estimation are purely technical. The “soft side” of estimation is equally important, yet rarely discussed (and in practice, it usually causes the most friction). In this post I’ll discuss the psychology of estimation, ways to communicate with stakeholders about engineering tasks, and tactics to get closer to hitting your mark (and learning how to be flexible when unexpected challenges come up).
+&lt;!--excerpt.end--&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;who-is-this-post-for&quot;&gt;Who is this post for?&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Small startups and tech organizations&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;tldr&quot;&gt;TL;DR&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Many ways to estimate engineering effort, but stakeholders care about deadlines&lt;/li&gt;
+  &lt;li&gt;Many psychological and logical barriers to accurately estimating (if you’re aware of them, you can limit their influence on you)&lt;/li&gt;
+  &lt;li&gt;You and stakeholders are on the same team; you just communicate in different terms&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;a-quick-primer-how-do-you-estimate-tasks&quot;&gt;A quick primer: how do you estimate tasks?&lt;/h1&gt;
+
+&lt;p&gt;Two typical ways are:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;effort-based&lt;/li&gt;
+  &lt;li&gt;time-based&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;effort-based&quot;&gt;Effort-based&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Recommended reading: &lt;a href=&quot;https://en.wikipedia.org/wiki/Fibonacci_scale_(agile)&quot;&gt;Fibonacci scale (agile)&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;“Effort-based” tends to make more sense to engineering teams, because it represents the relative complexity of a task. For example, the Agile software development approach considers using the fibonacci scale (or even t-shirt sizes).&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;fibonacci&lt;/strong&gt; scale ([1, 2, 3, 5, 8…]) is used because as a task increases in complexity, it’s harder to accurately determine effort needed to complete it. Using the fibonacci scale, a task with an estimate of 1 might be “relatively simple”, and a task with an estimate of 8 might be “significantly more complex”.&lt;/p&gt;
+
+&lt;p&gt;When numbers increase, it’s harder to tell the difference between two numbers that are both very large (when I was a child, anybody who was older than 13 was an adult, and anybody who was older that 20 was &lt;em&gt;old&lt;/em&gt;).&lt;/p&gt;
+
+&lt;p&gt;For example, what is the difference between a task that’s estimated at 50, versus a task that’s estimated at 51? It’s hard to say.&lt;/p&gt;
+
+&lt;p&gt;So, we don’t use 50 and 51. We would instead step to either 34 and 55, or 55 and 89 (2 pairs of numbers within the fibonacci sequence):&lt;/p&gt;
+
+&lt;p&gt;0, 1, 1, 2, 3, 5, 8, 13, 21, &lt;strong&gt;34&lt;/strong&gt;, &lt;strong&gt;55&lt;/strong&gt;, &lt;strong&gt;89&lt;/strong&gt;…&lt;/p&gt;
+
+&lt;p&gt;Again, these are all relative terms; but, stakeholders don’t want to hear about “relative effort”. You need to meet a deadline.&lt;/p&gt;
+
+&lt;h2 id=&quot;time-based-and-the-importance-of-intuition&quot;&gt;Time-based (and the importance of intuition)&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Recommended reading: &lt;a href=&quot;https://en.wikipedia.org/wiki/Software_development_effort_estimation&quot;&gt;Software development effort estimation&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Hofstadter’s Law: It always takes longer than you expect, even when you take into account Hofstadter’s Law.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;— &lt;em&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Hofstadter%27s_law&quot;&gt;Hofstadter’s Law&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;In practice, time-based estimation requires &lt;strong&gt;experience&lt;/strong&gt;. In a perfect world, you should have the engineer who will be working on the task give input on the estimate (and, optimally, this engineer has had experience dealing with other similar tasks). This, however, depends heavily on your organizational structure, and is much more effective in smaller teams.&lt;/p&gt;
+
+&lt;p&gt;In other words, the optimal person to be estimating the task is &lt;strong&gt;unconsciously competent&lt;/strong&gt; (or, a person whose &lt;strong&gt;intuition&lt;/strong&gt; can be reasonably trusted).&lt;/p&gt;
+
+&lt;p&gt;When we look at the &lt;a href=&quot;https://en.wikipedia.org/wiki/Four_stages_of_competence&quot;&gt;stages of competence&lt;/a&gt;, we see that people generally fall into 1 of 4 categories:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;1 - Unconscious incompetence&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;The individual does not understand or know how to do something and does not necessarily recognize the deficit. They may deny the usefulness of the skill. The individual must recognize their own incompetence, and the value of the new skill, before moving on to the next stage. The length of time an individual spends in this stage depends on the strength of the stimulus to learn.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;2 - Conscious incompetence&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;Though the individual does not understand or know how to do something, they recognize the deficit, as well as the value of a new skill in addressing the deficit. The making of mistakes can be integral to the learning process at this stage.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;3 - Conscious competence&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;The individual understands or knows how to do something. However, demonstrating the skill or knowledge requires concentration. It may be broken down into steps, and there is heavy conscious involvement in executing the new skill.&lt;/p&gt;
+
+  &lt;p&gt;&lt;strong&gt;4 - Unconscious competence&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;The individual has had so much practice with a skill that it has become “second nature” and can be performed easily. As a result, the skill can be performed while executing another task. The individual may be able to teach it to others, depending upon how and when it was learned.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;An engineer who is in stages 1 or 2 will generally provide an unreliable estimate (but will gradually begin to provide more accurate estimates as they gain more experience, given that they also learn to overcome certain psychological barriers that I’ll discuss later).&lt;/p&gt;
+
+&lt;p&gt;It may concern some readers that I used the word “intuition” when describing estimating an engineering task. In other words, “intuition” isn’t quantifiable, so the two concepts seem juxtaposed.&lt;/p&gt;
+
+&lt;p&gt;However, the intuition comes after already diving in-depth into each individual component of the task (which I will also discuss more in detail later).&lt;/p&gt;
+
+&lt;p&gt;To give more light on these seemingly contradictory ideas, we can look at &lt;a href=&quot;https://www.quora.com/Whats-more-real-to-you-your-feelings-or-facts/answer/Richard-Muller-3?srid=2dRl&quot;&gt;Richard Mueller’s framework for decision-making&lt;/a&gt; (he is a professor of physics at UC Berkeley):&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Rosemary once told me that she approaches all important questions in the same way:&lt;/p&gt;
+
+  &lt;ol&gt;
+    &lt;li&gt;Analyze the issue to death. Gather all the numbers, all the facts, put them (if possible) on a spreadsheet. Create an evaluation function to weigh the importance of all the numbers and facts (she was a math major), and see what the computer says. (Actually, you can do most of this in your head.) Then analyze it a different way. Compare conclusions.&lt;/li&gt;
+    &lt;li&gt;Then, having completed Step 1, ignore the results, and base your conclusion on your feelings.&lt;/li&gt;
+  &lt;/ol&gt;
+
+  &lt;p&gt;That sounds contradictory, but I don’t think it is. Facts and numbers are important, but they can be misleading. Moreover, your own evaluation function, based on what you think is important to you, may be completely wrong. We often can’t articulate what is really important to us. Maybe we don’t even know.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now, this is in the context of personal decision-making, but we can learn some important lessons that translate over to our current context.&lt;/p&gt;
+
+&lt;p&gt;Firstly, it is important to &lt;strong&gt;analyze the facts to death&lt;/strong&gt; (i.e., each individual piece of the task), and then it’s equally as important &lt;strong&gt;to listen to your gut&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;We can also look at Gavin DeBecker’s book &lt;a href=&quot;https://www.amazon.com/Other-Survival-Signals-Protect-Violence/dp/0440508835/ref=sr_1_1?s=books&amp;amp;ie=UTF8&amp;amp;qid=1503267711&amp;amp;sr=1-1&amp;amp;keywords=gavin+debecker&quot;&gt;“The Gift of Fear”&lt;/a&gt; for another lesson that can be useful in our context. He says:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Intuition is always right in at least two important ways;
+it is always in response to something.
+It always has your best interest at heart&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Again, this is out of context, but the lesson we can learn from this is that &lt;strong&gt;after analyzing the facts to death, you should also listen to what your intuition is saying, because it’s trying to help you&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In our context, this tells us a very simple (but important) thing: estimate the shit out of a task, and then do a final gut check. Add a buffer if your gut tells you something doesn’t sound right (&lt;a href=&quot;https://en.wikipedia.org/wiki/Cognitive_dissonance&quot;&gt;cognitive dissonance&lt;/a&gt;), and feel free to subtract from the estimate if your gut tells you that it won’t actually take “that long” (for whatever reason).&lt;/p&gt;
+
+&lt;p&gt;The important considerations here are the “unknowns”, which generally influence your intuition:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;known unknowns&lt;/li&gt;
+  &lt;li&gt;unknown unknowns&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;“Known unknowns” are things that you know you don’t know, and don’t have information for yet. If these are present, then you know you should add a little extra buffer, just in case.&lt;/p&gt;
+
+&lt;p&gt;“Unknown unknowns” are even worse. What if you implement this new caching system, and something comes up that you never even thought to think of?&lt;/p&gt;
+
+&lt;p&gt;These two categories of “unknowns” are generally present in more complex tasks (and can be present in simple tasks), but the simpler the task is in complexity, the easier it is to reliably estimate (and even cut off time during your final gut check) because there simply may not be any “unknowns” (aside from irrelevant situations that may affect your task completion, like unrelated server issues, etc.)&lt;/p&gt;
+
+&lt;p&gt;In the conclusion of this post, I’ll give an example of merging the “effort-based” and “time-based” frameworks for estimating a task.&lt;/p&gt;
+
+&lt;h1 id=&quot;the-psychology-of-estimating&quot;&gt;The psychology of estimating&lt;/h1&gt;
+
+&lt;p&gt;Here we’ll discuss barriers to accurately estimating (and how these also affect even experienced engineers’ intuition):&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Planning_fallacy&quot;&gt;Planning Fallacy&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Dunning%E2%80%93Kruger_effect&quot;&gt;Dunning-Kruger Effect&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Anchoring&quot;&gt;Anchoring (false premises)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.simplypsychology.org/obedience.html&quot;&gt;Obedience to Authority&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Rebellion (silent or active)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Before we dive in, it is worth it to explain why I included this section.&lt;/p&gt;
+
+&lt;p&gt;You should look at psychological factors as external forces that – unbeknownst to you – are attempting to influence your decision-making: once you are aware of these phsycological influences and can define them (and see the role they’re playing in your own thought processes), the easier it is to work past them.&lt;/p&gt;
+
+&lt;p&gt;In other words, you can discover your own natural biases and prevent them from limiting you. &lt;strong&gt;But, the first step is to be aware of them&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;planning-fallacy&quot;&gt;Planning fallacy&lt;/h2&gt;
+
+&lt;p&gt;This is a simple one:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;a phenomenon in which predictions about how much time will be needed to complete a future task display an optimism bias and underestimate the time needed.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The takeaway here is: &lt;strong&gt;be skeptical of your optimism about a task&lt;/strong&gt;. On the other hand, &lt;strong&gt;also be careful of your own skepticism&lt;/strong&gt;. The key is to find a balance.&lt;/p&gt;
+
+&lt;h2 id=&quot;dunning-kruger-effect&quot;&gt;Dunning-Kruger Effect&lt;/h2&gt;
+
+&lt;p&gt;Another simple one:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;a cognitive bias wherein persons of low ability suffer from illusory superiority, mistakenly assessing their cognitive ability as greater than it is&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is especially relevant to engineers who fall into categories 1 or 2 of the stages of competence.&lt;/p&gt;
+
+&lt;p&gt;In other words, this is a good lesson in humility, especially for new engineering who might be feeling a bit of &lt;a href=&quot;https://en.wikipedia.org/wiki/Impostor_syndrome&quot;&gt;impostor syndrome&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The takeaway here is: &lt;strong&gt;be humble about yourself and your capabilities, and seek as much information as is reasonably appropriate before making an important decision&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;“Can I really do this in a day? Can I implement that algorithm from scratch? Whose help will I need? What resources should I use?”&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;anchoring&quot;&gt;Anchoring&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;a cognitive bias that describes the common human tendency to rely too heavily on the first piece of information offered (the “anchor”) when making decisions. During decision making, anchoring occurs when individuals use an initial piece of information to make subsequent judgments. Once an anchor is set, other judgments are made by adjusting away from that anchor, and there is a bias toward interpreting other information around the anchor. For example, the initial price offered for a used car sets the standard for the rest of the negotiations, so that prices lower than the initial price seem more reasonable even if they are still higher than what the car is really worth.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;In our case, this is also means that we need not to be scared of readjusting estimates when we have more information. For example, if in a meeting with managers, we say “this sounds like something that could take about a week”, and then come back a couple days later after thinking about it more and saying “this will take 2 weeks”, we had already based all of our other discussions over those couple of days on the idea that the task would take a week, and we are more resistant to being open to discussing a new estimate, even when we have new information (more on this in the section about communicating with stakeholders).&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;“You said it was gonna take a week… now you’re saying it’s gonna take longer? Why’d you tell me a week, then, in the first place?”&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The takeaway here is: &lt;strong&gt;as a company, don’t be afraid of flexibility. Don’t anchor yourself to initial premises that can be proved wrong once you get new information&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Also, &lt;strong&gt;try not to go fishing for estimates at inappropriate times&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is related to the logical fallacy of drawing conclusions based on &lt;a href=&quot;https://en.wikipedia.org/wiki/False_premise&quot;&gt;false premises&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;obedience-to-authority&quot;&gt;Obedience to Authority&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Obedience is a form of social influence where an individual acts in response to a direct order from another individual, who is usually an authority figure. It is assumed that without such an order the person would not have acted in this way.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This isn’t meant to say that you shouldn’t listen to your boss: instead, it is important to keep in mind that you might easily feel pressured into giving an inaccurate estimate because you don’t want to disappoint your boss with an estimate he or she didn’t expect (more on this in the section about communicating with stakeholders).&lt;/p&gt;
+
+&lt;p&gt;The takeaway here is: &lt;strong&gt;be honest in your estimates, even if it isn’t pleasant&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is &lt;em&gt;extremely&lt;/em&gt; important, too, for the person who is going to be doing the work. If you tell your boss that it’ll take a day, knowing that it will take a week, you’re doing disservice to yourself, and everyone else:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;there’s no way you’re gonna get it done in a day, unless you sacrifice your own well-being&lt;/li&gt;
+  &lt;li&gt;you will be perceived more and more as incompetent in your estimations&lt;/li&gt;
+  &lt;li&gt;end result: you didn’t deliver on time, and possibly negatively impacted the business&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;rebellion-silent-or-active&quot;&gt;Rebellion (silent or active)&lt;/h2&gt;
+
+&lt;p&gt;In contract to “Obedience to Authority”, you might feel oppressed by your boss and feel the need to give inappropriate estimates in order to spite him or her, because after all, you are in control of the work output. Without you, your boss would need to find another engineer to do the work. This gives you &lt;em&gt;leverage&lt;/em&gt;. However, it’s important to keep this in mind as well: the important thing is the success of the business (because, after all, it benefits you, especially if you have equity). The key principle you should keep in mind is that you are in search of a &lt;em&gt;correct estimate&lt;/em&gt;, but not necessarily an estimate that is &lt;em&gt;pleasing&lt;/em&gt; to you. The two should not be conflated.&lt;/p&gt;
+
+&lt;p&gt;This is very similar to the concept of finding a correct solution, and not just being biased towards your own solution (“leaving your ego at the door”).&lt;/p&gt;
+
+&lt;p&gt;The takeaway here is: &lt;strong&gt;you’re on the same team&lt;/strong&gt;. You all succeed together.&lt;/p&gt;
+
+&lt;p&gt;Now that we’re aware of psychological and logical barriers to providing estimates, let’s discuss how to communicate to the bosses.&lt;/p&gt;
+
+&lt;h1 id=&quot;communicating-with-stakeholders&quot;&gt;Communicating with stakeholders&lt;/h1&gt;
+
+&lt;p&gt;In this context, we’ll think of “stakeholders” as anybody else who is not an engineer, and who has a degree (limited or otherwise) of influence in your decision-making and the trajectory of the business.&lt;/p&gt;
+
+&lt;p&gt;We’ll discuss some common situations, and how to deal with them:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Us vs. them&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;Ineedanestimatenow-itus&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;Trust issues (sandbagging, honesty, incompetence, black swan)&lt;/li&gt;
+  &lt;li&gt;Communication friction&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;us-vs-them&quot;&gt;Us vs. them&lt;/h2&gt;
+
+&lt;p&gt;I want to talk about this one first, because it’s very important. Generally, engineers view businesspeople as just that… “the businesspeople”. You know, the oppressive authority figures lurking in the shadows.&lt;/p&gt;
+
+&lt;p&gt;However, we want to limit this dynamic as much as possible. Just like &lt;a href=&quot;http://blog.close.io/get-past-gatekeeper&quot;&gt;salespeople shouldn’t refer to operations professionals as gatekeepers&lt;/a&gt;, engineers shouldn’t think of businesspeople as “the other guys”.&lt;/p&gt;
+
+&lt;p&gt;Although there can be frequent friction and conflict, the important thing is to understand that you are both attempting to achieve a mutual goal. When the boss says, “why isn’t this done yet?”, it’s probably not because he or she wants to make your life miserable; instead, it’s because your boss (especially if your boss is someone in the C-Suite) has &lt;strong&gt;vested emotional interest in the outcome of the company&lt;/strong&gt; (or, maybe you’re working for a middle-manager who’s just an asshole, but usually you only start encountering these issues at larger firms, since hiring in small organizations and startups can be very selective, and cultural fit is a key aspect that’s looked at… usually).&lt;/p&gt;
+
+&lt;p&gt;Assuming that it’s not the latter case (and your boss isn’t just a salty middle-manager), we can then conclude that there are 1 or 2 issues here:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;the boss’s perception is that you’re purposely resisting them, and/or&lt;/li&gt;
+  &lt;li&gt;you’re not doing a good job of communicating your decision-making&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Usually, the 2 issues are related (a vicious cycle).&lt;/p&gt;
+
+&lt;p&gt;Maybe the boss has had prior experiences with lazy engineers or free-loaders, and their default view (the premise from which they base their conclusions – their operating principle) is that other engineers will probably be the same. They are inherently skeptical. This is not your problem, it is theirs. However, you still need to be on the same team. You can still take steps to alter this dynamic.&lt;/p&gt;
+
+&lt;p&gt;Or, maybe the boss’s trust issues stemmed from your bad job at communicating your decision-making in the first place. You make silent decisions that affect scope of work, and the boss is left in the dust, confused about the progress of work, and thinking that there was no plan. Maybe the boss &lt;em&gt;is&lt;/em&gt; flexible, &lt;strong&gt;but you’re not communicating your flexible decisions appropriately&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Remember, &lt;strong&gt;if this person has vested emotional interest in the outcome of the company, anything that may stand in the way of that is unconsciously (or worse, consciously) branded as an enemy.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see, then, that the fault isn’t always necessarily just one person’s. We can alter this dynamic through effective communication (I’ll discuss this after the next few sections).&lt;/p&gt;
+
+&lt;h2 id=&quot;ineedanestimatenow-itus&quot;&gt;&lt;em&gt;Ineedanestimatenow-itus&lt;/em&gt;&lt;/h2&gt;
+
+&lt;p&gt;Your boss asks, “I know it’s hard to give an estimate right now, but if you had to guess, how long do you think this could take?”&lt;/p&gt;
+
+&lt;p&gt;What do you respond with?&lt;/p&gt;
+
+&lt;p&gt;Optimially, he or she gives you space to be able to say, “I’d love to throw something out there, but I think my best bet might be to let this all churn in my head a little first, and then I can come back to you with something that makes sense.”&lt;/p&gt;
+
+&lt;p&gt;But, what if they insist? Well, this may be a good opportunity to explain something we’ve already talked about before: &lt;em&gt;anchoring&lt;/em&gt;. The tactic would be to preface your gut estimate with a warning about the anchoring fallacy.&lt;/p&gt;
+
+&lt;p&gt;“For the sake of discussion, we can frame our thinking right now based on the idea that this &lt;em&gt;could&lt;/em&gt; take about a week, but let’s be flexible; I need to look into more, and then I can give you a more reliable initial estimate.”&lt;/p&gt;
+
+&lt;p&gt;Optimally, everyone should be on the same page on how we, as a team, handle “initial gut estimates”. There can be many tactics for this:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Give a quick organized presentation to the team on the psychological barriers we talked about above&lt;/li&gt;
+  &lt;li&gt;Or, have a one-on-one with the person who has &lt;em&gt;Ineedanestimatenow-itus&lt;/em&gt;, and explain the issues that this can cause. Remember to frame it in the correct context: you are both on the same team, and you want to be able to give a reliable estimate and not be anchored to an unreliable one. This is for the benefit of the business.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As a side note, &lt;a href=&quot;https://softwareengineering.stackexchange.com/a/716/171283&quot;&gt;this StackExchange post&lt;/a&gt; echoes my point by quoting &lt;a href=&quot;http://rads.stackoverflow.com/amzn/click/020161622X&quot;&gt;The Pragmatic Programmer&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;What to Say When Asked for an Estimate&lt;/strong&gt;&lt;/p&gt;
+
+  &lt;p&gt;You say “I’ll get back to you.”&lt;/p&gt;
+
+  &lt;p&gt;You almost always get better results if you slow the process down and spend some time going through the steps we describe in this section. Estimates given at the coffee machine will (like the coffee) come back to haunt you.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;trust-issues&quot;&gt;Trust issues&lt;/h2&gt;
+
+&lt;h3 id=&quot;sandbagging&quot;&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Sandbagging&quot;&gt;Sandbagging&lt;/a&gt;&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;hiding the strength, skill or difficulty of something or someone early in an engagement&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This can occur when you accidentally overestimate a task, and complete it earlier than intended. If this happens often, it looks like a tactic, and can cause trust issues.&lt;/p&gt;
+
+&lt;p&gt;This brings up 2 important points:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;be thorough in your estimates&lt;/li&gt;
+  &lt;li&gt;communicate, communicate, communicate&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I hate to place all the blame on the engineer for not communicating properly. However, you should have some tactics in mind for when someone asks you the question, “why were you able to complete this so quickly?”&lt;/p&gt;
+
+&lt;p&gt;A good response might be:&lt;/p&gt;
+
+&lt;p&gt;“Well, I did my best to estimate accurately, but it turns out, I was actually able to build on top of some good previous architectural decisions [resuable components, etc.]”&lt;/p&gt;
+
+&lt;p&gt;This also gives emphasizes a good point to the questioner: it is important to invest time in good architecture.&lt;/p&gt;
+
+&lt;h3 id=&quot;perceived-incompetence&quot;&gt;Perceived incompetence&lt;/h3&gt;
+
+&lt;p&gt;This is opposite to sandbagging. This happens when you tend to underestimate tasks, and exceed deadlines. If it happens once, ok. If it happens twice, you need to re-evaluate your system. If you it happens three times, there’s a major issue.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You might not be incompetent in your work, but you are incompetent in your estimates.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, those two ideas can get easily conflated.&lt;/p&gt;
+
+&lt;h3 id=&quot;honesty&quot;&gt;Honesty&lt;/h3&gt;
+
+&lt;p&gt;Always, always, always, be honest with your estimates. If you succumb to the “Obedience to Authority” fallacy (or on the opposite end of the spectrum, “Rebellion”), then this is the quickest way to put yourself in a situation where you can’t be trusted – and the worst part is, you could’ve avoided it in the first place. You know when you’re being honest, and you know when you’re being dishonest. &lt;strong&gt;Choose to be honest&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;black-swan-theory&quot;&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Black_swan_theory&quot;&gt;Black swan theory&lt;/a&gt;&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;1 - The event is a surprise (to the observer).&lt;/p&gt;
+
+  &lt;p&gt;2 - The event has a major effect.&lt;/p&gt;
+
+  &lt;p&gt;3 - After the first recorded instance of the event, it is rationalized by hindsight, as if it could have been expected; that is, the relevant data were available but unaccounted for in risk mitigation programs. The same is true for the personal perception by individuals.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is when you’re blamed for an “unknown unknown”, with the assumption that it could’ve been predicted based on the information at the time. It’s easy to armchair quarterback engineers.&lt;/p&gt;
+
+&lt;p&gt;It is important to communicate up-front about your estimates, and everybody should be on the same page that “shit happens”.&lt;/p&gt;
+
+&lt;h1 id=&quot;communication-friction&quot;&gt;Communication friction&lt;/h1&gt;
+
+&lt;p&gt;&lt;strong&gt;You and stakeholders are on the same team; you just communicate in different terms&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;There is a difference between “dealing with” businesspeople, and being on the same team as them. You should re-frame your thinking in your interactions if you, by default, view them as people to be “dealt with”. If you don’t, you will set yourself up for failure.&lt;/p&gt;
+
+&lt;p&gt;Once you operate from this principle, you can then delve into methods for reducing friction in communication:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;metaphors&lt;/li&gt;
+  &lt;li&gt;business terms&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;metaphors&quot;&gt;Metaphors&lt;/h2&gt;
+
+&lt;p&gt;This one kind of makes me laugh out loud, but it’s very useful.&lt;/p&gt;
+
+&lt;p&gt;You are an engineer, so you know the words you use. When someone says “server”, you might know to ask: “you mean, the app server or the db server?”. &lt;strong&gt;You are an engineer; you know the words you use&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Other people probably don’t.&lt;/p&gt;
+
+&lt;p&gt;So, explain it in non-technical terms. The easiest way to do this sometimes is with metaphors.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;What’s the difference between changing styles and adding functionality? That’s like re-painting a house versus installing new electrical wiring. Re-painting is easier; re-wiring takes a lot of different kind of effort.&lt;/li&gt;
+  &lt;li&gt;What does it mean that the process is running out of memory? It’s like when the drain gets clogged and the sink starts to overflow.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Yes, I know, some of you are probably rolling your eyes. I have to control this impulse as well. But remember, not everybody is a damn engineer! And you are not superior to them because you are; you just have different sets of skills and knowledge.&lt;/p&gt;
+
+&lt;!-- Here's a useful video on the topic (*Napoleon Dynamite talks about skills*):
+
+&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/XsiiIa6bs9I?ecver=1&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt; --&gt;
+
+&lt;h2 id=&quot;business-terms&quot;&gt;Business terms&lt;/h2&gt;
+
+&lt;p&gt;When discussing trade-offs and implementation, talk about them in business terms.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;“If we don’t spend time on configuring our database to support encryption-at-rest, this could open us up to leaking customer data, which could bring down the business.”&lt;/li&gt;
+  &lt;li&gt;“If we don’t spend the time to implement this caching mechanism correctly, then critical customer information can be operated on when it’s potentially out-of-date, and cause rippling effects throughout the system; this would take days to fix, and then we can implement feature X, Y, and Z.”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;The boss only cares about good engineering practices to the extent that it makes the product better and mitigates risk to the business&lt;/strong&gt;. And so should you.&lt;/p&gt;
+
+&lt;p&gt;In other words, the boss is a good check/balance on your ability to be pragmatic. He is completely uninfluenced by any tech implementation details; he just wants something that works, and works well.&lt;/p&gt;
+
+&lt;p&gt;Keep this idea in mind. It is useful to you. Use this ignorance to your benefit.&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;Let’s do a real-world example to help put this into our context:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;You are designing an admin page that displays a list of users&lt;/li&gt;
+  &lt;li&gt;You are using a RESTful API on a Node.js back-end, and Angular on the front-end&lt;/li&gt;
+  &lt;li&gt;We already have a “grid component” (say, using &lt;a href=&quot;https://www.telerik.com/kendo-ui&quot;&gt;Kendo Web UI Components&lt;/a&gt;), which we’ve determined is suitable for most of our internal admin display pages&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The components involved in a time-based estimate for this task are:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;A server endpoint to retrieve a list of users (only authorized people can query this endpoint)&lt;/li&gt;
+  &lt;li&gt;A UI component to draw the users on an internal admin webpage&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The effort here is minimally complex. We already have most of our basic components to work with. We’ll call this a “3” in complexity.&lt;/p&gt;
+
+&lt;p&gt;How does this translate to time though? What’s involved in setting up the REST endpoint? What about the grid to draw the list of users?&lt;/p&gt;
+
+&lt;p&gt;Ok, the server endpoint will take an hour:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;attach the endpoint to Express router&lt;/li&gt;
+  &lt;li&gt;ensure only authorized users can access it&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;write a damn unit test&lt;/em&gt;&lt;/li&gt;
+  &lt;li&gt;ask someone for a code review and merge the PR&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Side note: &lt;strong&gt;Always account for testing, code review, and deployment.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The UI is super simple; just need to wire up an existing component. That’s a half hour.&lt;/p&gt;
+
+&lt;p&gt;And then, let’s give another hour on top of that, because shit happens.&lt;/p&gt;
+
+&lt;p&gt;It was a minimally complex task (a “3”), but the time necessary is about 2 and a half hours. What’s the gut check on that? You will know, if you know your system. To me, something like this “feels” right. 2 and a half hours is probably more than enough to get through this, and it feels safe.&lt;/p&gt;
+
+&lt;p&gt;Remember, throughout all of this, we need to be communicating. If something changes, tell the boss about the business implications. Why is it more important to spend time on a different part of it? What is the important of having a unit test for it?&lt;/p&gt;
+
+&lt;p&gt;If takes less time than you originally thought, you’re not sandbagging. You built on top of previous good architecture. But, it’s important to keep this in mind when analyzing your estimate in the first place. You need to hit your mark.&lt;/p&gt;
+
+&lt;p&gt;There is a soft counterpart to the technical implementation of a system. Use it to your advantage.&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Aug 2017 05:45:00 -0700</pubDate>
+        <link>http://joshbeam.github.io/product/2017/08/15/estimating-engineering-tasks.html</link>
+        <guid isPermaLink="true">http://joshbeam.github.io/product/2017/08/15/estimating-engineering-tasks.html</guid>
+        
+        
+        <category>product</category>
+        
+      </item>
     
       <item>
         <title>How to Actually Brainstorm (like a respectable businessperson)</title>
@@ -1715,51 +2151,6 @@ One of the main problems with &lt;code&gt;forEach&lt;/code&gt; is that it primar
         
         
         <category>javascript</category>
-        
-      </item>
-    
-      <item>
-        <title>5 Things I Learned in My First Month at a Startup</title>
-        <description>&lt;div class=&quot;note&quot;&gt;&lt;!--excerpt.start--&gt;
-In a departure from the normal content of this blog, I wanted to talk briefly about some of (what I think) are some important things I've learned so far in my first month working for a Bay Area tech startup.&lt;!--excerpt.end--&gt;
-&lt;/div&gt;
-
-&lt;p&gt;In no particular order (and at a very high level of abstraction and with as little fluff as possible)…&lt;/p&gt;
-
-&lt;h1 id=&quot;5-dont-come-with-a-problem-come-with-a-working-prototype&quot;&gt;5) Don’t come with a problem. Come with a working prototype.&lt;/h1&gt;
-
-&lt;p&gt;A working prototype says much more about a proposed solution, than does talking about the proposed solution.&lt;/p&gt;
-
-&lt;h1 id=&quot;4-be-both-purist-and-pragmatic&quot;&gt;4) Be both purist and pragmatic&lt;/h1&gt;
-
-&lt;p&gt;This is a careful balance of business goals vs. coding nirvana, ruthless pragmatism vs. lofty purism. In other words, it’s both good to know exactly what the perfect solution &lt;em&gt;should&lt;/em&gt; look like, and to know what compromises you have to make to have a working solution based on business timeline constraints.&lt;/p&gt;
-
-&lt;h1 id=&quot;3-conflict-breeds-results-but-always-listen&quot;&gt;3) Conflict breeds results (but always listen)&lt;/h1&gt;
-
-&lt;p&gt;As our patient, level-headed CTO says, “One person scores, but the whole team gets them there.” By “conflict” I don’t mean the &lt;em&gt;bad&lt;/em&gt; type of conflict. I mean the conflict that arises from a group of passionate people all trying to arrive at the best solution.&lt;/p&gt;
-
-&lt;p&gt;The opposite side of the coin is: communication. “Today, I will learn nothing by speaking, but much by listening.” &lt;a href=&quot;https://twitter.com/mhkt/status/619526422906961920&quot;&gt;Beme engineer Matt Hackett (previously VP of Engineering at Tumblr) says&lt;/a&gt;: “Most important engineering skill: Humility.”&lt;/p&gt;
-
-&lt;h1 id=&quot;2-the-pieces-eventually-come-together&quot;&gt;2) The pieces eventually come together&lt;/h1&gt;
-
-&lt;p&gt;When working on teams of engineers (perhaps in an Agile environment), all the pieces of the product seem scattered, but eventually, everything will begin to cleanly merge back into the product that everyone has been imagining it would be.&lt;/p&gt;
-
-&lt;h1 id=&quot;1-work-hard&quot;&gt;1) Work hard&lt;/h1&gt;
-
-&lt;p&gt;You’re it. You directly influence the success or failure of your company. Dwayne Johnson says, “always be the hardest worker in the room.” This is a tough goal when everyone else is already working harder than everyone else in the room.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Great companies don’t hire skilled people and motivate them, they hire already motivated people and inspire them. People are either motivated or they are not. Unless you give motivated people something to believe in, something bigger than their job to work toward, they will motivate themselves to find a new job and you’ll be stuck with whoever’s left.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;— Simon Sinek, &lt;i&gt;&lt;a href=&quot;http://www.goodreads.com/work/quotes/7367737&quot;&gt;Start with Why: How Great Leaders Inspire Everyone to Take Action&lt;/a&gt;&lt;/i&gt;&lt;/p&gt;
-</description>
-        <pubDate>Tue, 11 Aug 2015 10:48:00 -0700</pubDate>
-        <link>http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</link>
-        <guid isPermaLink="true">http://joshbeam.github.io/engineering/2015/08/11/5-things-i-learned-in-my-first-month-at-a-startup.html</guid>
-        
-        
-        <category>engineering</category>
         
       </item>
     
