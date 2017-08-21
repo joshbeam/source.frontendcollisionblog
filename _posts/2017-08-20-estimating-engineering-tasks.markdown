@@ -301,7 +301,7 @@ This is when you're blamed for an "unknown unknown", with the assumption that it
 
 It is important to communicate up-front about your estimates, and everybody should be on the same page that "shit happens".
 
-# Communication friction
+## Communication friction
 
 **You and stakeholders are on the same team; you just communicate in different terms**.
 
@@ -312,7 +312,7 @@ Once you operate from this principle, you can then delve into methods for reduci
 - metaphors
 - business terms
 
-## Metaphors
+### Metaphors
 
 This one kind of makes me laugh out loud, but it's very useful.
 
@@ -331,7 +331,7 @@ Yes, I know, some of you are probably rolling your eyes. I have to control this 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/XsiiIa6bs9I?ecver=1" frameborder="0" allowfullscreen></iframe> -->
 
-## Business terms
+### Business terms
 
 When discussing trade-offs and implementation, talk about them in business terms.
 

@@ -6,8 +6,8 @@
 </description>
     <link>http://joshbeam.github.io/</link>
     <atom:link href="http://joshbeam.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Aug 2017 18:13:46 -0700</pubDate>
-    <lastBuildDate>Sun, 20 Aug 2017 18:13:46 -0700</lastBuildDate>
+    <pubDate>Sun, 20 Aug 2017 18:15:56 -0700</pubDate>
+    <lastBuildDate>Sun, 20 Aug 2017 18:15:56 -0700</lastBuildDate>
     <generator>Jekyll v3.5.2</generator>
     
       <item>
@@ -347,7 +347,7 @@ It always has your best interest at heart&lt;/p&gt;
 
 &lt;p&gt;It is important to communicate up-front about your estimates, and everybody should be on the same page that “shit happens”.&lt;/p&gt;
 
-&lt;h1 id=&quot;communication-friction&quot;&gt;Communication friction&lt;/h1&gt;
+&lt;h2 id=&quot;communication-friction&quot;&gt;Communication friction&lt;/h2&gt;
 
 &lt;p&gt;&lt;strong&gt;You and stakeholders are on the same team; you just communicate in different terms&lt;/strong&gt;.&lt;/p&gt;
 
@@ -360,7 +360,7 @@ It always has your best interest at heart&lt;/p&gt;
   &lt;li&gt;business terms&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;metaphors&quot;&gt;Metaphors&lt;/h2&gt;
+&lt;h3 id=&quot;metaphors&quot;&gt;Metaphors&lt;/h3&gt;
 
 &lt;p&gt;This one kind of makes me laugh out loud, but it’s very useful.&lt;/p&gt;
 
@@ -381,7 +381,7 @@ It always has your best interest at heart&lt;/p&gt;
 
 &lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/XsiiIa6bs9I?ecver=1&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt; --&gt;
 
-&lt;h2 id=&quot;business-terms&quot;&gt;Business terms&lt;/h2&gt;
+&lt;h3 id=&quot;business-terms&quot;&gt;Business terms&lt;/h3&gt;
 
 &lt;p&gt;When discussing trade-offs and implementation, talk about them in business terms.&lt;/p&gt;
 
